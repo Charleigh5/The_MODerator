@@ -1,12 +1,12 @@
 import type { Phase } from "../types";
 import { TICKER_ITEMS } from "../data/modLibrary";
-import { IconBall, IconReset, IconChip } from "./icons";
+import { IconBall } from "./icons";
 
-const STEPS: { label: string; phase: Phase }[] = [
-  { label: "BRIEF", phase: "idle" },
-  { label: "INTERROGATE", phase: "qa" },
-  { label: "COMPILE", phase: "generating" },
-  { label: "SHIP", phase: "ready" },
+const STEPS: { label: string; sub: string; phase: Phase }[] = [
+  { label: "1 · BRIEF", sub: "talk to the coach", phase: "idle" },
+  { label: "2 · GRILL", sub: "Q&A on the board", phase: "qa" },
+  { label: "3 · COMPILE", sub: "weaving patterns", phase: "generating" },
+  { label: "4 · SHIP IT", sub: "test & export", phase: "ready" },
 ];
 
 export default function TopBar({
@@ -24,55 +24,45 @@ export default function TopBar({
   const ticker = [...TICKER_ITEMS, ...TICKER_ITEMS];
 
   return (
-    <header className="relative z-20 shrink-0 border-b border-line bg-pine-900/80 backdrop-blur-sm">
-      <div className="flex h-[54px] items-center gap-4 px-3.5">
-        {/* mark */}
-        <div className="flex items-center gap-3">
-          <div className="relative grid h-9 w-9 place-items-center rounded-lg border border-line-bright bg-pine-800 text-turf-400 shadow-[0_0_18px_rgba(43,213,116,0.15)]">
-            <IconBall className="h-5.5 w-5.5" />
-            <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-turf-400 led-green" />
-          </div>
+    <header className="relative z-20 shrink-0">
+      <div className="flex items-center gap-4 px-4 py-2.5">
+        {/* brass plaque */}
+        <div className="plaque flex items-center gap-3 px-3.5 py-2">
+          <IconBall className="h-6 w-6 text-[#3a2a10]" />
           <div className="leading-none">
-            <div className="font-display text-[15px] font-bold tracking-[0.14em] text-chalk">
-              GRIDIRON<span className="text-turf-400">FORGE</span>
-            </div>
-            <div className="mt-1 font-mono text-[9.5px] uppercase tracking-[0.22em] text-fog">
-              NCAA '27 · smart mod studio
+            <div className="font-display text-[16px] tracking-[0.1em]">GRIDIRON FORGE</div>
+            <div className="mt-1 font-body text-[9.5px] font-bold uppercase tracking-[0.3em] opacity-80">
+              NCAA '27 · Coach's Office
             </div>
           </div>
         </div>
 
-        {/* stepper */}
-        <nav className="ml-2 hidden items-center md:flex">
+        {/* phase signs */}
+        <nav className="hidden flex-1 items-center justify-center gap-2 lg:flex">
           {STEPS.map((s, i) => {
             const done = i < activeIdx;
             const active = i === activeIdx;
             return (
-              <div key={s.label} className="flex items-center">
-                <div
-                  className={`flex items-center gap-2 border px-2.5 py-1.5 font-display text-[10px] font-semibold tracking-[0.18em] transition-colors duration-300 ${
-                    active
-                      ? "border-turf-500/60 bg-turf-900/60 text-turf-300"
-                      : done
-                        ? "border-line-bright text-turf-600"
-                        : "border-line text-fog"
-                  } ${i === 0 ? "rounded-l-md" : ""} ${i === STEPS.length - 1 ? "rounded-r-md" : ""}`}
+              <div
+                key={s.label}
+                className={`relative flex min-w-[148px] flex-col items-center rounded-md border px-3 py-1.5 transition-all duration-500 ${
+                  active
+                    ? "sign-lit border-led/70 bg-[#3d2c12] text-led"
+                    : done
+                      ? "border-brass-400/40 bg-wood-800/80 text-brass-300"
+                      : "border-wood-600/60 bg-wood-900/70 text-[#7a6a52]"
+                }`}
+              >
+                <span className="font-display text-[11.5px] tracking-[0.12em]">{s.label}</span>
+                <span
+                  className={`font-body text-[9px] font-semibold uppercase tracking-[0.14em] ${
+                    active ? "text-led/80" : done ? "text-brass-300/60" : "text-[#665844]"
+                  }`}
                 >
-                  <span
-                    className={`grid h-4 w-4 place-items-center rounded-full border text-[9px] ${
-                      active
-                        ? "border-turf-400 text-turf-300"
-                        : done
-                          ? "border-turf-600 bg-turf-900 text-turf-400"
-                          : "border-fog/50"
-                    }`}
-                  >
-                    {done ? "✓" : i + 1}
-                  </span>
-                  {s.label}
-                </div>
-                {i < STEPS.length - 1 && (
-                  <span className={`h-px w-3 ${i < activeIdx ? "bg-turf-600" : "bg-line"}`} />
+                  {done ? "✓ done" : s.sub}
+                </span>
+                {active && (
+                  <span className="absolute -top-1 left-1/2 h-2 w-2 -translate-x-1/2 rounded-full bg-led shadow-[0_0_10px_rgba(255,182,72,0.9)]" />
                 )}
               </div>
             );
@@ -80,34 +70,32 @@ export default function TopBar({
         </nav>
 
         <div className="ml-auto flex items-center gap-2.5">
-          <div className="hidden items-center gap-1.5 rounded-md border border-line bg-pine-850 px-2.5 py-1.5 font-mono text-[10px] text-moss lg:flex">
-            <IconChip className="h-3.5 w-3.5 text-blaze-400" />
-            KB <span className="font-semibold text-chalk">{kbCount}</span> patterns
-          </div>
-          <div className="hidden rounded-md border border-line bg-pine-850 px-2.5 py-1.5 font-mono text-[10px] text-moss sm:block">
-            agent <span className="text-turf-400">online</span> · v0.9.4
+          <div className="tape hidden rotate-[-1.5deg] px-2.5 py-1 font-type text-[10.5px] text-[#5c4a2a] md:block">
+            KB: {kbCount} patterns scouted
           </div>
           <button
             onClick={onNew}
             disabled={!canReset}
-            className="group flex items-center gap-1.5 rounded-md border border-blaze-500/50 bg-blaze-500/10 px-3 py-1.5 font-display text-[10.5px] font-semibold tracking-[0.14em] text-blaze-300 transition-all hover:border-blaze-400 hover:bg-blaze-500/20 hover:text-blaze-300 disabled:cursor-not-allowed disabled:opacity-35"
+            className="group relative rounded-md border-[3px] border-inkred bg-paper px-4 py-1.5 shadow-[3px_4px_0_rgba(0,0,0,0.35)] transition-all hover:-translate-y-0.5 hover:shadow-[4px_6px_0_rgba(0,0,0,0.35)] active:translate-y-0.5 active:shadow-[1px_2px_0_rgba(0,0,0,0.35)] disabled:cursor-not-allowed disabled:opacity-35"
           >
-            <IconReset className="h-3.5 w-3.5 transition-transform duration-500 group-hover:-rotate-180" />
-            NEW MOD
+            <span className="font-display text-[12px] tracking-[0.12em] text-inkred">
+              NEW PLAY CALL
+            </span>
+            <span className="absolute -right-1.5 -top-1.5 h-2.5 w-2.5 rounded-full border border-inkred bg-paper" />
           </button>
         </div>
       </div>
 
-      {/* wire ticker */}
-      <div className="relative flex h-6 items-center overflow-hidden border-t border-line/70 bg-pine-950/70">
-        <span className="z-10 ml-3 shrink-0 rounded-sm bg-turf-900/80 px-1.5 py-[1px] font-mono text-[9px] font-semibold uppercase tracking-[0.18em] text-turf-300">
-          wire
+      {/* stadium LED ribbon */}
+      <div className="relative flex h-[26px] items-center overflow-hidden border-y border-black/60 bg-[#140d05] shadow-[inset_0_2px_8px_rgba(0,0,0,0.8)]">
+        <span className="z-10 ml-3 shrink-0 rounded-sm border border-led/50 bg-[#2a1c08] px-2 py-[2px] font-mono text-[9px] font-semibold uppercase tracking-[0.2em] text-led">
+          ● wire
         </span>
-        <div className="ticker-track flex whitespace-nowrap font-mono text-[9.5px] tracking-[0.08em] text-fog">
+        <div className="ticker-track flex whitespace-nowrap font-mono text-[10px] tracking-[0.1em]">
           {ticker.map((t, i) => (
             <span key={i} className="flex items-center">
-              <span className="px-4 hover:text-moss">{t}</span>
-              <span className="text-turf-600">///</span>
+              <span className="led-glow px-4">{t}</span>
+              <span className="text-[#5c4318]">▮</span>
             </span>
           ))}
         </div>

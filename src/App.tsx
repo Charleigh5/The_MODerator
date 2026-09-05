@@ -24,7 +24,7 @@ import Workbench from "./components/Workbench";
 import Terminal from "./components/Terminal";
 
 const GREETING =
-  'CODEWRIGHT here — ex-offensive coordinator, full-time compiler. Tell me in plain English what NCAA 27 should do differently. I\'ll interrogate you on the details, then weave blocks I\'ve learned from the vault into a signed, game-ready bundle. Prefer the terminal? I obey the CLI too — type `help` below.';
+  "CODEWRIGHT here — head coach of this office. Pull up a chair and tell me, in plain English, what NCAA 27 should do differently. I'll grill you on the details right here on the chalkboard, then stitch together blocks I've scouted off the corkboard into a signed, game-ready bundle. Film-room jockeys: the CLI below takes orders too — type `help`.";
 
 export default function App() {
   const [phase, setPhase] = useState<Phase>("idle");
@@ -325,26 +325,45 @@ export default function App() {
   };
 
   /* ---------- render ---------- */
+  const motes = [
+    { left: "72%", top: "30%", dur: 12, delay: 0 },
+    { left: "80%", top: "22%", dur: 15, delay: 2 },
+    { left: "88%", top: "38%", dur: 11, delay: 4 },
+    { left: "76%", top: "52%", dur: 17, delay: 1 },
+    { left: "92%", top: "18%", dur: 13, delay: 6 },
+    { left: "68%", top: "16%", dur: 16, delay: 3 },
+    { left: "84%", top: "60%", dur: 14, delay: 5 },
+  ];
+
   return (
-    <div className="field-bg relative flex h-full flex-col overflow-hidden font-body text-chalk">
-      <div className="vignette pointer-events-none absolute inset-0 z-0" />
-      <div className="pointer-events-none absolute -right-10 top-[22%] z-0 hidden select-none font-display text-[24rem] font-bold leading-none text-turf-400/[0.045] lg:block" style={{ transform: "rotate(-8deg)" }}>
-        27
-      </div>
-      <div className="pointer-events-none absolute -left-16 bottom-[8%] z-0 hidden select-none font-display text-[11rem] font-bold leading-none text-blaze-500/[0.05] xl:block" style={{ transform: "rotate(6deg)" }}>
-        4TH&nbsp;&amp;&nbsp;GOAL
+    <div className="relative flex h-full flex-col overflow-hidden font-body text-chalk">
+      {/* desk lamp wash + dust */}
+      <div className="lamp-glow pointer-events-none absolute -top-24 right-[-8%] z-0 h-[520px] w-[720px] rounded-full bg-[radial-gradient(closest-side,rgba(255,196,110,0.16),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_50%_42%,transparent_50%,rgba(10,5,2,0.55)_100%)]" />
+      {motes.map((m, i) => (
+        <span key={i} className="mote z-0" style={{ left: m.left, top: m.top, animationDuration: `${m.dur}s`, animationDelay: `${m.delay}s` }} />
+      ))}
+      <div className="chalk-text pointer-events-none absolute -right-6 top-[20%] z-0 hidden select-none font-chalk text-[15rem] font-bold leading-none text-chalk/[0.04] lg:block" style={{ transform: "rotate(-8deg)" }}>
+        '27
       </div>
 
       <TopBar phase={phase} kbCount={kb.length} onNew={() => resetAll()} canReset={messages.length > 2 || phase !== "idle"} />
 
-      <main className="relative z-10 grid min-h-0 flex-1 grid-cols-1 gap-2.5 overflow-y-auto p-2.5 lg:grid-cols-[288px_minmax(0,1fr)_384px] lg:overflow-visible">
-        <div className="h-[460px] min-h-0 lg:h-auto">
+      <main className="relative z-10 grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-y-auto p-3 lg:grid-cols-[324px_minmax(0,1fr)_462px] lg:overflow-visible">
+        <div className="h-[480px] min-h-0 lg:h-auto">
           <SourcesPanel kb={kb} onPull={pullMod} />
         </div>
-        <div className="h-[520px] min-h-0 lg:h-auto">
-          <AgentChat messages={messages} phase={phase} qa={qa} onSend={onSend} onChip={answer} />
+        <div className="h-[540px] min-h-0 lg:h-auto">
+          <AgentChat
+            messages={messages}
+            phase={phase}
+            qa={qa}
+            onSend={onSend}
+            onAnswer={answer}
+            busy={phase === "generating"}
+          />
         </div>
-        <div className="h-[560px] min-h-0 lg:h-auto">
+        <div className="h-[580px] min-h-0 lg:h-auto">
           <Workbench
             phase={phase}
             bundle={bundle}
@@ -360,7 +379,7 @@ export default function App() {
         </div>
       </main>
 
-      <div className="relative z-10 shrink-0 px-2.5 pb-2.5">
+      <div className="relative z-10 shrink-0 px-3 pb-3">
         <Terminal lines={termLines} onCommand={execCommand} open={termOpen} onToggle={() => setTermOpen((o) => !o)} />
       </div>
     </div>

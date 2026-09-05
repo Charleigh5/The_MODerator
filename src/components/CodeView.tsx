@@ -2,15 +2,15 @@ import { useMemo, type ReactNode } from "react";
 
 type Lang = "json" | "lua" | "xml";
 
-const CLS = {
-  key: "text-ice-300",
-  str: "text-turf-300",
-  num: "text-gold-300",
-  kw: "text-blaze-400",
-  com: "text-fog italic",
-  tag: "text-blaze-400",
-  attr: "text-ice-300",
-  plain: "text-[#cfe3d6]",
+const PAPER = {
+  key: "text-inkblue",
+  str: "text-inkgreen",
+  num: "text-inkgold",
+  kw: "text-inkred",
+  com: "text-[#8b8578] italic",
+  tag: "text-inkred",
+  attr: "text-inkblue",
+  plain: "text-[#3a362c]",
 };
 
 const RX: Record<Lang, RegExp> = {
@@ -27,24 +27,24 @@ function renderLine(line: string, lang: Lang): ReactNode[] {
   let m: RegExpExecArray | null;
   while ((m = rx.exec(line)) !== null) {
     if (m.index > last) out.push(<span key={k++}>{line.slice(last, m.index)}</span>);
-    let cls = CLS.plain;
+    let cls = PAPER.plain;
     if (lang === "json") {
-      if (m[1]) cls = CLS.com;
-      else if (m[2] && m[3]) cls = CLS.key;
-      else if (m[2]) cls = CLS.str;
-      else if (m[4]) cls = CLS.kw;
-      else if (m[5]) cls = CLS.num;
+      if (m[1]) cls = PAPER.com;
+      else if (m[2] && m[3]) cls = PAPER.key;
+      else if (m[2]) cls = PAPER.str;
+      else if (m[4]) cls = PAPER.kw;
+      else if (m[5]) cls = PAPER.num;
     } else if (lang === "lua") {
-      if (m[1]) cls = CLS.com;
-      else if (m[2]) cls = CLS.str;
-      else if (m[3]) cls = CLS.kw;
-      else if (m[4]) cls = CLS.num;
+      if (m[1]) cls = PAPER.com;
+      else if (m[2]) cls = PAPER.str;
+      else if (m[3]) cls = PAPER.kw;
+      else if (m[4]) cls = PAPER.num;
     } else {
-      if (m[1] || m[2]) cls = CLS.com;
-      else if (m[3]) cls = CLS.tag;
-      else if (m[4]) cls = CLS.attr;
-      else if (m[5]) cls = CLS.str;
-      else if (m[6]) cls = CLS.tag;
+      if (m[1] || m[2]) cls = PAPER.com;
+      else if (m[3]) cls = PAPER.tag;
+      else if (m[4]) cls = PAPER.attr;
+      else if (m[5]) cls = PAPER.str;
+      else if (m[6]) cls = PAPER.tag;
     }
     out.push(
       <span key={k++} className={cls}>
@@ -63,20 +63,22 @@ export default function CodeView({
   lang,
   className = "",
   startAt = 1,
+  dense = false,
 }: {
   code: string;
   lang: Lang;
   className?: string;
   startAt?: number;
+  dense?: boolean;
 }) {
   const lines = useMemo(() => code.split("\n"), [code]);
   return (
     <pre
-      className={`font-mono text-[11.5px] leading-[1.62] overflow-x-auto whitespace-pre ${className}`}
+      className={`font-mono ${dense ? "text-[10px] leading-[1.55]" : "text-[11.5px] leading-[1.62]"} overflow-x-auto whitespace-pre ${className}`}
     >
       {lines.map((ln, i) => (
-        <div key={i} className="flex min-w-max hover:bg-pine-800/60">
-          <span className="w-9 shrink-0 select-none pr-3 text-right text-fog/70">
+        <div key={i} className="flex min-w-max rounded-sm hover:bg-[rgba(90,70,30,0.07)]">
+          <span className="w-8 shrink-0 select-none pr-2.5 text-right text-[#a49a82]">
             {i + startAt}
           </span>
           <span className="pr-6">{renderLine(ln, lang)}</span>
