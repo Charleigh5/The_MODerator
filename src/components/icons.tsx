@@ -141,3 +141,28 @@ export const IconTree = (p: SVGProps<SVGSVGElement>) => (
     <circle cx="12.5" cy="18" r="1.6" />
   </S>
 );
+
+export const IconX = (p: SVGProps<SVGSVGElement>) => (
+  <S {...p}>
+    <path d="m6 6 12 12M18 6 6 18" />
+  </S>
+);
+
+export const IconFolder = (p: SVGProps<SVGSVGElement>) => (
+  <S {...p}>
+    <path d="M3.5 6.5A1.5 1.5 0 0 1 5 5h4.5l2 2.5H19A1.5 1.5 0 0 1 20.5 9v9A1.5 1.5 0 0 1 19 19.5H5A1.5 1.5 0 0 1 3.5 18V6.5Z" />
+  </S>
+);
+
+export const IconBrain = (p: SVGProps<SVGSVGElement>) => (
+  <S {...p}>
+    <path d="M9.5 4.5A2.5 2.5 0 0 0 7 7v.3A3 3 0 0 0 5 10a3 3 0 0 0 .6 5.2A2.8 2.8 0 0 0 8.5 19c.9 0 1.6-.3 2.2-.8V6.6c0-1.2-.5-2.1-1.2-2.1Z" />
+    <path d="M14.5 4.5A2.5 2.5 0 0 1 17 7v.3a3 3 0 0 1 2 2.7 3 3 0 0 1-.6 5.2 2.8 2.8 0 0 1-2.9 3.8c-.9 0-1.6-.3-2.2-.8V6.6c0-1.2.5-2.1 1.2-2.1Z" />
+  </S>
+);
+
+export const IconPlus = (p: SVGProps<SVGSVGElement>) => (
+  <S {...p}>
+    <path d="M12 5v14M5 12h14" />
+  </S>
+);

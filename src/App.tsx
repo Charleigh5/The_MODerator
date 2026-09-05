@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type {
   Phase,
   ChatMsg,
@@ -17,22 +17,70 @@ import {
   testLines,
   CATEGORIES,
 } from "./lib/agentEngine";
+import {
+  type Memory,
+  type Session,
+  type SessionSummary,
+  loadMemory,
+  saveMemory,
+  loadSessions,
+  upsertSession,
+  removeSession,
+  summarize,
+  makeSession,
+  binderLabel,
+  slugifyName,
+  nextNum,
+  maxMsgId,
+} from "./lib/storage";
 import TopBar from "./components/TopBar";
 import SourcesPanel from "./components/SourcesPanel";
 import AgentChat from "./components/AgentChat";
 import Workbench from "./components/Workbench";
 import Terminal from "./components/Terminal";
 
-const GREETING =
-  "CODEWRIGHT here — head coach of this office. Pull up a chair and tell me, in plain English, what NCAA 27 should do differently. I'll grill you on the details right here on the chalkboard, then stitch together blocks I've scouted off the corkboard into a signed, game-ready bundle. Film-room jockeys: the CLI below takes orders too — type `help`.";
+const GREETING_BASE =
+  "CODEWRIGHT here — ex-offensive coordinator, full-time compiler. Tell me in plain English what NCAA 27 should do differently. I'll grill you on the details, then weave blocks I've learned from the vault into a signed, game-ready bundle. Prefer the terminal? I obey the CLI too — type `help` below.";
+
+function memoryFacts(m: Memory): string {
+  const parts: string[] = [];
+  if (m.kbIds.length) parts.push(`${m.kbIds.length} patterns warm`);
+  if (m.built.length)
+    parts.push(
+      `${m.built.length} mod${m.built.length > 1 ? "s" : ""} shipped (${m.built
+        .slice(-2)
+        .map((b) => b.slug)
+        .join(", ")})`
+    );
+  if (m.prefs.length) parts.push(`notes say you ${m.prefs[0]}`);
+  return parts.join(" · ");
+}
 
 export default function App() {
-  const [phase, setPhase] = useState<Phase>("idle");
-  const [messages, setMessages] = useState<ChatMsg[]>([]);
-  const [qa, setQa] = useState<QAState | null>(null);
-  const [kb, setKb] = useState<PatternDef[]>(() => starterKb());
-  const [bundle, setBundle] = useState<BundleMeta | null>(null);
-  const [buildStatus, setBuildStatus] = useState<BuildStatus>("unbuilt");
+  /* ---------- boot: cabinet + brain ---------------------------------- */
+  const boot = useMemo(() => {
+    const mem = loadMemory();
+    mem.visits += 1;
+    saveMemory(mem);
+    const sessions = loadSessions();
+    return { mem, sessions, resumed: sessions.length > 0, maxId: maxMsgId(sessions) };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const active0 = boot.sessions[0] ?? null;
+
+  const [phase, setPhase] = useState<Phase>(active0?.phase ?? "idle");
+  const [messages, setMessages] = useState<ChatMsg[]>(active0?.messages ?? []);
+  const [qa, setQa] = useState<QAState | null>(active0?.qa ?? null);
+  const [bundle, setBundle] = useState<BundleMeta | null>(active0?.bundle ?? null);
+  const [buildStatus, setBuildStatus] = useState<BuildStatus>(active0?.buildStatus ?? "unbuilt");
+  const [kb, setKb] = useState<PatternDef[]>(() =>
+    boot.mem.kbIds.length ? PATTERNS.filter((p) => boot.mem.kbIds.includes(p.id)) : starterKb()
+  );
+  const [mem, setMem] = useState<Memory>(boot.mem);
+  const [sessions, setSessions] = useState<SessionSummary[]>(() => summarize(boot.sessions));
+  const [activeId, setActiveId] = useState<string | null>(active0?.id ?? null);
+
   const [buildProgress, setBuildProgress] = useState(0);
   const [buildLog, setBuildLog] = useState<TermLine[]>([]);
   const [testLog, setTestLog] = useState<TermLine[]>([]);
@@ -40,47 +88,196 @@ export default function App() {
   const [termLines, setTermLines] = useState<TermLine[]>([]);
   const [termOpen, setTermOpen] = useState(true);
 
-  const idRef = useRef(1);
+  const idRef = useRef(boot.maxId + 1);
   const timers = useRef<number[]>([]);
-  const kbRef = useRef<PatternDef[]>([]);
-  const phaseRef = useRef<Phase>("idle");
-  const qaRef = useRef<QAState | null>(null);
-  const bundleRef = useRef<BundleMeta | null>(null);
+  const kbRef = useRef(kb);
+  const memRef = useRef(mem);
+  const metaRef = useRef(
+    active0
+      ? { id: active0.id, num: active0.num, name: active0.name, createdAt: active0.createdAt }
+      : { id: "", num: 0, name: "", createdAt: Date.now() }
+  );
+  const phaseRef = useRef(phase);
+  const qaRef = useRef(qa);
+  const bundleRef = useRef(bundle);
   phaseRef.current = phase;
   qaRef.current = qa;
   bundleRef.current = bundle;
   kbRef.current = kb;
+  memRef.current = mem;
 
   const after = (ms: number, fn: () => void) => {
     timers.current.push(window.setTimeout(fn, ms));
   };
+  useEffect(() => () => timers.current.forEach((t) => window.clearTimeout(t)), []);
 
-  useEffect(() => {
-    return () => timers.current.forEach((t) => window.clearTimeout(t));
-  }, []);
-
-  /* ---------- chat / term writers ---------- */
+  /* ---------- writers ------------------------------------------------- */
   const pushMsg = (role: ChatMsg["role"], text: string, tag?: string) =>
     setMessages((m) => [...m, { id: idRef.current++, role, text, tag }]);
-
   const termPush = (kind: TermLine["kind"], text: string) =>
     setTermLines((l) => [...l, { kind, text }]);
 
-  /* ---------- boot ---------- */
+  const mutateMem = (fn: (m: Memory) => Memory) => {
+    const n = fn(memRef.current);
+    memRef.current = n;
+    saveMemory(n);
+    setMem(n);
+  };
+
+  /* ---------- boot effect --------------------------------------------- */
   useEffect(() => {
-    pushMsg("agent", GREETING);
-    pushMsg("sys", "wire connected · 4 platforms · 6 patterns warm");
+    const m = boot.mem;
     termPush("dim", "gridiron-forge v0.9.4 — kernel linked");
     termPush("dim", "mounting pattern vault … 4 sources on the wire");
-    termPush("ok", "knowledge base: 6 blocks warm");
-    termPush("out", "agent CODEWRIGHT online — type `help`");
+    termPush("ok", `knowledge base: ${kbRef.current.length} blocks warm`);
+    if (boot.resumed && boot.sessions[0]) {
+      const s = boot.sessions[0];
+      termPush("out", `resumed binder ${binderLabel(s.num)} · memory: ${m.kbIds.length} patterns / ${m.built.length} shipped`);
+      pushMsg("sys", `binder ${binderLabel(s.num)} opened — full context restored from the shelf`);
+      const facts = memoryFacts(m);
+      pushMsg(
+        "agent",
+        `Back in "${s.name}", coach. I kept the film rolling while you were out${facts ? ` — ${facts}` : ""}. Pick up where we left off, or pull a fresh binder off the shelf.`
+      );
+    } else {
+      const s = makeSession(1);
+      metaRef.current = { id: s.id, num: s.num, name: s.name, createdAt: s.createdAt };
+      setActiveId(s.id);
+      upsertSession(s);
+      pushMsg("agent", GREETING_BASE);
+      pushMsg("sys", "wire connected · 4 platforms · patterns warm");
+      termPush("out", `binder ${binderLabel(1)} opened · agent CODEWRIGHT online — type \`help\``);
+    }
+    setSessions(summarize(loadSessions()));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /* ---------- agent flow ---------- */
+  /* ---------- autosave the active binder ------------------------------- */
+  useEffect(() => {
+    if (!activeId || metaRef.current.id !== activeId) return;
+    const t = window.setTimeout(() => {
+      const snap: Session = {
+        id: activeId,
+        num: metaRef.current.num,
+        name: metaRef.current.name,
+        createdAt: metaRef.current.createdAt,
+        updatedAt: Date.now(),
+        phase,
+        messages: messages.slice(-200),
+        qa,
+        bundle,
+        buildStatus,
+      };
+      upsertSession(snap);
+      setSessions(summarize(loadSessions()));
+    }, 400);
+    return () => window.clearTimeout(t);
+  }, [activeId, phase, messages, qa, bundle, buildStatus]);
+
+  const snapshot = (): Session | null => {
+    if (!metaRef.current.id) return null;
+    return {
+      id: metaRef.current.id,
+      num: metaRef.current.num,
+      name: metaRef.current.name,
+      createdAt: metaRef.current.createdAt,
+      updatedAt: Date.now(),
+      phase: phaseRef.current,
+      messages,
+      qa: qaRef.current,
+      bundle: bundleRef.current,
+      buildStatus,
+    };
+  };
+
+  /* ---------- binder management ---------------------------------------- */
+  const hydrate = (s: Session) => {
+    metaRef.current = { id: s.id, num: s.num, name: s.name, createdAt: s.createdAt };
+    setActiveId(s.id);
+    setPhase(s.phase);
+    setMessages(s.messages);
+    setQa(s.qa);
+    setBundle(s.bundle);
+    setBuildStatus(s.buildStatus);
+    setBuildProgress(0);
+    setBuildLog([]);
+    setTestLog([]);
+    setTesting(false);
+  };
+
+  const createSession = () => {
+    if (phaseRef.current === "generating") return;
+    const snap = snapshot();
+    if (snap) upsertSession(snap);
+    const s = makeSession(nextNum(loadSessions()));
+    upsertSession(s);
+    hydrate(s);
+    setMessages([]);
+    const facts = memoryFacts(memRef.current);
+    pushMsg(
+      "agent",
+      `Fresh binder on the desk.${facts ? ` Brain intact from the shelf: ${facts}.` : ""} What's the play this time, coach?`
+    );
+    termPush("out", `new binder ${binderLabel(s.num)} created · memory carried over`);
+    setSessions(summarize(loadSessions()));
+  };
+
+  const switchSession = (id: string) => {
+    if (id === activeId) return;
+    const snap = snapshot();
+    if (snap) upsertSession(snap);
+    const target = loadSessions().find((s) => s.id === id);
+    if (!target) return;
+    hydrate(target);
+    pushMsg("sys", `binder ${binderLabel(target.num)} pulled from the shelf — context restored`);
+    termPush("out", `opened binder ${binderLabel(target.num)} · "${target.name}"`);
+    setSessions(summarize(loadSessions()));
+  };
+
+  const deleteSession = (id: string) => {
+    removeSession(id);
+    if (id === activeId) {
+      const rest = loadSessions();
+      if (rest.length > 0) {
+        hydrate(rest[0]);
+        pushMsg("sys", `binder ${binderLabel(rest[0].num)} pulled from the shelf — resuming`);
+      } else {
+        const s = makeSession(1);
+        upsertSession(s);
+        hydrate(s);
+        setMessages([]);
+        pushMsg("agent", `Cabinet's empty — fresh binder, fresh page. ${GREETING_BASE}`);
+      }
+    }
+    termPush("out", `binder removed · ${loadSessions().length} left on the shelf`);
+    setSessions(summarize(loadSessions()));
+  };
+
+  /* ---------- knowledge base ------------------------------------------- */
+  const pullMod = (modId: string) => {
+    const mod = MODS.find((m) => m.id === modId);
+    if (!mod) return;
+    const pats = PATTERNS.filter((p) => mod.patternIds.includes(p.id));
+    setKb((old) => {
+      const have = new Set(old.map((p) => p.id));
+      return [...old, ...pats.filter((p) => !have.has(p.id))];
+    });
+    mutateMem((m) => ({ ...m, kbIds: [...new Set([...m.kbIds, ...mod.patternIds])] }));
+    termPush("out", `pull ${mod.id} · ${mod.name} · ${pats.length} patterns learned`);
+    pushMsg(
+      "sys",
+      `learned ${pats.length} patterns from ${mod.platform} → "${mod.name}" (blocks join the knowledge base)`,
+      "learn"
+    );
+  };
+
+  /* ---------- agent flow ----------------------------------------------- */
   const startBrief = (text: string) => {
     if (phaseRef.current === "generating") return;
     const cat = detectCategory(text);
+    const name = slugifyName(text);
+    metaRef.current = { ...metaRef.current, name };
+    mutateMem((m) => ({ ...m, briefs: [...m.briefs, text].slice(-6) }));
     setPhase("qa");
     pushMsg("user", text);
     after(550, () => pushMsg("agent", cat.opener(text), "scout"));
@@ -97,6 +294,15 @@ export default function App() {
     const cat = CATEGORIES.find((c) => c.id === q.category)!;
     const question = cat.questions[q.index];
     pushMsg("user", value);
+
+    const hits: string[] = [];
+    if (/realistic/i.test(value)) hits.push("want realistic tuning, not arcade");
+    if (/hard|brutal|punish|sweat/i.test(value)) hits.push("like a punishing challenge");
+    if (/chaos|wild|fun|crazy/i.test(value)) hits.push("here for chaos and fun");
+    if (q.category === "recruiting") hits.push("go hard on recruiting mods");
+    if (hits.length)
+      mutateMem((m) => ({ ...m, prefs: [...new Set([...m.prefs, ...hits])].slice(0, 4) }));
+
     const answers = { ...q.answers, [question.key]: value };
     const next = q.index + 1;
     if (next < cat.questions.length) {
@@ -128,92 +334,67 @@ export default function App() {
       const cat = CATEGORIES.find((c) => c.id === catId)!;
       const b = generateBundle(cat, answers, brief, kbRef.current);
       setBundle(b);
+      mutateMem((m) => ({
+        ...m,
+        built: [
+          ...m.built,
+          { slug: b.slug, title: b.title, version: b.version, at: Date.now() },
+        ].slice(-8),
+      }));
       setPhase("ready");
+      const n = memRef.current.built.length;
       pushMsg(
         "agent",
-        `Bundle hot: "${b.title}" — ${b.files.length} files, ${b.blocksLinked} blocks linked, sha ${b.hash}.\nOpen the SHIP tab on the right: run BUILD, hit SANDBOX TEST, then export straight into your mods folder. That's a touchdown, coach.`,
-        "bundle"
+        `Bundle's on your desk — "${b.title}" v${b.version}, ${b.files.length} files, ${b.kbUsed.length} vault patterns woven in. Blueprints in the right panel.\nThat's mod #${n} on your record, coach — I'll remember it in every binder from here on.`
       );
-      termPush("ok", `compile complete · ${b.id} · ${b.files.length} files · sha ${b.hash}`);
+      termPush("ok", `bundle signed · ${b.id} · ${b.files.length} files · ${b.hash}`);
     });
   };
 
-  const onSend = (text: string) => {
-    if (phase === "idle") startBrief(text);
-    else if (phase === "qa") answer(text);
-    else if (phase === "ready")
-      pushMsg(
-        "agent",
-        "This bundle is sealed and signed — if you want changes, hit NEW MOD up top and re-brief me. I'll take the same route faster now that I know your tendencies."
-      );
-  };
-
-  /* ---------- vault ---------- */
-  const pullMod = (modId: string) => {
-    const mod = MODS.find((m) => m.id === modId);
-    if (!mod) return;
-    const existing = new Set(kb.map((p) => p.id));
-    const fresh = PATTERNS.filter((p) => mod.patternIds.includes(p.id) && !existing.has(p.id));
-    if (fresh.length === 0) {
-      termPush("dim", `${mod.name}: patterns already in knowledge base`);
-      return;
-    }
-    setKb((k) => [...k, ...fresh]);
-    pushMsg("sys", `learned ${fresh.length} pattern${fresh.length > 1 ? "s" : ""} from "${mod.name} ${mod.version}"`, "vault");
-    termPush("ok", `pull ${mod.id} · +${fresh.length} patterns (${fresh.map((p) => p.name).join(", ")})`);
-  };
-
-  /* ---------- build / test / export ---------- */
+  /* ---------- ship pipeline -------------------------------------------- */
   const runBuild = () => {
     const b = bundleRef.current;
-    if (!b || buildStatus !== "unbuilt") return;
+    if (!b || buildStatus === "building") return;
     setBuildStatus("building");
+    setBuildProgress(0);
     setBuildLog([]);
     const steps = buildSteps(b);
-    steps.forEach((s, i) =>
-      after(380 * (i + 1), () => {
-        setBuildLog((l) => [...l, { kind: s.kind, text: s.line }]);
-        setBuildProgress((i + 1) / steps.length);
-        termPush(s.kind, `[build] ${s.line}`);
-      })
-    );
-    after(380 * (steps.length + 1), () => {
+    steps.forEach((step, i) => {
+      after(i * 520, () => setBuildLog((l) => [...l, { kind: step.kind, text: step.line }]));
+      after(i * 520 + 150, () => setBuildProgress(Math.round(((i + 1) / steps.length) * 100)));
+    });
+    after(steps.length * 520 + 200, () => {
       setBuildStatus("built");
-      pushMsg("sys", "build passed · bundle signed and sandbox-cleared", "pipeline");
+      termPush("ok", `build clean · ${b.files.reduce((a, f) => a + f.bytes, 0)} bytes · 0 conflicts`);
     });
   };
 
   const runTest = () => {
     const b = bundleRef.current;
-    if (!b || buildStatus !== "built" || testing) return;
+    if (!b || testing) return;
     setTesting(true);
     setTestLog([]);
     const lines = testLines(b);
-    lines.forEach((l, i) =>
-      after(480 * (i + 1), () => {
-        setTestLog((t) => [...t, { kind: l.kind, text: l.line }]);
-        termPush(l.kind, `[test] ${l.line}`);
-      })
+    lines.forEach((line, i) =>
+      after(i * 430, () => setTestLog((l) => [...l, { kind: line.kind, text: line.line }]))
     );
-    after(480 * (lines.length + 1), () => {
+    after(lines.length * 430 + 200, () => {
       setTesting(false);
-      pushMsg("sys", "sandbox verdict: SHIP IT — safe for live saves", "verdict");
+      termPush("ok", "scrimmage complete · 4 quarters · 0 errors");
     });
   };
 
   const exportBundle = () => {
     const b = bundleRef.current;
-    if (!b || buildStatus !== "built") return;
+    if (!b) return;
     const payload = {
-      format: "ncaa27-mod-bundle/1.0",
-      generated_by: "GridironForge v0.9.4 · agent CODEWRIGHT",
-      target: "NCAA Football 27 · build >=1.0.3841",
       id: b.id,
-      name: b.title,
+      title: b.title,
+      slug: b.slug,
       version: b.version,
-      signature: b.hash,
-      blocks_linked: b.blocksLinked,
-      learned_from: b.kbUsed.map((k) => ({ pattern: k.name, kind: k.kind, source: k.source })),
+      format: "ncaa27-mod/3.1",
+      hash: b.hash,
+      installed: b.kbUsed.map((p) => ({ id: p.id, name: p.name, source: p.source })),
       files: b.files.map((f) => ({ path: f.path, lang: f.lang, bytes: f.bytes, content: f.content })),
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
@@ -223,108 +404,117 @@ export default function App() {
     a.download = `${b.slug}.ncaa27mod.json`;
     a.click();
     URL.revokeObjectURL(url);
-    pushMsg("sys", `exported ${b.slug}.ncaa27mod.json — drop it in NCAA 27/mods/`, "export");
-    termPush("ok", `export · ${b.slug}.ncaa27mod.json written to disk`);
+    pushMsg("sys", `exported ${b.slug}.ncaa27mod.json — drop it in /mods and fire up the game`, "export");
+    termPush("ok", `exported → ${b.slug}.ncaa27mod.json`);
   };
 
-  /* ---------- reset ---------- */
-  const resetAll = (silent?: boolean) => {
+  /* ---------- agent / cli input ---------------------------------------- */
+  const onSend = (text: string) => {
+    const t = text.trim();
+    if (!t) return;
+    if (phaseRef.current === "qa") answer(t);
+    else startBrief(t);
+  };
+
+  const resetAll = () => {
     timers.current.forEach((t) => window.clearTimeout(t));
     timers.current = [];
-    setPhase("idle");
     setMessages([]);
     setQa(null);
     setBundle(null);
+    setPhase("idle");
     setBuildStatus("unbuilt");
     setBuildProgress(0);
     setBuildLog([]);
     setTestLog([]);
     setTesting(false);
-    if (!silent) {
-      after(60, () => {
-        pushMsg("agent", "Fresh slate. Same agent, cleaner whiteboard. What are we breaking — I mean, improving — this time?");
-        pushMsg("sys", "session reset · knowledge base retained");
-      });
-      termPush("dim", "session reset — agent ready for a new brief");
-    }
   };
 
-  /* ---------- terminal ---------- */
   const execCommand = (raw: string) => {
     termPush("in", raw);
     const [cmd, ...rest] = raw.trim().split(/\s+/);
-    const arg = rest.join(" ").replace(/^["“”']|["“”']$/g, "");
+    const arg = raw.slice(cmd.length).trim().replace(/^["']|["']$/g, "");
     const c = cmd.toLowerCase();
 
     if (c === "help") {
-      [
-        "help                 — this card",
-        "sources              — platforms on the wire",
-        "mods                 — indexed mods (with ids)",
-        "pull <id|all>        — learn patterns into the KB",
-        "kb                   — list warm patterns",
-        'brief "<text>"       — hand the agent a mod brief',
-        "status               — pipeline phase + bundle",
-        "build | test | export — run the ship pipeline",
-        "new                  — reset for a fresh mod",
-        "version · whoami · clear",
-      ].forEach((l) => termPush("out", l));
+      termPush("out", "commands:");
+      termPush("out", "  help                  this card");
+      termPush("out", "  sources               platforms on the wire");
+      termPush("out", "  mods                  indexed mods");
+      termPush("out", "  pull <id|all>         learn patterns from a mod");
+      termPush("out", "  kb                    patterns currently warm");
+      termPush("out", "  sessions              binders on the shelf");
+      termPush("out", "  brief \"<text>\"        hand the agent a brief");
+      termPush("out", "  build · test · export run the ship pipeline");
+      termPush("out", "  new                   grab a fresh binder");
+      termPush("out", "  status                where are we");
     } else if (c === "sources") {
-      PLATFORMS.forEach((p) => termPush("out", `${p.name.padEnd(18)} ${p.url.padEnd(20)} ${String(p.mods).padStart(5)} mods · ${p.status}`));
+      PLATFORMS.forEach((p) =>
+        termPush("out", `  ${p.name.padEnd(18)} ${p.mods.toLocaleString().padStart(8)} mods   ${p.url}   [${p.status}]`)
+      );
     } else if (c === "mods") {
-      MODS.forEach((m) => termPush("out", `${m.id.padEnd(11)} ${m.name.padEnd(26)} ${m.version.padEnd(12)} ${m.blocks} blk · ${m.reliability}%`));
-    } else if (c === "pull") {
-      if (arg === "all") {
-        MODS.forEach((m) => pullMod(m.id));
-        termPush("ok", "vault swept — every clean pattern learned");
-      } else if (MODS.some((m) => m.id === arg)) {
-        pullMod(arg);
-      } else {
-        termPush("err", `unknown mod id "${arg}" — run \`mods\` for the index`);
-      }
+      MODS.forEach((m) => termPush("out", `  ${m.id.padEnd(12)} ${m.name.padEnd(34)} ${m.platform}`));
     } else if (c === "kb") {
-      termPush("out", `knowledge base · ${kb.length} patterns warm:`);
-      kb.forEach((p) => termPush("out", `  [${p.kind.padEnd(8)}] ${p.name} ← ${p.source}`));
+      if (kbRef.current.length === 0) termPush("out", "knowledge base is cold — pull a mod");
+      kbRef.current.forEach((p) => termPush("out", `  ${p.kind.padEnd(9)} ${p.name}   ← ${p.source}`));
+    } else if (c === "pull") {
+      const target = arg.toLowerCase();
+      if (target === "all") {
+        MODS.forEach((m) => pullMod(m.id));
+        termPush("ok", `learned every curated mod — ${kbRef.current.length + MODS.reduce((a, m) => a + m.patternIds.length, 0)}+ patterns`);
+      } else if (MODS.some((m) => m.id === target)) {
+        pullMod(target);
+      } else {
+        termPush("err", `no mod "${arg}" — run \`mods\``);
+      }
+    } else if (c === "sessions") {
+      const list = loadSessions();
+      if (!list.length) termPush("out", "shelf is empty");
+      list.forEach((s) =>
+        termPush("out", `  ${s.id === activeId ? "▶" : " "} ${binderLabel(s.num)} · ${s.name.padEnd(26)} · ${s.phase.padEnd(10)} · ${s.bundle ? "bundled" : "—"}`)
+      );
     } else if (c === "brief") {
       if (!arg) {
-        termPush("err", 'brief needs text — brief "stop CPU poaching my commits"');
-      } else if (phaseRef.current === "generating") {
-        termPush("err", "agent busy compiling — wait, or `new` to abort");
-      } else {
-        if (phaseRef.current === "ready") resetAll(true);
-        startBrief(arg);
+        termPush("err", "usage: brief \"your idea in plain english\"");
+        return;
       }
-    } else if (c === "status") {
-      termPush("out", `phase    : ${phase}`);
-      termPush("out", `kb       : ${kb.length} patterns`);
-      termPush("out", `bundle   : ${bundle ? `${bundle.id} (v${bundle.version})` : "none"}`);
-      termPush("out", `build    : ${buildStatus}`);
-      if (qa) termPush("out", `q&a      : ${CATEGORIES.find((x) => x.id === qa.category)?.label} · Q${Math.min(qa.index + 1, 9)}/${CATEGORIES.find((x) => x.id === qa.category)?.questions.length}`);
+      if (phaseRef.current === "ready") {
+        resetAll();
+        pushMsg("sys", "new huddle — fresh brief on the same binder", "note");
+      }
+      startBrief(arg);
     } else if (c === "build") {
-      if (!bundle) termPush("err", "nothing to build — brief the agent first");
-      else if (buildStatus === "built") termPush("dim", "already built — signature holds");
-      else runBuild();
+      if (!bundleRef.current) termPush("err", "no bundle yet — brief the agent first");
+      else {
+        runBuild();
+        termPush("out", "build pipeline running …");
+      }
     } else if (c === "test") {
-      if (!bundle) termPush("err", "nothing to test — brief the agent first");
-      else if (buildStatus !== "built") termPush("err", "run `build` before the sandbox will accept it");
-      else runTest();
+      if (!bundleRef.current) termPush("err", "no bundle to scrimmage");
+      else {
+        runTest();
+        termPush("out", "loading scrimmage …");
+      }
     } else if (c === "export") {
-      if (!bundle || buildStatus !== "built") termPush("err", "export needs a built bundle — `build` first");
+      if (!bundleRef.current) termPush("err", "nothing to export");
       else exportBundle();
     } else if (c === "new") {
-      resetAll();
+      createSession();
+    } else if (c === "status") {
+      const ph = phaseRef.current;
+      termPush("out", `phase: ${ph} · binder: ${binderLabel(metaRef.current.num)} "${metaRef.current.name}"`);
+      termPush("out", `brain: ${kbRef.current.length} patterns · ${memRef.current.built.length} mods shipped across all binders`);
+      if (bundleRef.current) termPush("out", `bundle: ${bundleRef.current.title} v${bundleRef.current.version}`);
     } else if (c === "clear") {
       setTermLines([]);
-    } else if (c === "version") {
-      termPush("out", "gridiron-forge v0.9.4 · agent CODEWRIGHT · schema ncaa27-mod/3.1");
     } else if (c === "whoami") {
-      termPush("out", "coach — the only human in the building");
+      termPush("out", `coach — ${memRef.current.built.length} mods on record, ${memRef.current.visits} office visits`);
     } else {
       termPush("err", `command not found: ${cmd} — try \`help\``);
     }
   };
 
-  /* ---------- render ---------- */
+  /* ---------- render ---------------------------------------------------- */
   const motes = [
     { left: "72%", top: "30%", dur: 12, delay: 0 },
     { left: "80%", top: "22%", dur: 15, delay: 2 },
@@ -337,7 +527,6 @@ export default function App() {
 
   return (
     <div className="relative flex h-full flex-col overflow-hidden font-body text-chalk">
-      {/* desk lamp wash + dust */}
       <div className="lamp-glow pointer-events-none absolute -top-24 right-[-8%] z-0 h-[520px] w-[720px] rounded-full bg-[radial-gradient(closest-side,rgba(255,196,110,0.16),transparent_70%)]" />
       <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_50%_42%,transparent_50%,rgba(10,5,2,0.55)_100%)]" />
       {motes.map((m, i) => (
@@ -347,11 +536,25 @@ export default function App() {
         '27
       </div>
 
-      <TopBar phase={phase} kbCount={kb.length} onNew={() => resetAll()} canReset={messages.length > 2 || phase !== "idle"} />
+      <TopBar
+        phase={phase}
+        kbCount={kb.length}
+        onNew={createSession}
+        canReset={phase !== "generating"}
+      />
 
-      <main className="relative z-10 grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-y-auto p-3 lg:grid-cols-[324px_minmax(0,1fr)_462px] lg:overflow-visible">
-        <div className="h-[480px] min-h-0 lg:h-auto">
-          <SourcesPanel kb={kb} onPull={pullMod} />
+      <main className="relative z-10 grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-y-auto p-3 lg:grid-cols-[330px_minmax(0,1fr)_462px] lg:overflow-visible">
+        <div className="h-[560px] min-h-0 lg:h-auto">
+          <SourcesPanel
+            kb={kb}
+            onPull={pullMod}
+            sessions={sessions}
+            activeId={activeId}
+            memory={mem}
+            onNew={createSession}
+            onSwitch={switchSession}
+            onDelete={deleteSession}
+          />
         </div>
         <div className="h-[540px] min-h-0 lg:h-auto">
           <AgentChat

@@ -79,7 +79,7 @@ export default function TopBar({
             className="group relative rounded-md border-[3px] border-inkred bg-paper px-4 py-1.5 shadow-[3px_4px_0_rgba(0,0,0,0.35)] transition-all hover:-translate-y-0.5 hover:shadow-[4px_6px_0_rgba(0,0,0,0.35)] active:translate-y-0.5 active:shadow-[1px_2px_0_rgba(0,0,0,0.35)] disabled:cursor-not-allowed disabled:opacity-35"
           >
             <span className="font-display text-[12px] tracking-[0.12em] text-inkred">
-              NEW PLAY CALL
+              NEW BINDER
             </span>
             <span className="absolute -right-1.5 -top-1.5 h-2.5 w-2.5 rounded-full border border-inkred bg-paper" />
           </button>

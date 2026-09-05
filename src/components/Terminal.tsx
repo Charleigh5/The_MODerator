@@ -107,7 +107,7 @@ export default function Terminal({
                     }
                   }
                 }}
-                placeholder="help · sources · mods · pull m_cpu · brief “…” · build · test · export"
+                placeholder="help · sessions · new · pull m_cpu · brief “…” · build · test · export"
                 className="min-w-0 flex-1 bg-transparent font-mono text-[11px] text-[#d9f5dd] caret-[#f3d470] placeholder:text-[#4c6e53] focus:outline-none"
                 spellCheck={false}
               />
