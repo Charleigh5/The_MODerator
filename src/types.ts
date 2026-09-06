@@ -20,6 +20,8 @@ export interface QAState {
   index: number;
   answers: Record<string, string>;
   brief: string;
+  expansions: string[];
+  expLocked: boolean;
 }
 
 export interface Platform {
@@ -40,6 +42,7 @@ export interface PatternDef {
 export interface ModEntry {
   id: string;
   name: string;
+  short: string;
   platform: string;
   version: string;
   schema: string;

@@ -167,9 +167,20 @@ export interface CategoryDef {
   code: string;
   keywords: string[];
   opener: (brief: string) => string;
+  expansions: string[];
   questions: QAQuestion[];
   build: (a: Record<string, string>, brief: string, kb: PatternDef[]) => BundleMeta;
 }
+
+/** which vault mods the scout recommends per intent */
+export const SOURCES: Record<string, string[]> = {
+  recruiting: ["m_recruit", "m_portal", "m_redshirt"],
+  playbook: ["m_veer", "m_cpu", "m_clock"],
+  weather: ["m_weather", "m_cpu", "m_atmos"],
+  atmosphere: ["m_atmos", "m_sound", "m_weather"],
+  difficulty: ["m_cpu", "m_recruit", "m_redshirt"],
+  rules: ["m_clock", "m_veer", "m_cpu"],
+};
 
 function finalize(
   cat: CategoryDef,
@@ -218,12 +229,18 @@ export const CATEGORIES: CategoryDef[] = [
     code: "RCR",
     keywords: ["recruit", "portal", "transfer", "commit", "poach", "offer", "signing", "stars", "visit"],
     opener: () =>
-      "Read you loud, coach — you want the recruiting engine rewired. I've run this route before: blocks from \"Recruiting Overhaul '26\" and \"Transfer Portal Chaos\" are already warm in my head. Four quick questions, then I write the bundle.",
+      "Read you loud, coach — the recruiting engine gets rewired. I pinned some stretch ideas to the board below, and the vault scout already flagged \"Recruiting Overhaul '26\", \"Portal Chaos\" and \"Redshirt Realism\" as source material. Pick your extras, then we drill.",
+    expansions: [
+      "Grace period before CPU can poach a commit",
+      "Log every CPU offer to a scout dashboard",
+      "Home-state rivals hit harder in the portal",
+    ],
     questions: [
       { key: "scope", label: "Blast radius", ask: "Q1/4 — Blast radius. What does this rule apply to?", chips: ["National", "Conference only", "My program only"] },
       { key: "intensity", label: "CPU intensity", ask: "Q2/4 — How aggressive should CPU coaches recruit, 1–10?", chips: ["4 — mild", "7 — realistic", "10 — bloodbath"] },
       { key: "poaching", label: "Poach policy", ask: "Q3/4 — Can CPU coaches poach your commits?", chips: ["No poaching", "Soft poach only", "Full chaos"] },
       { key: "homeboost", label: "Home-state bonus", ask: "Q4/4 — Home-state interest multiplier?", chips: ["1.2x", "1.5x", "2.0x", "Off"] },
+      { key: "sources", label: "Pattern sources", ask: "Final call — whose code do I borrow? I'll pull patterns from these vault mods into the knowledge base before I compile.", chips: ["Recruit Overhaul", "Portal Chaos", "Redshirt Realism", "scout's choice"] },
     ],
     build: (a, brief, kb) => {
       const poach = a.poaching?.toLowerCase().includes("no") ? "off" : a.poaching?.toLowerCase().includes("soft") ? "soft" : "full";
@@ -286,12 +303,18 @@ export const CATEGORIES: CategoryDef[] = [
     code: "PLY",
     keywords: ["playbook", "play", "offense", "option", "spread", "formation", "audible", "tempo", "scheme", "run game", "passing"],
     opener: () =>
-      "Got it — scheme work. My playbook shelf is stocked: \"Veer & Shoot Playbook\" gives me the mesh-read blocks and clean personnel packaging. Nail down four calls and I'll draw it up.",
+      "Got it — scheme work. Stretch ideas are pinned below, and the scout flagged \"Veer & Shoot\", \"Coordinator Brain\" and \"Clock Kings\" as source material for this one. Lock your extras, then we draw it up.",
+    expansions: [
+      "Let the CPU audible at the line",
+      "Package plays as situation groups",
+      "Share the playbook as exportable JSON",
+    ],
     questions: [
       { key: "scheme", label: "Scheme family", ask: "Q1/4 — Base scheme family?", chips: ["Triple option", "Spread / tempo", "Pro-style", "Air raid"] },
       { key: "frequency", label: "AI call rate", ask: "Q2/4 — How often should the CPU actually call it?", chips: ["Situational", "25% of snaps", "40%+ of snaps"] },
       { key: "personnel", label: "Personnel", ask: "Q3/4 — Personnel grouping policy?", chips: ["Auto-fit", "Force 11 personnel", "Force heavy (21)"] },
       { key: "tempo", label: "Tempo / clock", ask: "Q4/4 — Tempo's effect on the game clock?", chips: ["Real tempo rules", "No clock change", "Chaos tempo"] },
+      { key: "sources", label: "Pattern sources", ask: "Final call — whose code do I borrow? I'll pull patterns from these vault mods into the knowledge base before I compile.", chips: ["Veer & Shoot", "Coordinator Brain", "Clock Kings", "scout's choice"] },
     ],
     build: (a, brief, kb) => {
       const scheme = (a.scheme ?? "Spread / tempo").toLowerCase().replace(/[^a-z]+/g, "_").replace(/^_|_$/g, "");
@@ -348,12 +371,18 @@ export const CATEGORIES: CategoryDef[] = [
     code: "WX",
     keywords: ["weather", "rain", "snow", "wind", "storm", "forecast", "elements"],
     opener: () =>
-      "Weather ball — my favorite kind of Saturday. \"True Weather Systems\" hands me the front generator and a vector wind model that actually bends deep balls. Four calls and we forecast.",
+      "Weather ball — my favorite kind of Saturday. Stretch ideas are pinned below, and the scout flagged \"True Weather\", \"Coordinator Brain\" and \"Saturday Atmos\" as source material. Lock your extras and we forecast.",
+    expansions: [
+      "Wind gusts that bend deep balls",
+      "Lightning delays with a locker-room cutscene",
+      "Field puddles that slow cuts and breaks",
+    ],
     questions: [
       { key: "regions", label: "Regions", ask: "Q1/4 — Where does dynamic weather roll?", chips: ["All FBS", "Northern only", "Coastal + plains"] },
       { key: "severity", label: "Severity ceiling", ask: "Q2/4 — How ugly can it get?", chips: ["Broadcast-safe", "Storm level", "Apocalypse"] },
       { key: "wind", label: "Wind model", ask: "Q3/4 — Wind model for the passing game?", chips: ["Vector wind", "Scalar gusts", "Wind off"] },
       { key: "drift", label: "Live drift", ask: "Q4/4 — Conditions locked at kickoff, or live drift?", chips: ["Locked at kickoff", "Live drift", "Drift + cold fronts"] },
+      { key: "sources", label: "Pattern sources", ask: "Final call — whose code do I borrow? I'll pull patterns from these vault mods into the knowledge base before I compile.", chips: ["True Weather", "Coordinator Brain", "Saturday Atmos", "scout's choice"] },
     ],
     build: (a, brief, kb) => {
       const region = a.regions?.toLowerCase().includes("north") ? "northern" : a.regions?.toLowerCase().includes("coast") ? "coastal_plains" : "all_fbs";
@@ -410,11 +439,17 @@ export const CATEGORIES: CategoryDef[] = [
     code: "ATM",
     keywords: ["crowd", "noise", "stadium", "night", "atmosphere", "home field", "band", "momentum"],
     opener: () =>
-      "Saturday vibes, huh? \"Saturday Atmosphere Pack\" and \"Stadium Soundstage\" are already indexed — noise-to-penalty hooks, momentum shifts, the whole page. Four calls and the building gets loud.",
+      "Saturday vibes, huh? Stretch ideas are pinned below, and the scout flagged \"Saturday Atmos\", \"Soundstage\" and \"True Weather\" as source material — noise hooks, momentum shifts, the whole page. Lock your extras and the building gets loud.",
+    expansions: [
+      "Band plays the fight song on big stops",
+      "Crowd noise swells on 3rd-and-long",
+      "Camera shake on goal-line stands",
+    ],
     questions: [
       { key: "effect", label: "Crowd effect", ask: "Q1/4 — What does a loud crowd actually do on the field?", chips: ["False starts", "Masks audibles", "Both + momentum swings"] },
       { key: "night", label: "Night multiplier", ask: "Q2/4 — Night-game home advantage multiplier?", chips: ["1.15x", "1.3x", "1.5x"] },
       { key: "band", label: "Band & celebrations", ask: "Q3/4 — Band cams and celebration hooks?", chips: ["Full show", "Minimal", "Off"] },
+      { key: "sources", label: "Pattern sources", ask: "Final call — whose code do I borrow? I'll pull patterns from these vault mods into the knowledge base before I compile.", chips: ["Saturday Atmos", "Soundstage", "True Weather", "scout's choice"] },
     ],
     build: (a, brief, kb) => {
       const eff = a.effect?.toLowerCase().includes("both") ? "both" : a.effect?.toLowerCase().includes("false") ? "false_start" : "mask";
@@ -465,11 +500,17 @@ export const CATEGORIES: CategoryDef[] = [
     code: "BAL",
     keywords: ["difficulty", "cpu", "ai", "hard", "harder", "balance", "brutal", "rubber band", "catch-up", "cheat", "fair"],
     opener: () =>
-      "Balance work. Good — \"CPU Coordinator Brain\" is the cleanest code on the wire: late-game IQ profiles and a rubber-band stripper. Tell me where you want the teeth and I'll tune it.",
+      "Balance work. Good. Stretch ideas are pinned below, and the scout flagged \"Coordinator Brain\", \"Recruit Overhaul\" and \"Redshirt Realism\" as source material — late-game IQ profiles and a rubber-band stripper. Lock your extras and tell me where you want the teeth.",
+    expansions: [
+      "CPU adjusts to your tendencies mid-game",
+      "Injuries respect pitch counts",
+      "Comeback scripting off by default",
+    ],
     questions: [
       { key: "axis", label: "Where CPU gets teeth", ask: "Q1/4 — Where should the CPU get dangerous?", chips: ["4th quarter", "Red zone", "All phases"] },
       { key: "rubber", label: "Rubber-banding", ask: "Q2/4 — How do we treat catch-up scripting?", chips: ["Strip all rubber-banding", "Soft catch-up only", "Keep stock"] },
       { key: "injuries", label: "Injury realism", ask: "Q3/4 — Injury model?", chips: ["Stock", "Slightly brutal", "Full medical chart"] },
+      { key: "sources", label: "Pattern sources", ask: "Final call — whose code do I borrow? I'll pull patterns from these vault mods into the knowledge base before I compile.", chips: ["Coordinator Brain", "Recruit Overhaul", "Redshirt Realism", "scout's choice"] },
     ],
     build: (a, brief, kb) => {
       const axis = a.axis?.toLowerCase().includes("red") ? "redzone" : a.axis?.toLowerCase().includes("all") ? "all_phases" : "fourth_quarter";
@@ -519,11 +560,17 @@ export const CATEGORIES: CategoryDef[] = [
     code: "RUL",
     keywords: ["clock", "rules", "targeting", "overtime", "penalty", "runoff", "flag", "review", "ot"],
     opener: () =>
-      "Rules lawyer — respect. \"Clock Kings\" gives me the clock schema and review hooks, and they're tidy. Three rulings from the booth and I'll codify them.",
+      "Rules lawyer — respect. Stretch ideas are pinned below, and the scout flagged \"Clock Kings\", \"Veer & Shoot\" and \"Coordinator Brain\" as source material — the clock schema and review hooks are tidy. Lock your extras and give me the rulings.",
+    expansions: [
+      "Targeting review booth with instant replay",
+      "Overtime alternates possessions",
+      "Clock rules match the real 2027 book",
+    ],
     questions: [
       { key: "clock", label: "Clock rule set", ask: "Q1/3 — Which clock rule set do we enforce?", chips: ["NCAA stock", "NFL-style", "No runoff ever"] },
       { key: "targeting", label: "Targeting", ask: "Q2/3 — Targeting enforcement?", chips: ["Strict eject", "Reviewable + lenient", "Disabled"] },
       { key: "ot", label: "Overtime", ask: "Q3/3 — Overtime format?", chips: ["NCAA 2PT OTs", "Single OT only", "Sudden death"] },
+      { key: "sources", label: "Pattern sources", ask: "Final call — whose code do I borrow? I'll pull patterns from these vault mods into the knowledge base before I compile.", chips: ["Clock Kings", "Veer & Shoot", "Coordinator Brain", "scout's choice"] },
     ],
     build: (a, brief, kb) => {
       const clock = a.clock?.toLowerCase().includes("nfl") ? "nfl" : a.clock?.toLowerCase().includes("no runoff") ? "no_runoff" : "ncaa";
@@ -595,13 +642,58 @@ export function detectCategory(text: string): CategoryDef {
   return best ?? CATEGORIES[4]; // default: balance tuning
 }
 
+const slugExt = (s: string) =>
+  s.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 32) || "stretch";
+
 export function generateBundle(
   cat: CategoryDef,
   answers: Record<string, string>,
   brief: string,
-  kb: PatternDef[]
+  kb: PatternDef[],
+  expansions: string[] = []
 ): BundleMeta {
-  return cat.build(answers, brief, kb);
+  const b = cat.build(answers, brief, kb);
+  if (expansions.length) {
+    // manifest — declare extensions
+    const manifest = b.files.find((f) => f.path.endsWith("manifest.json"));
+    if (manifest) {
+      try {
+        const mj = JSON.parse(manifest.content);
+        mj.extensions = expansions;
+        manifest.content = JSON.stringify(mj, null, 2) + "\n";
+        manifest.bytes = manifest.content.length;
+      } catch {
+        /* keep manifest as-is */
+      }
+    }
+    // logic — stub hooks per stretch goal
+    const lua = b.files.find((f) => f.lang === "lua");
+    if (lua) {
+      const section =
+        [
+          "",
+          "-- ══ STRETCH GOALS (coach-approved expansions) ══════════════",
+          ...expansions.flatMap((e) => [
+            `-- stretch: ${e}`,
+            `hooks.register("EXT_${slugExt(e)}", function(ctx)`,
+            `  return engine.applyVar("${slugExt(e)}", ctx) -- wired by CODEWRIGHT`,
+            `end)`,
+          ]),
+        ].join("\n") + "\n";
+      lua.content += section;
+      lua.bytes = lua.content.length;
+    }
+    // vars — hot-reload toggle per stretch goal
+    const xml = b.files.find((f) => f.lang === "xml");
+    if (xml) {
+      const vars = expansions
+        .map((e) => `  <var name="${slugExt(e)}" type="bool" default="true" hotreload="true"/> <!-- stretch -->`)
+        .join("\n");
+      xml.content = xml.content.replace(/(\n?)(<\/[A-Za-z][A-Za-z0-9]*>\s*)$/, `\n${vars}\n$2`);
+      xml.bytes = xml.content.length;
+    }
+  }
+  return b;
 }
 
 /* ---------------- build & test scripts ---------------- */

@@ -1,46 +1,66 @@
 import { useEffect, useRef, useState } from "react";
 import type { ChatMsg, Phase, QAState } from "../types";
 import { CATEGORIES } from "../lib/agentEngine";
+import { IconBall, IconBolt, IconChevron } from "./icons";
 
-function ChalkDoodle({ className }: { className: string }) {
+const PHASE_STATUS: Record<Phase, string> = {
+  idle: "chalk up a brief, coach",
+  qa: "interrogation in progress",
+  generating: "weaving vault patterns…",
+  ready: "ready to ship · GO BLUE",
+};
+
+function Doodle() {
   return (
-    <svg viewBox="0 0 150 110" className={className} fill="none" stroke="#f2eddc" strokeWidth="2.2" strokeLinecap="round" opacity="0.28">
-      <circle cx="26" cy="26" r="13" pathLength={300} className="chalk-draw" />
-      <circle cx="70" cy="20" r="13" pathLength={300} className="chalk-draw" style={{ animationDelay: "0.5s" }} />
-      <path d="M104 14 l24 24 M128 14 l-24 24" pathLength={300} className="chalk-draw" style={{ animationDelay: "1s" }} />
-      <path d="M26 44 C 30 70, 55 82, 92 84" pathLength={300} className="chalk-draw" style={{ animationDelay: "1.4s" }} />
-      <path d="M84 76 l10 8 l-12 4" pathLength={300} className="chalk-draw" style={{ animationDelay: "2s" }} />
-      <path d="M112 60 q 14 10 8 30" strokeDasharray="5 7" opacity="0.8" />
+    <svg
+      className="pointer-events-none absolute right-4 top-3 h-24 w-40 text-chalk/25"
+      viewBox="0 0 160 96"
+      fill="none"
+      strokeWidth="2.4"
+      strokeLinecap="round"
+    >
+      <circle cx="26" cy="26" r="9" className="chalk-draw" stroke="currentColor" />
+      <circle cx="26" cy="66" r="9" className="chalk-draw" stroke="currentColor" style={{ animationDelay: "0.3s" }} />
+      <path d="M42 22 q 34 -12 56 6" className="chalk-draw" stroke="#ffcb05" strokeOpacity="0.6" style={{ animationDelay: "0.5s" }} />
+      <path d="M98 28 l -8 -4 M98 28 l -9 3" className="chalk-draw" stroke="#ffcb05" strokeOpacity="0.6" style={{ animationDelay: "1.1s" }} />
+      <path d="M42 66 q 40 10 74 -8" className="chalk-draw" stroke="currentColor" style={{ animationDelay: "0.8s" }} />
+      <path d="M116 58 l -9 -2 M116 58 l -6 7" className="chalk-draw" stroke="currentColor" style={{ animationDelay: "1.4s" }} />
+      <path d="M66 44 l 10 0 M71 39 l 0 10" className="chalk-draw" stroke="#ffcb05" strokeOpacity="0.5" style={{ animationDelay: "1.2s" }} />
     </svg>
   );
 }
 
 function Msg({ m }: { m: ChatMsg }) {
-  if (m.role === "sys") {
+  if (m.role === "user") {
     return (
-      <div className="typewrite pl-1 text-[11px] leading-relaxed text-chalk/55 animate-rise">
-        <span className="text-chalkyellow/70">» </span>
-        {m.text}
+      <div className="animate-rise flex justify-end pl-10">
+        <div className="max-w-[88%] text-right">
+          <div className="font-mono text-[8.5px] uppercase tracking-[0.2em] text-maize-400/60">you · coach</div>
+          <div className="chalk-text chalk-yellow whitespace-pre-wrap text-[22px] font-semibold leading-[1.18]">{m.text}</div>
+        </div>
       </div>
     );
   }
-  if (m.role === "user") {
+  if (m.role === "sys") {
     return (
-      <div className="animate-rise pl-4">
-        <span className="chalk-text chalk-yellow text-[19px] font-semibold leading-snug" style={{ borderLeft: "3px solid rgba(243,212,112,0.5)", paddingLeft: "10px" }}>
-          {m.text}
-        </span>
+      <div className="animate-rise flex items-start gap-2 pr-10">
+        <span className="mt-1 shrink-0 font-mono text-[10px] text-maize-400/70">▸</span>
+        <span className="typewrite whitespace-pre-wrap text-[11px] leading-relaxed text-chalk/70">{m.text}</span>
+        {m.tag && m.tag !== "learn" && (
+          <span className="typewrite mt-px shrink-0 text-[9px] uppercase tracking-[0.2em] text-maize-400/60">[{m.tag}]</span>
+        )}
       </div>
     );
   }
   return (
-    <div className="animate-rise">
-      {m.tag && m.tag !== "compiler" && (
-        <div className="chalk-text mb-0.5 text-[13px] uppercase tracking-[0.18em] opacity-70">
-          {m.tag === "scout" ? "✱ scout report" : m.tag === "locked" ? "✱ play locked in" : `✱ ${m.tag}`}
+    <div className="animate-rise flex items-start gap-2.5 pr-8">
+      <span className="mt-3 h-2 w-2 shrink-0 rotate-45 bg-maize-400 shadow-[0_0_8px_rgba(255,203,5,0.6)]" />
+      <div>
+        <div className="font-mono text-[8.5px] uppercase tracking-[0.2em] text-chalk/45">
+          CODEWRIGHT {m.tag ? `· ${m.tag}` : ""}
         </div>
-      )}
-      <p className="chalk-text whitespace-pre-wrap text-[19px] font-bold leading-[1.35]">{m.text}</p>
+        <div className="chalk-text whitespace-pre-wrap text-[21px] leading-[1.22]">{m.text}</div>
+      </div>
     </div>
   );
 }
@@ -51,6 +71,7 @@ export default function AgentChat({
   qa,
   onSend,
   onAnswer,
+  onLock,
   busy,
 }: {
   messages: ChatMsg[];
@@ -58,132 +79,181 @@ export default function AgentChat({
   qa: QAState | null;
   onSend: (t: string) => void;
   onAnswer: (t: string) => void;
+  onLock: (selected: string[]) => void;
   busy: boolean;
 }) {
   const [val, setVal] = useState("");
-  const listRef = useRef<HTMLDivElement>(null);
-  const qaPhase = phase === "qa" && qa;
-  const q = qaPhase ? CATEGORIES.find((c) => c.id === qa.category) : null;
+  const [sel, setSel] = useState<string[]>([]);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const cat = qa ? CATEGORIES.find((c) => c.id === qa.category) ?? null : null;
+  const question = cat && qa && qa.index < cat.questions.length ? cat.questions[qa.index] : null;
+  const showExpansions = phase === "qa" && !!qa && !qa.expLocked && !!cat;
+  const showChips = phase === "qa" && !!qa && qa.expLocked && !!question;
+  const thinking =
+    busy || (messages.length > 0 && messages[messages.length - 1].role === "user" && phase === "qa");
 
   useEffect(() => {
-    const el = listRef.current;
-    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
-  }, [messages, busy, phase]);
+    setSel([]);
+  }, [qa?.brief, qa?.expLocked]);
+
+  useEffect(() => {
+    const el = bodyRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  }, [messages, phase, showExpansions, showChips]);
+
+  const submit = () => {
+    const t = val.trim();
+    if (!t || busy) return;
+    setVal("");
+    if (showChips && question) onAnswer(t);
+    else onSend(t);
+  };
 
   const status =
-    phase === "idle"
-      ? "waiting on a play call"
-      : phase === "qa" && qa && q
-        ? `Q&A · question ${Math.min(qa.index + 1, q.questions.length)} of ${q.questions.length}`
-        : phase === "generating"
-          ? "compiling the bundle…"
-          : "bundle ready — ship it";
+    phase === "qa" && qa
+      ? qa.expLocked && question
+        ? `Q&A · ${Math.min(qa.index + 1, cat!.questions.length)} of ${cat!.questions.length}`
+        : "stretch ideas on the board"
+      : PHASE_STATUS[phase];
 
   return (
     <section
-      className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border-[12px] border-wood-600 shadow-[0_18px_40px_rgba(0,0,0,0.55),inset_0_0_0_3px_#3a2818] animate-rise"
+      className="relative flex h-full min-h-0 flex-col animate-rise"
       style={{ animationDelay: "120ms" }}
     >
-      <div className="tex-board relative flex h-full min-h-0 flex-col">
-        <ChalkDoodle className="pointer-events-none absolute left-1/2 top-0 h-20 w-28 -translate-x-1/2" />
+      {/* stadium frame */}
+      <div className="relative flex h-full min-h-0 flex-col overflow-hidden rounded-xl border-[3px] border-maize-400/80 shadow-[0_0_0_3px_#00132a,0_0_50px_rgba(255,203,5,0.09),0_20px_50px_rgba(0,0,0,0.5)]">
+        <div className="absolute inset-[3px] z-20 pointer-events-none rounded-lg border border-maize-400/25" />
 
-        {/* board header */}
-        <div className="relative shrink-0 px-5 pb-2 pt-4">
-          <div className="flex items-end justify-between gap-4">
-            <div>
-              <h2 className="chalk-text font-display text-[15px] tracking-[0.16em] text-chalk">
-                CODEWRIGHT'S CHALKBOARD
-              </h2>
-              <svg viewBox="0 0 220 10" className="mt-1 h-2.5 w-52" fill="none" stroke="#f2eddc" strokeWidth="2" strokeLinecap="round" opacity="0.5">
-                <path d="M3 6 C 40 2, 90 9, 130 5 S 200 3, 217 6" pathLength={300} className="chalk-draw" />
-              </svg>
+        {/* jumbotron header */}
+        <div className="flex items-center gap-3 border-b-[3px] border-maize-400/60 bg-navy-900 px-4 py-2.5">
+          <span className="flex items-center gap-1.5 rounded-sm border border-maize-400/40 bg-navy-950 px-2 py-1 font-mono text-[9px] font-semibold uppercase tracking-[0.2em] text-maize-300">
+            <span className="h-1.5 w-1.5 rounded-full bg-maize-400 led-glow shadow-[0_0_8px_rgba(255,203,5,0.9)]" />
+            live
+          </span>
+          <div className="leading-none">
+            <div className="font-display text-[19px] tracking-[0.18em] text-maize-400" style={{ textShadow: "0 0 14px rgba(255,203,5,0.35)" }}>
+              COACH'S JUMBOTRON
             </div>
-            <div className="chalk-text chalk-yellow shrink-0 pb-1 text-right text-[16px] font-semibold leading-tight">
-              {status}
-              {phase === "qa" && qa && q && (
-                <span className="ml-2 inline-block rounded-full border border-dashed border-chalkyellow/60 px-2 text-[14px]">
-                  {q.label.toLowerCase()}
+            <div className="mt-0.5 font-mono text-[8.5px] uppercase tracking-[0.26em] text-navy-400">
+              agent CODEWRIGHT · Ann Arbor · NCAA '27
+            </div>
+          </div>
+          <div className="chalk-text ml-auto hidden text-[19px] text-maize-200 sm:block">{status}</div>
+        </div>
+
+        {/* the blue board */}
+        <div className="tex-board relative min-h-0 flex-1">
+          <Doodle />
+          <div ref={bodyRef} className="relative z-10 h-full space-y-4 overflow-y-auto px-5 py-5">
+            {messages.map((m) => (
+              <Msg key={m.id} m={m} />
+            ))}
+
+            {thinking && (
+              <div className="flex items-center gap-2 pl-4">
+                <span className="h-2 w-2 rotate-45 bg-maize-400/70" />
+                <span className="chalk-text text-[20px] text-chalk/80">
+                  <span className="typing-dot inline-block">·</span>
+                  <span className="typing-dot inline-block" style={{ animationDelay: "0.15s" }}>·</span>
+                  <span className="typing-dot inline-block" style={{ animationDelay: "0.3s" }}>·</span>
                 </span>
-              )}
-            </div>
+              </div>
+            )}
+
+            {/* stretch ideas — expand the coach's idea */}
+            {showExpansions && cat && (
+              <div className="animate-rise ml-6 max-w-[92%] rounded-lg border-2 border-dashed border-maize-400/60 bg-navy-900/70 p-3.5 backdrop-blur-[1px]">
+                <div className="flex items-center gap-2">
+                  <IconBolt className="h-4 w-4 text-maize-400" />
+                  <span className="font-display text-[13px] tracking-[0.18em] text-maize-300">STRETCH THE IDEA</span>
+                  <span className="typewrite ml-auto text-[9px] uppercase tracking-[0.16em] text-chalk/50">pick any · wired as hot-reload extensions</span>
+                </div>
+                <div className="mt-2.5 flex flex-wrap gap-1.5">
+                  {cat.expansions.map((e) => {
+                    const on = sel.includes(e);
+                    return (
+                      <button key={e} onClick={() => setSel((s) => (on ? s.filter((x) => x !== e) : [...s, e]))} className={`chalk-pill px-3 py-1 text-[17px] leading-tight ${on ? "chalk-pill-on" : ""}`}>
+                        {on ? "✓ " : "+ "}
+                        {e}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="mt-3 flex items-center gap-2.5">
+                  <button
+                    onClick={() => onLock(sel)}
+                    className="stamp-btn bg-maize-400/10 px-4 py-1.5 text-[11px] font-bold text-maize-300"
+                  >
+                    {sel.length ? `LOCK ${sel.length} EXTRA${sel.length > 1 ? "S" : ""} & GRILL ME` : "GRILL ME"}
+                    <IconChevron className="ml-1 inline h-3 w-3" />
+                  </button>
+                  {sel.length > 0 && (
+                    <button onClick={() => onLock([])} className="typewrite text-[10px] uppercase tracking-[0.14em] text-chalk/55 underline decoration-dashed underline-offset-4 hover:text-chalk/85">
+                      skip extras
+                    </button>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Q&A quick calls */}
+            {showChips && question && (
+              <div className="animate-rise ml-6 flex max-w-[92%] flex-wrap items-center gap-1.5">
+                {question.chips.map((c) => (
+                  <button key={c} onClick={() => onAnswer(c)} className={`chalk-pill px-3 py-1 text-[17px] leading-tight ${question.key === "sources" && c === "scout's choice" ? "border-maize-400/90 bg-maize-400/10" : ""}`}>
+                    {c}
+                  </button>
+                ))}
+                <span className="typewrite ml-1 text-[9px] uppercase tracking-[0.16em] text-chalk/45">or chalk your own below</span>
+              </div>
+            )}
+
+            {phase === "ready" && (
+              <div className="animate-rise ml-6 max-w-[92%] rounded-md border border-maize-400/40 bg-navy-900/70 px-3.5 py-2.5">
+                <span className="chalk-text text-[19px] text-maize-200">
+                  Bundle's on the desk. Build it, scrimmage it in the sandbox, or ship it — the right panel handles the rest.
+                </span>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* messages */}
-        <div ref={listRef} className="min-h-0 flex-1 space-y-4 overflow-y-auto px-5 pb-3 pt-1">
-          {messages.map((m) => (
-            <Msg key={m.id} m={m} />
-          ))}
-          {busy && (
-            <div className="flex items-center gap-1.5 pl-1">
-              {[0, 1, 2].map((i) => (
-                <span
-                  key={i}
-                  className="typing-dot inline-block h-2 w-2 rounded-full bg-chalk/80"
-                  style={{ animationDelay: `${i * 0.18}s` }}
-                />
-              ))}
-              <span className="chalk-text ml-1 text-[15px] opacity-60">coach is thinking…</span>
-            </div>
-          )}
-        </div>
-
-        {/* quick-call chips */}
-        {qaPhase && q && qa.index < q.questions.length && !busy && (
-          <div className="shrink-0 px-5 pb-3">
-            <div className="chalk-text mb-1.5 text-[13px] uppercase tracking-[0.18em] opacity-60">
-              quick call, or write your own ↓
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {q.questions[qa.index].chips.map((c) => (
-                <button
-                  key={c}
-                  onClick={() => onAnswer(c)}
-                  className="chalk-pill px-3.5 py-1 text-[16px] font-semibold"
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* chalk tray input */}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            const t = val.trim();
-            if (!t || busy) return;
-            setVal("");
-            qaPhase ? onAnswer(t) : onSend(t);
-          }}
-          className="relative shrink-0 border-t-[6px] border-wood-700 bg-gradient-to-b from-wood-600 to-wood-700 px-5 py-3 shadow-[inset_0_3px_6px_rgba(0,0,0,0.4)]"
-        >
-          {/* chalk sticks */}
-          <span className="absolute right-16 top-2 hidden h-[7px] w-11 rotate-[8deg] rounded-full bg-chalk shadow-[0_2px_3px_rgba(0,0,0,0.45)] lg:block" />
-          <span className="absolute right-5 top-3.5 hidden h-[7px] w-9 -rotate-[5deg] rounded-full bg-chalkyellow shadow-[0_2px_3px_rgba(0,0,0,0.45)] lg:block" />
-          <div className="flex items-center gap-3">
+        {/* chalk tray */}
+        <div className="shrink-0 border-t-[3px] border-maize-400/60 bg-wood-800 px-3 pb-2.5 pt-2 shadow-[inset_0_6px_12px_rgba(0,0,0,0.35)]">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              submit();
+            }}
+            className="flex items-center gap-2 rounded-lg border-2 border-maize-400/40 bg-navy-900 px-3 py-2 shadow-[0_4px_12px_rgba(0,0,0,0.4)] transition-colors focus-within:border-maize-400/80"
+          >
+            <IconBall className="h-4 w-4 shrink-0 text-maize-400/70" />
             <input
+              ref={inputRef}
               value={val}
               onChange={(e) => setVal(e.target.value)}
-              disabled={busy}
               placeholder={
-                qaPhase
-                  ? "answer the coach…"
-                  : "draw it up in plain English — “stop CPU poaching my commits”…"
+                showChips
+                  ? `answer: ${question?.label.toLowerCase()}…`
+                  : phase === "ready"
+                    ? "call a new play, or open a fresh binder…"
+                    : "tell CODEWRIGHT what NCAA 27 should do differently…"
               }
-              className="chalk-text min-w-0 flex-1 border-b-2 border-dashed border-chalk/45 bg-transparent pb-1 text-[19px] font-semibold placeholder:text-chalk/35 focus:border-solid focus:border-chalkyellow/80 focus:outline-none disabled:opacity-50"
-              autoFocus
+              className="chalk-text min-w-0 flex-1 bg-transparent text-[20px] text-chalk caret-maize-400 placeholder:text-chalk/35 focus:outline-none"
+              spellCheck={false}
             />
             <button
               type="submit"
-              disabled={busy || !val.trim()}
-              className="shrink-0 rounded-md border-2 border-chalk/70 bg-chalk/10 px-4 py-1.5 font-display text-[11px] tracking-[0.14em] text-chalk transition-all hover:bg-chalk/20 hover:shadow-[0_0_14px_rgba(242,237,220,0.25)] active:scale-95 disabled:cursor-not-allowed disabled:opacity-35"
+              disabled={!val.trim() || busy}
+              className="shrink-0 rounded-md bg-maize-400 px-3.5 py-1.5 font-display text-[12px] tracking-[0.16em] text-navy-950 shadow-[0_3px_0_#8f7100] transition-all hover:brightness-110 active:translate-y-0.5 active:shadow-[0_1px_0_#8f7100] disabled:cursor-not-allowed disabled:opacity-35"
             >
-              {qaPhase ? "ANSWER" : "WRITE IT"}
+              CHALK IT
             </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </section>
   );

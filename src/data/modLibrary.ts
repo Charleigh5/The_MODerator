@@ -1,4 +1,4 @@
-import type { Platform, PatternDef, ModEntry } from "../types";
+import type { ModEntry, PatternDef, Platform } from "../types";
 
 export const PLATFORMS: Platform[] = [
   { id: "cfbvault", name: "CFB Vault", url: "cfbvault.gg", mods: 1204, status: "online" },
@@ -39,6 +39,7 @@ export const MODS: ModEntry[] = [
   {
     id: "m_recruit",
     name: "Recruiting Overhaul '26",
+    short: "Recruit Overhaul",
     platform: "CFB Vault",
     version: "v2.3.1",
     schema: "ncaa27-mod/3.1",
@@ -58,6 +59,7 @@ end)`,
   {
     id: "m_weather",
     name: "True Weather Systems",
+    short: "True Weather",
     platform: "ModAxis",
     version: "v1.8.0",
     schema: "ncaa27-mod/3.1",
@@ -76,6 +78,7 @@ end`,
   {
     id: "m_veer",
     name: "Veer & Shoot Playbook",
+    short: "Veer & Shoot",
     platform: "The Locker Room",
     version: "v3.0.2",
     schema: "ncaa27-mod/3.1",
@@ -86,15 +89,16 @@ end`,
     patternIds: ["p_playcall", "p_formpkg"],
     excerpt: `-- Veer & Shoot · option mesh read
 Game.hooks.on("OnPlaycall", function(ctx, down, dist)
-  if ctx.scheme == "veer" and dist <= 4 then
-    return PersonnelPackage("11-option")
+  if ctx.formation:startsWith("VEER") then
+    ctx.meshWindow = PersonnelPackage(ctx.id).mesh
   end
-  return ctx.pkg
+  return ctx
 end)`,
   },
   {
     id: "m_atmos",
     name: "Saturday Atmosphere Pack",
+    short: "Saturday Atmos",
     platform: "CFB Vault",
     version: "v2.1.4",
     schema: "ncaa27-mod/3.1",
@@ -114,6 +118,7 @@ end)`,
   {
     id: "m_cpu",
     name: "CPU Coordinator Brain",
+    short: "Coordinator Brain",
     platform: "ModAxis",
     version: "v4.2.0",
     schema: "ncaa27-mod/3.1",
@@ -132,6 +137,7 @@ end`,
   {
     id: "m_clock",
     name: "Clock Kings",
+    short: "Clock Kings",
     platform: "OpenPlaybooks",
     version: "v1.3.7",
     schema: "ncaa27-mod/3.1",
@@ -150,6 +156,7 @@ end)`,
   {
     id: "m_portal",
     name: "Transfer Portal Chaos",
+    short: "Portal Chaos",
     platform: "The Locker Room",
     version: "v0.9.9-beta",
     schema: "ncaa27-mod/3.0",
@@ -168,6 +175,7 @@ end)`,
   {
     id: "m_redshirt",
     name: "Redshirt Realism",
+    short: "Redshirt Realism",
     platform: "OpenPlaybooks",
     version: "v1.1.2",
     schema: "ncaa27-mod/3.1",
@@ -185,6 +193,7 @@ end)`,
   {
     id: "m_sound",
     name: "Stadium Soundstage",
+    short: "Soundstage",
     platform: "CFB Vault",
     version: "v1.6.0",
     schema: "ncaa27-mod/3.1",
@@ -202,12 +211,16 @@ Audio.layers.crowd:setStems({
 ];
 
 export const TICKER_ITEMS = [
+  "GO BLUE · the forge is open",
+  "HAIL! TO THE VICTORS VALIANT",
+  "THE BIG HOUSE · 107,601 SEATS OF OPINION",
+  "THOSE WHO STAY WILL BE CHAMPIONS",
+  "MAIZE & BLUE FOREVER · ANN ARBOR, MICH.",
   "CFB VAULT · 1,204 mods indexed",
   "MODAXIS sync OK · 862 mods",
   "THE LOCKER ROOM · re-syncing 431 mods",
   "OPENPLAYBOOKS · 296 mods verified",
   "schema ncaa27-mod/3.1 · stable",
-  "game target: NCAA Football 27 · build ≥1.0.3841",
   "hook-conflict scanner armed",
   "KB warm · patterns ready to weave",
 ];

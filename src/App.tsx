@@ -16,6 +16,7 @@ import {
   buildSteps,
   testLines,
   CATEGORIES,
+  SOURCES,
 } from "./lib/agentEngine";
 import {
   type Memory,
@@ -40,7 +41,7 @@ import Workbench from "./components/Workbench";
 import Terminal from "./components/Terminal";
 
 const GREETING_BASE =
-  "CODEWRIGHT here — ex-offensive coordinator, full-time compiler. Tell me in plain English what NCAA 27 should do differently. I'll grill you on the details, then weave blocks I've learned from the vault into a signed, game-ready bundle. Prefer the terminal? I obey the CLI too — type `help` below.";
+  "CODEWRIGHT here — forged in Ann Arbor, bleeds maize and blue. Chalk up what NCAA 27 should do differently in plain English. I'll pin some stretch ideas to the board first, grill you on the details — including which proven vault mods to borrow code from — then weave it all into a signed, game-ready bundle. Go Blue. Prefer the terminal? I obey the CLI too — type `help` below.";
 
 function memoryFacts(m: Memory): string {
   const parts: string[] = [];
@@ -254,19 +255,26 @@ export default function App() {
   };
 
   /* ---------- knowledge base ------------------------------------------- */
-  const pullMod = (modId: string) => {
+  const learnMod = (modId: string): number => {
     const mod = MODS.find((m) => m.id === modId);
-    if (!mod) return;
+    if (!mod) return 0;
     const pats = PATTERNS.filter((p) => mod.patternIds.includes(p.id));
     setKb((old) => {
       const have = new Set(old.map((p) => p.id));
       return [...old, ...pats.filter((p) => !have.has(p.id))];
     });
     mutateMem((m) => ({ ...m, kbIds: [...new Set([...m.kbIds, ...mod.patternIds])] }));
-    termPush("out", `pull ${mod.id} · ${mod.name} · ${pats.length} patterns learned`);
+    return pats.length;
+  };
+
+  const pullMod = (modId: string) => {
+    const mod = MODS.find((m) => m.id === modId);
+    if (!mod) return;
+    const n = learnMod(modId);
+    termPush("out", `pull ${mod.id} · ${mod.name} · ${n} patterns learned`);
     pushMsg(
       "sys",
-      `learned ${pats.length} patterns from ${mod.platform} → "${mod.name}" (blocks join the knowledge base)`,
+      `learned ${n} patterns from ${mod.platform} → "${mod.name}" (blocks join the knowledge base)`,
       "learn"
     );
   };
@@ -281,11 +289,34 @@ export default function App() {
     setPhase("qa");
     pushMsg("user", text);
     after(550, () => pushMsg("agent", cat.opener(text), "scout"));
-    after(1250, () => {
-      pushMsg("agent", cat.questions[0].ask);
-      termPush("out", `brief accepted · route: ${cat.label} · ${cat.questions.length}-question interrogation`);
-    });
-    setQa({ category: cat.id, index: 0, answers: {}, brief: text });
+    after(1150, () => pushMsg("sys", "stretch ideas pinned to the board — pick any, then we drill", "compiler"));
+    termPush("out", `brief accepted · route: ${cat.label} · scout report ready`);
+    setQa({ category: cat.id, index: 0, answers: {}, brief: text, expansions: [], expLocked: false });
+  };
+
+  const lockExpansions = (selected: string[]) => {
+    const q = qaRef.current;
+    if (!q || q.expLocked) return;
+    setQa({ ...q, expansions: selected, expLocked: true });
+    if (selected.length) {
+      pushMsg("user", selected.map((s) => `+ ${s}`).join("\n"));
+      after(450, () =>
+        pushMsg(
+          "agent",
+          `Stretch goals locked: ${selected.join(" · ")}. I'll wire each one as a hot-reload extension in the bundle.`
+        )
+      );
+      mutateMem((m) => ({
+        ...m,
+        prefs: [...new Set([...m.prefs, "wants stretch-goal extensions in bundles"])].slice(0, 4),
+      }));
+    } else {
+      pushMsg("user", "no extras — keep it lean");
+      after(450, () => pushMsg("agent", "Lean it is. Core mod only, no extensions — still signed, still game-ready."));
+    }
+    const cat = CATEGORIES.find((c) => c.id === q.category)!;
+    after(1000, () => pushMsg("agent", cat.questions[0].ask));
+    termPush("out", `extensions: ${selected.length || "none"} · interrogation begins`);
   };
 
   const answer = (value: string) => {
@@ -304,23 +335,52 @@ export default function App() {
       mutateMem((m) => ({ ...m, prefs: [...new Set([...m.prefs, ...hits])].slice(0, 4) }));
 
     const answers = { ...q.answers, [question.key]: value };
+
+    /* sourcing question → actually pull the chosen vault mods */
+    if (question.key === "sources") {
+      const picks =
+        value.toLowerCase().includes("scout")
+          ? SOURCES[q.category] ?? []
+          : (value.split(",").map((s) => MODS.find((m) => m.short.toLowerCase() === s.trim().toLowerCase())?.id).filter(Boolean) as string[]);
+      const unique = [...new Set(picks)];
+      let total = 0;
+      const parts = unique.map((id) => {
+        const n = learnMod(id);
+        total += n;
+        return `${id} (+${n})`;
+      });
+      after(500, () =>
+        pushMsg(
+          "agent",
+          `${total ? `Pulled ${total} fresh blocks from ${unique.length} vault mod${unique.length > 1 ? "s" : ""} (${parts.join(" · ")}).` : "Those were already warm in the vault."} Weaving everything now.`,
+          "compiler"
+        )
+      );
+      termPush("ok", `pattern pull · ${parts.join(" · ") || "kb already warm"}`);
+    }
+
     const next = q.index + 1;
     if (next < cat.questions.length) {
       setQa({ ...q, answers, index: next });
-      after(550, () => pushMsg("agent", cat.questions[next].ask));
+      after(500, () => pushMsg("agent", cat.questions[next].ask));
     } else {
       setQa({ ...q, answers, index: next });
       const summary = Object.entries(answers)
         .map(([k, v]) => `${k} → ${v}`)
         .join(" · ");
-      after(500, () =>
+      after(1100, () =>
         pushMsg("agent", `Locked in: ${summary}.\nThat's the whole picture. Weaving vault blocks into your bundle now — watch the wire.`, "locked")
       );
-      compile(cat.id, answers, q.brief);
+      compile(cat.id, answers, q.brief, q.expansions);
     }
   };
 
-  const compile = (catId: (typeof CATEGORIES)[number]["id"], answers: Record<string, string>, brief: string) => {
+  const compile = (
+    catId: (typeof CATEGORIES)[number]["id"],
+    answers: Record<string, string>,
+    brief: string,
+    expansions: string[]
+  ) => {
     setPhase("generating");
     const stages = [
       "stage 1/5 · resolving manifest against ncaa27-mod/3.1",
@@ -332,7 +392,7 @@ export default function App() {
     stages.forEach((s, i) => after(1000 + i * 620, () => pushMsg("sys", s, "compiler")));
     after(1000 + stages.length * 620, () => {
       const cat = CATEGORIES.find((c) => c.id === catId)!;
-      const b = generateBundle(cat, answers, brief, kbRef.current);
+      const b = generateBundle(cat, answers, brief, kbRef.current, expansions);
       setBundle(b);
       mutateMem((m) => ({
         ...m,
@@ -527,13 +587,13 @@ export default function App() {
 
   return (
     <div className="relative flex h-full flex-col overflow-hidden font-body text-chalk">
-      <div className="lamp-glow pointer-events-none absolute -top-24 right-[-8%] z-0 h-[520px] w-[720px] rounded-full bg-[radial-gradient(closest-side,rgba(255,196,110,0.16),transparent_70%)]" />
-      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_50%_42%,transparent_50%,rgba(10,5,2,0.55)_100%)]" />
+      <div className="lamp-glow pointer-events-none absolute -top-28 left-1/2 z-0 h-[560px] w-[900px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(255,203,5,0.1),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(ellipse_at_50%_42%,transparent_52%,rgba(0,6,15,0.6)_100%)]" />
       {motes.map((m, i) => (
         <span key={i} className="mote z-0" style={{ left: m.left, top: m.top, animationDuration: `${m.dur}s`, animationDelay: `${m.delay}s` }} />
       ))}
-      <div className="chalk-text pointer-events-none absolute -right-6 top-[20%] z-0 hidden select-none font-chalk text-[15rem] font-bold leading-none text-chalk/[0.04] lg:block" style={{ transform: "rotate(-8deg)" }}>
-        '27
+      <div className="pointer-events-none absolute -left-10 top-1/2 z-0 hidden -translate-y-1/2 select-none font-display text-[34rem] leading-none text-maize-400/[0.045] lg:block" style={{ WebkitTextStroke: "2px rgba(255,203,5,0.08)" }}>
+        M
       </div>
 
       <TopBar
@@ -543,7 +603,7 @@ export default function App() {
         canReset={phase !== "generating"}
       />
 
-      <main className="relative z-10 grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-y-auto p-3 lg:grid-cols-[330px_minmax(0,1fr)_462px] lg:overflow-visible">
+      <main className="relative z-10 grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-y-auto p-3 lg:grid-cols-[296px_minmax(0,1fr)_396px] lg:overflow-visible">
         <div className="h-[560px] min-h-0 lg:h-auto">
           <SourcesPanel
             kb={kb}
@@ -556,13 +616,14 @@ export default function App() {
             onDelete={deleteSession}
           />
         </div>
-        <div className="h-[540px] min-h-0 lg:h-auto">
+        <div className="h-[560px] min-h-0 lg:h-auto">
           <AgentChat
             messages={messages}
             phase={phase}
             qa={qa}
             onSend={onSend}
             onAnswer={answer}
+            onLock={lockExpansions}
             busy={phase === "generating"}
           />
         </div>
