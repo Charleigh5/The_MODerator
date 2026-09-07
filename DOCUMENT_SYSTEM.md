@@ -8,18 +8,35 @@ Gridiron Forge now includes a comprehensive document-driven mod creation system 
 
 ### 1. Document Upload & Processing
 
-**Location**: Coach's Jumbotron (Chat Panel) → Chalk Tray → "UPLOAD SPECS" button
+**Location**: Coach's Jumbotron (Chat Panel) → Chalk Tray
 
-**Supported Formats**: `.txt`, `.md`, `.doc`, `.docx`
+**Supported Formats**: `.txt`, `.md`, `.doc`, `.docx`, `.pdf`
+
+**Upload Methods**:
+
+**Method 1: Drag & Drop (Recommended)**
+1. Simply drag your requirements document file from your computer
+2. Drop it anywhere in the chat container
+3. A visual overlay appears showing "DROP YOUR SPECS" with an animated upload icon
+4. Release the file to upload
+5. The system automatically parses and processes the document
+
+**Method 2: Paperclip Button**
+1. Click the paperclip icon (📎) located to the left of the "CHALK IT" button
+2. File picker dialog opens
+3. Select your requirements document
+4. Document is automatically parsed and processed
 
 **How It Works**:
-1. Click "UPLOAD SPECS" to select your requirements document
+1. Upload document via drag-and-drop or paperclip button
 2. The system parses the document and extracts:
    - Mod title and category
    - Individual features (from numbered lists, bullet points, or headers)
    - Feature descriptions and requirements
 3. A summary is posted to the chat showing what was found
 4. The parsed document is stored for report generation
+5. A status indicator appears showing the document title and feature count
+6. "REPORT" button becomes available to download the detailed HTML report
 
 **Document Parsing Logic**:
 - Detects mod category from keywords (recruiting, playbook, weather, atmosphere, difficulty, rules)
@@ -88,7 +105,7 @@ For each feature, the system recommends which existing mods to pull code from:
 
 ### 4. Visual HTML Report Generator
 
-**Location**: Coach's Jumbotron → "DOWNLOAD REPORT" button (appears after document upload)
+**Location**: Coach's Jumbotron → Chalk Tray → "REPORT" button (appears after document upload)
 
 **Report Contents**:
 
@@ -135,15 +152,19 @@ AI-generated suggestions for:
 
 The document system integrates seamlessly with the existing mod creation flow:
 
-1. **Upload Document** → System parses and posts summary
-2. **Continue Chat** → Use the parsed features as context for Q&A
-3. **Generate Bundle** → System uses document insights to inform code generation
-4. **Download Report** → Get comprehensive HTML documentation
+1. **Upload Document** → Drag-and-drop into chat or click paperclip icon
+2. **Visual Feedback** → See drag overlay or file picker
+3. **Auto-Processing** → System parses and posts summary
+4. **Status Indicator** → Document title and feature count displayed
+5. **Continue Chat** → Use the parsed features as context for Q&A
+6. **Generate Bundle** → System uses document insights to inform code generation
+7. **Download Report** → Click "REPORT" button to get comprehensive HTML documentation
 
 ## Usage Examples
 
 ### Example 1: Simple Feature Document
 
+**Step 1: Create your document**
 ```markdown
 # Recruiting Overhaul Mod
 
@@ -163,7 +184,28 @@ The document system integrates seamlessly with the existing mod creation flow:
    - Player can adjust weight in settings
 ```
 
+**Step 2: Upload via Drag & Drop**
+1. Save the document as `recruiting-specs.md`
+2. Drag the file from your file explorer
+3. Drop it anywhere in the Coach's Jumbotron chat area
+4. Watch the "DROP YOUR SPECS" overlay appear
+5. Release the file
+
+**Step 3: Automatic Processing**
+- Status indicator appears: "recruiting-specs.md · 3 features"
+- Chat posts: "📄 Uploaded: Recruiting Overhaul Mod... Found 3 features. Processing..."
+- "REPORT" button becomes available
+
 **Result**: 3 features parsed, each with 3 user stories, test plans, and code source recommendations from Recruiting Overhaul '26, Transfer Portal Chaos, and Redshirt Realism mods.
+
+### Example 2: Upload via Paperclip Icon
+
+**Alternative Method:**
+1. Click the paperclip icon (📎) next to the "CHALK IT" button
+2. File picker opens
+3. Select your document
+4. Same automatic processing occurs
+5. Small dot indicator appears on paperclip when document is loaded
 
 ### Example 2: Technical Specification
 
@@ -213,13 +255,16 @@ The document system integrates seamlessly with the existing mod creation flow:
 
 ## Benefits
 
-1. **Structured Requirements**: Turn vague ideas into detailed specifications
-2. **User-Centric Design**: Every feature has clear user stories
-3. **Test-Driven Development**: Comprehensive test plans for each feature
-4. **Code Reuse**: Intelligent recommendations for vault patterns
-5. **Documentation**: Automatic HTML reports for reference
-6. **Workflow Optimization**: AI suggestions for development order
-7. **Quality Assurance**: Clear boundaries and acceptance criteria
+1. **Intuitive Upload**: Drag-and-drop or paperclip button - no hunting for upload dialogs
+2. **Visual Feedback**: Clear overlay and status indicators throughout the process
+3. **Structured Requirements**: Turn vague ideas into detailed specifications
+4. **User-Centric Design**: Every feature has clear user stories
+5. **Test-Driven Development**: Comprehensive test plans for each feature
+6. **Code Reuse**: Intelligent recommendations for vault patterns
+7. **Documentation**: Automatic HTML reports for reference
+8. **Workflow Optimization**: AI suggestions for development order
+9. **Quality Assurance**: Clear boundaries and acceptance criteria
+10. **Seamless Integration**: Works naturally within the existing chat interface
 
 ## Future Enhancements
 
