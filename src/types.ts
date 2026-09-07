@@ -30,6 +30,8 @@ export interface Platform {
   url: string;
   mods: number;
   status: "online" | "syncing";
+  heartbeat: number; // ms since last ping
+  latency: number; // ms
 }
 
 export interface PatternDef {
@@ -37,6 +39,14 @@ export interface PatternDef {
   name: string;
   kind: "Hook" | "Block" | "Schema" | "VarTable";
   source: string;
+}
+
+export interface ModReview {
+  user: string;
+  rating: number; // 1-5
+  text: string;
+  date: string;
+  helpful: number;
 }
 
 export interface ModEntry {
@@ -52,6 +62,17 @@ export interface ModEntry {
   tags: string[];
   excerpt: string;
   patternIds: string[];
+  description: string;
+  rating: number; // 1-5
+  reviewCount: number;
+  reviews: ModReview[];
+  pros: string[];
+  cons: string[];
+  warnings: string[];
+  files: { name: string; purpose: string; size: string }[];
+  variables: { name: string; type: string; purpose: string }[];
+  logic: string[];
+  testPlan: string[];
 }
 
 export interface GenFile {

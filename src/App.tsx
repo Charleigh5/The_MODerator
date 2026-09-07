@@ -605,16 +605,7 @@ export default function App() {
 
       <main className="relative z-10 grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-y-auto p-3 lg:grid-cols-[296px_minmax(0,1fr)_396px] lg:overflow-visible">
         <div className="h-[560px] min-h-0 lg:h-auto">
-          <SourcesPanel
-            kb={kb}
-            onPull={pullMod}
-            sessions={sessions}
-            activeId={activeId}
-            memory={mem}
-            onNew={createSession}
-            onSwitch={switchSession}
-            onDelete={deleteSession}
-          />
+          <SourcesPanel kb={kb} onPull={pullMod} />
         </div>
         <div className="h-[560px] min-h-0 lg:h-auto">
           <AgentChat
