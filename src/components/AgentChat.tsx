@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import type { ChatMsg, Phase, QAState } from "../types";
 import { CATEGORIES } from "../lib/agentEngine";
-import { IconBall, IconBolt, IconChevron } from "./icons";
+import { IconBall, IconBolt, IconChevron, IconUpload, IconFile, IconDownload } from "./icons";
+import { parseDocument } from "../lib/documentProcessor";
+import { downloadReport } from "../lib/reportGenerator";
+import type { ParsedDocument } from "../lib/documentProcessor";
 
 const PHASE_STATUS: Record<Phase, string> = {
   idle: "chalk up a brief, coach",
@@ -84,8 +87,10 @@ export default function AgentChat({
 }) {
   const [val, setVal] = useState("");
   const [sel, setSel] = useState<string[]>([]);
+  const [parsedDoc, setParsedDoc] = useState<ParsedDocument | null>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const cat = qa ? CATEGORIES.find((c) => c.id === qa.category) ?? null : null;
   const question = cat && qa && qa.index < cat.questions.length ? cat.questions[qa.index] : null;
@@ -109,6 +114,27 @@ export default function AgentChat({
     setVal("");
     if (showChips && question) onAnswer(t);
     else onSend(t);
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    const text = await file.text();
+    const doc = parseDocument(text);
+    setParsedDoc(doc);
+    
+    // Send document summary to chat
+    onSend(`📄 Uploaded: ${doc.title}\n\n${doc.summary}\n\nFound ${doc.features.length} features. Processing...`);
+    
+    // Reset file input
+    if (fileInputRef.current) fileInputRef.current.value = '';
+  };
+
+  const handleDownloadReport = () => {
+    if (parsedDoc) {
+      downloadReport(parsedDoc);
+    }
   };
 
   const status =
@@ -223,6 +249,39 @@ export default function AgentChat({
 
         {/* chalk tray */}
         <div className="shrink-0 border-t-[3px] border-maize-400/60 bg-wood-800 px-3 pb-2.5 pt-2 shadow-[inset_0_6px_12px_rgba(0,0,0,0.35)]">
+          {/* document tools */}
+          <div className="mb-2 flex items-center gap-2">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".txt,.md,.doc,.docx"
+              onChange={handleFileUpload}
+              className="hidden"
+              id="doc-upload"
+            />
+            <label
+              htmlFor="doc-upload"
+              className="flex cursor-pointer items-center gap-1.5 rounded-md border border-maize-400/40 bg-navy-900/70 px-3 py-1.5 font-display text-[11px] tracking-[0.14em] text-maize-300 shadow-[0_2px_0_rgba(0,0,0,0.3)] transition-all hover:border-maize-400/70 hover:bg-navy-900"
+            >
+              <IconUpload className="h-3.5 w-3.5" />
+              UPLOAD SPECS
+            </label>
+            {parsedDoc && (
+              <button
+                onClick={handleDownloadReport}
+                className="flex items-center gap-1.5 rounded-md border border-maize-400/40 bg-navy-900/70 px-3 py-1.5 font-display text-[11px] tracking-[0.14em] text-maize-300 shadow-[0_2px_0_rgba(0,0,0,0.3)] transition-all hover:border-maize-400/70 hover:bg-navy-900"
+              >
+                <IconDownload className="h-3.5 w-3.5" />
+                DOWNLOAD REPORT
+              </button>
+            )}
+            {parsedDoc && (
+              <span className="typewrite ml-auto text-[9px] uppercase tracking-[0.16em] text-maize-400/60">
+                {parsedDoc.features.length} features parsed
+              </span>
+            )}
+          </div>
+          
           <form
             onSubmit={(e) => {
               e.preventDefault();
