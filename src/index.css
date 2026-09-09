@@ -58,7 +58,8 @@
   --color-led: #ffcb05;
 
   --font-display: "Bebas Neue", "Barlow", sans-serif;
-  --font-body: "Barlow", sans-serif;
+  --font-body: "Inter", "Barlow", sans-serif;
+  --font-chat: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-chalk: "Caveat", cursive;
   --font-type: "Special Elite", monospace;
   --font-mono: "IBM Plex Mono", monospace;
@@ -160,7 +161,7 @@ body {
 
 /* ---------------- type helpers ---------------- */
 .chalk-text {
-  font-family: var(--font-body);
+  font-family: var(--font-chat);
   font-weight: 500;
   color: #f2efe4;
   letter-spacing: 0.01em;
@@ -169,6 +170,7 @@ body {
     0 1px 2px rgba(0, 0, 0, 0.4);
 }
 .chalk-yellow {
+  font-family: var(--font-chat);
   color: #ffcb05;
   font-weight: 600;
   text-shadow:
@@ -268,7 +270,7 @@ body {
 
 /* chalk pills on the blue board — maize dashes */
 .chalk-pill {
-  font-family: var(--font-body);
+  font-family: var(--font-chat);
   font-weight: 500;
   font-size: 15px;
   border: 2px dashed rgba(255, 203, 5, 0.6);

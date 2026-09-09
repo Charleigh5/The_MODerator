@@ -38,8 +38,8 @@ function Msg({ m }: { m: ChatMsg }) {
     return (
       <div className="animate-rise flex justify-end pl-10">
         <div className="max-w-[90%] text-right">
-          <div className="font-body text-xs uppercase tracking-[0.15em] text-maize-400/70 mb-1 font-semibold">you · coach</div>
-          <div className="chalk-text chalk-yellow whitespace-pre-wrap text-[24px] font-semibold leading-[1.35]">{m.text}</div>
+          <div className="text-xs uppercase tracking-[0.15em] text-maize-400/70 mb-1 font-semibold" style={{ fontFamily: 'Inter, sans-serif' }}>you · coach</div>
+          <div className="whitespace-pre-wrap text-[22px] font-medium leading-[1.5] text-maize-300" style={{ fontFamily: 'Inter, sans-serif' }}>{m.text}</div>
         </div>
       </div>
     );
@@ -49,7 +49,7 @@ function Msg({ m }: { m: ChatMsg }) {
       <div className="animate-rise flex items-start gap-3 pr-10">
         <span className="mt-1.5 shrink-0 font-mono text-sm text-maize-400/80">▸</span>
         <div className="flex-1">
-          <span className="font-body whitespace-pre-wrap text-[15px] leading-relaxed text-chalk/85">{m.text}</span>
+          <span className="whitespace-pre-wrap text-[15px] leading-[1.6] text-chalk/90" style={{ fontFamily: 'Inter, sans-serif' }}>{m.text}</span>
           {m.tag && m.tag !== "learn" && (
             <span className="font-mono ml-2 inline-block text-xs uppercase tracking-[0.15em] text-maize-400/70">[{m.tag}]</span>
           )}
@@ -61,10 +61,10 @@ function Msg({ m }: { m: ChatMsg }) {
     <div className="animate-rise flex items-start gap-3 pr-8">
       <span className="mt-4 h-2.5 w-2.5 shrink-0 rotate-45 bg-maize-400 shadow-[0_0_10px_rgba(255,203,5,0.7)]" />
       <div className="flex-1">
-        <div className="font-body text-xs uppercase tracking-[0.15em] text-chalk/60 mb-1.5 font-semibold">
+        <div className="text-xs uppercase tracking-[0.15em] text-chalk/60 mb-1.5 font-semibold" style={{ fontFamily: 'Inter, sans-serif' }}>
           CODEWRIGHT {m.tag ? `· ${m.tag}` : ""}
         </div>
-        <div className="chalk-text whitespace-pre-wrap text-[20px] font-semibold leading-[1.4]">{m.text}</div>
+        <div className="whitespace-pre-wrap text-[19px] font-medium leading-[1.55] text-chalk" style={{ fontFamily: 'Inter, sans-serif' }}>{m.text}</div>
       </div>
     </div>
   );
@@ -353,7 +353,8 @@ export default function AgentChat({
                     ? "call a new play, or open a fresh binder…"
                     : "tell CODEWRIGHT what NCAA 27 should do differently…"
               }
-              className="chalk-text min-w-0 flex-1 bg-transparent text-lg text-chalk caret-maize-400 placeholder:text-chalk/40 focus:outline-none"
+              className="min-w-0 flex-1 bg-transparent text-lg text-chalk caret-maize-400 placeholder:text-chalk/40 focus:outline-none font-medium"
+              style={{ fontFamily: 'Inter, sans-serif' }}
               spellCheck={false}
             />
             

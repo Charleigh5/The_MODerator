@@ -603,11 +603,11 @@ export default function App() {
         canReset={phase !== "generating"}
       />
 
-      <main className="relative z-10 grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-y-auto p-3 lg:grid-cols-[200px_minmax(0,1fr)_280px] lg:overflow-visible">
-        <div className="h-[560px] min-h-0 lg:h-auto">
+      <main className="relative z-10 grid min-h-0 flex-1 grid-cols-1 gap-2 overflow-y-auto p-2 lg:grid-cols-[180px_minmax(0,1fr)_260px] lg:overflow-visible">
+        <div className="h-[520px] min-h-0 lg:h-auto">
           <SourcesPanel kb={kb} onPull={pullMod} />
         </div>
-        <div className="h-[600px] min-h-0 lg:h-auto">
+        <div className="h-[640px] min-h-0 lg:h-auto">
           <AgentChat
             messages={messages}
             phase={phase}
@@ -618,7 +618,7 @@ export default function App() {
             busy={phase === "generating"}
           />
         </div>
-        <div className="h-[580px] min-h-0 lg:h-auto">
+        <div className="h-[520px] min-h-0 lg:h-auto">
           <Workbench
             phase={phase}
             bundle={bundle}
