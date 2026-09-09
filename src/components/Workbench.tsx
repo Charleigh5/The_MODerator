@@ -83,6 +83,7 @@ export default function Workbench({
 
   return (
     <section
+      data-demo-id="workbench"
       className="flex h-full min-h-0 flex-col overflow-hidden rounded-xl border-[10px] border-wood-700 shadow-[0_18px_40px_rgba(0,0,0,0.5)] animate-rise"
       style={{ animationDelay: "180ms" }}
     >
@@ -211,7 +212,7 @@ export default function Workbench({
                   </div>
                 )}
                 {buildStatus === "unbuilt" && (
-                  <button onClick={onBuild} className="stamp-btn ml-6 mt-2 bg-inkred/5 px-4 py-1.5 text-[11.5px] font-bold text-inkred hover:bg-inkred/15">
+                  <button data-demo-id="build-button" onClick={onBuild} className="stamp-btn ml-6 mt-2 bg-inkred/5 px-4 py-1.5 text-[11.5px] font-bold text-inkred hover:bg-inkred/15">
                     RUN THE BUILD ▸
                   </button>
                 )}
@@ -253,6 +254,7 @@ export default function Workbench({
                   Drop the file into <span className="font-bold text-ink">/mods</span> and boot NCAA 27 — it hot-loads.
                 </p>
                 <button
+                  data-demo-id="export-button"
                   onClick={onExport}
                   className="stamp-btn ml-6 mt-2 bg-inkgreen/5 px-5 py-2 text-[12.5px] font-bold text-inkgreen hover:bg-inkgreen/15"
                 >

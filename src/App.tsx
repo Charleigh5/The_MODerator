@@ -39,6 +39,7 @@ import SourcesPanel from "./components/SourcesPanel";
 import AgentChat from "./components/AgentChat";
 import Workbench from "./components/Workbench";
 import Terminal from "./components/Terminal";
+import DemoController from "./components/DemoController";
 
 const GREETING_BASE =
   "CODEWRIGHT here — forged in Ann Arbor, bleeds maize and blue. Chalk up what NCAA 27 should do differently in plain English. I'll pin some stretch ideas to the board first, grill you on the details — including which proven vault mods to borrow code from — then weave it all into a signed, game-ready bundle. Go Blue. Prefer the terminal? I obey the CLI too — type `help` below.";
@@ -88,6 +89,8 @@ export default function App() {
   const [testing, setTesting] = useState(false);
   const [termLines, setTermLines] = useState<TermLine[]>([]);
   const [termOpen, setTermOpen] = useState(false);
+  const [demoActive, setDemoActive] = useState(false);
+  const [demoStep, setDemoStep] = useState(0);
 
   const idRef = useRef(boot.maxId + 1);
   const timers = useRef<number[]>([]);
@@ -602,6 +605,47 @@ export default function App() {
         onNew={createSession}
         canReset={phase !== "generating"}
       />
+
+      {/* Demo Controller */}
+      <DemoController
+        active={demoActive}
+        onComplete={() => {
+          setDemoActive(false);
+          setDemoStep(0);
+        }}
+        onStepChange={setDemoStep}
+      />
+
+      {/* Demo Start Button */}
+      {!demoActive && (
+        <button
+          onClick={() => {
+            resetAll();
+            setDemoActive(true);
+            setDemoStep(0);
+          }}
+          className="fixed bottom-20 right-4 z-50 rounded-lg bg-maize-400 px-4 py-2 font-body text-sm font-bold text-navy-950 shadow-lg transition-all hover:scale-105 hover:bg-maize-300"
+        >
+          🎬 Start Demo
+        </button>
+      )}
+
+      {/* Demo Progress Indicator */}
+      {demoActive && (
+        <div className="fixed bottom-20 right-4 z-50 rounded-lg bg-navy-900/90 px-4 py-2 font-body text-xs text-chalk shadow-lg backdrop-blur-sm">
+          <div className="font-bold text-maize-400">Demo in Progress</div>
+          <div className="mt-1 text-chalk/70">Step {demoStep + 1} of 17</div>
+          <button
+            onClick={() => {
+              setDemoActive(false);
+              setDemoStep(0);
+            }}
+            className="mt-2 rounded bg-inkred/20 px-2 py-1 text-xs text-inkred hover:bg-inkred/30"
+          >
+            Exit Demo
+          </button>
+        </div>
+      )}
 
       <main className="relative z-10 grid min-h-0 flex-1 grid-cols-1 gap-2 overflow-y-auto p-2 lg:grid-cols-[180px_minmax(0,1fr)_260px] lg:overflow-visible">
         <div className="h-[520px] min-h-0 lg:h-auto">

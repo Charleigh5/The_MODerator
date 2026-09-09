@@ -255,17 +255,17 @@ export default function AgentChat({
 
             {/* stretch ideas — expand the coach's idea */}
             {showExpansions && cat && (
-              <div className="animate-rise ml-6 max-w-[92%] rounded-lg border-2 border-dashed border-maize-400/60 bg-navy-900/70 p-4 backdrop-blur-[1px]">
+              <div data-demo-id="stretch-ideas" className="animate-rise ml-6 max-w-[92%] rounded-lg border-2 border-dashed border-maize-400/60 bg-navy-900/70 p-4 backdrop-blur-[1px]">
                 <div className="flex items-center gap-2 mb-3">
                   <IconBolt className="h-5 w-5 text-maize-400" />
                   <span className="font-body text-sm font-semibold tracking-wide text-maize-300">STRETCH THE IDEA</span>
                   <span className="font-body ml-auto text-xs text-chalk/60">pick any · wired as hot-reload extensions</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {cat.expansions.map((e) => {
+                  {cat.expansions.map((e, idx) => {
                     const on = sel.includes(e);
                     return (
-                      <button key={e} onClick={() => setSel((s) => (on ? s.filter((x) => x !== e) : [...s, e]))} className={`chalk-pill ${on ? "chalk-pill-on" : ""}`}>
+                      <button key={e} data-demo-id={`stretch-idea-${idx + 1}`} onClick={() => setSel((s) => (on ? s.filter((x) => x !== e) : [...s, e]))} className={`chalk-pill ${on ? "chalk-pill-on" : ""}`}>
                         {on ? "✓ " : "+ "}
                         {e}
                       </button>
@@ -274,6 +274,7 @@ export default function AgentChat({
                 </div>
                 <div className="mt-4 flex items-center gap-3">
                   <button
+                    data-demo-id="lock-button"
                     onClick={() => onLock(sel)}
                     className="stamp-btn bg-maize-400/10 px-5 py-2 text-sm font-bold text-maize-300"
                   >
@@ -292,8 +293,8 @@ export default function AgentChat({
             {/* Q&A quick calls */}
             {showChips && question && (
               <div className="animate-rise ml-6 flex max-w-[92%] flex-wrap items-center gap-2">
-                {question.chips.map((c) => (
-                  <button key={c} onClick={() => onAnswer(c)} className={`chalk-pill ${question.key === "sources" && c === "scout's choice" ? "border-maize-400/90 bg-maize-400/10" : ""}`}>
+                {question.chips.map((c, idx) => (
+                  <button key={c} data-demo-id={`qa-chip-${idx + 1}`} onClick={() => onAnswer(c)} className={`chalk-pill ${question.key === "sources" && c === "scout's choice" ? "border-maize-400/90 bg-maize-400/10" : ""}`}>
                     {c}
                   </button>
                 ))}
@@ -344,6 +345,7 @@ export default function AgentChat({
             <IconBall className="h-5 w-5 shrink-0 text-maize-400/70" />
             <input
               ref={inputRef}
+              data-demo-id="chat-input"
               value={val}
               onChange={(e) => setVal(e.target.value)}
               placeholder={
@@ -382,6 +384,7 @@ export default function AgentChat({
             
             <button
               type="submit"
+              data-demo-id="chalk-it-button"
               disabled={!val.trim() || busy}
               className="shrink-0 rounded-md bg-maize-400 px-5 py-2 font-body text-sm font-bold tracking-wide text-navy-950 shadow-[0_3px_0_#8f7100] transition-all hover:brightness-110 active:translate-y-0.5 active:shadow-[0_1px_0_#8f7100] disabled:cursor-not-allowed disabled:opacity-35"
             >

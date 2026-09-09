@@ -28,6 +28,7 @@ export default function SourcesPanel({
 
   return (
     <aside 
+      data-demo-id="pattern-vault"
       className="flex h-full min-h-0 flex-col overflow-hidden animate-rise rounded-lg border-2 border-[#2a4a3a]"
       style={{ 
         animationDelay: "60ms",
