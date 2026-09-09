@@ -37,32 +37,34 @@ function Msg({ m }: { m: ChatMsg }) {
   if (m.role === "user") {
     return (
       <div className="animate-rise flex justify-end pl-10">
-        <div className="max-w-[88%] text-right">
-          <div className="font-mono text-[8.5px] uppercase tracking-[0.2em] text-maize-400/60">you · coach</div>
-          <div className="chalk-text chalk-yellow whitespace-pre-wrap text-[22px] font-semibold leading-[1.18]">{m.text}</div>
+        <div className="max-w-[90%] text-right">
+          <div className="font-body text-xs uppercase tracking-[0.15em] text-maize-400/70 mb-1 font-semibold">you · coach</div>
+          <div className="chalk-text chalk-yellow whitespace-pre-wrap text-[24px] font-semibold leading-[1.35]">{m.text}</div>
         </div>
       </div>
     );
   }
   if (m.role === "sys") {
     return (
-      <div className="animate-rise flex items-start gap-2 pr-10">
-        <span className="mt-1 shrink-0 font-mono text-[10px] text-maize-400/70">▸</span>
-        <span className="typewrite whitespace-pre-wrap text-[11px] leading-relaxed text-chalk/70">{m.text}</span>
-        {m.tag && m.tag !== "learn" && (
-          <span className="typewrite mt-px shrink-0 text-[9px] uppercase tracking-[0.2em] text-maize-400/60">[{m.tag}]</span>
-        )}
+      <div className="animate-rise flex items-start gap-3 pr-10">
+        <span className="mt-1.5 shrink-0 font-mono text-sm text-maize-400/80">▸</span>
+        <div className="flex-1">
+          <span className="font-body whitespace-pre-wrap text-[15px] leading-relaxed text-chalk/85">{m.text}</span>
+          {m.tag && m.tag !== "learn" && (
+            <span className="font-mono ml-2 inline-block text-xs uppercase tracking-[0.15em] text-maize-400/70">[{m.tag}]</span>
+          )}
+        </div>
       </div>
     );
   }
   return (
-    <div className="animate-rise flex items-start gap-2.5 pr-8">
-      <span className="mt-3 h-2 w-2 shrink-0 rotate-45 bg-maize-400 shadow-[0_0_8px_rgba(255,203,5,0.6)]" />
-      <div>
-        <div className="font-mono text-[8.5px] uppercase tracking-[0.2em] text-chalk/45">
+    <div className="animate-rise flex items-start gap-3 pr-8">
+      <span className="mt-4 h-2.5 w-2.5 shrink-0 rotate-45 bg-maize-400 shadow-[0_0_10px_rgba(255,203,5,0.7)]" />
+      <div className="flex-1">
+        <div className="font-body text-xs uppercase tracking-[0.15em] text-chalk/60 mb-1.5 font-semibold">
           CODEWRIGHT {m.tag ? `· ${m.tag}` : ""}
         </div>
-        <div className="chalk-text whitespace-pre-wrap text-[21px] leading-[1.22]">{m.text}</div>
+        <div className="chalk-text whitespace-pre-wrap text-[20px] font-semibold leading-[1.4]">{m.text}</div>
       </div>
     </div>
   );
@@ -253,33 +255,33 @@ export default function AgentChat({
 
             {/* stretch ideas — expand the coach's idea */}
             {showExpansions && cat && (
-              <div className="animate-rise ml-6 max-w-[92%] rounded-lg border-2 border-dashed border-maize-400/60 bg-navy-900/70 p-3.5 backdrop-blur-[1px]">
-                <div className="flex items-center gap-2">
-                  <IconBolt className="h-4 w-4 text-maize-400" />
-                  <span className="font-display text-[13px] tracking-[0.18em] text-maize-300">STRETCH THE IDEA</span>
-                  <span className="typewrite ml-auto text-[9px] uppercase tracking-[0.16em] text-chalk/50">pick any · wired as hot-reload extensions</span>
+              <div className="animate-rise ml-6 max-w-[92%] rounded-lg border-2 border-dashed border-maize-400/60 bg-navy-900/70 p-4 backdrop-blur-[1px]">
+                <div className="flex items-center gap-2 mb-3">
+                  <IconBolt className="h-5 w-5 text-maize-400" />
+                  <span className="font-body text-sm font-semibold tracking-wide text-maize-300">STRETCH THE IDEA</span>
+                  <span className="font-body ml-auto text-xs text-chalk/60">pick any · wired as hot-reload extensions</span>
                 </div>
-                <div className="mt-2.5 flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-2">
                   {cat.expansions.map((e) => {
                     const on = sel.includes(e);
                     return (
-                      <button key={e} onClick={() => setSel((s) => (on ? s.filter((x) => x !== e) : [...s, e]))} className={`chalk-pill px-3 py-1 text-[17px] leading-tight ${on ? "chalk-pill-on" : ""}`}>
+                      <button key={e} onClick={() => setSel((s) => (on ? s.filter((x) => x !== e) : [...s, e]))} className={`chalk-pill ${on ? "chalk-pill-on" : ""}`}>
                         {on ? "✓ " : "+ "}
                         {e}
                       </button>
                     );
                   })}
                 </div>
-                <div className="mt-3 flex items-center gap-2.5">
+                <div className="mt-4 flex items-center gap-3">
                   <button
                     onClick={() => onLock(sel)}
-                    className="stamp-btn bg-maize-400/10 px-4 py-1.5 text-[11px] font-bold text-maize-300"
+                    className="stamp-btn bg-maize-400/10 px-5 py-2 text-sm font-bold text-maize-300"
                   >
                     {sel.length ? `LOCK ${sel.length} EXTRA${sel.length > 1 ? "S" : ""} & GRILL ME` : "GRILL ME"}
-                    <IconChevron className="ml-1 inline h-3 w-3" />
+                    <IconChevron className="ml-1 inline h-4 w-4" />
                   </button>
                   {sel.length > 0 && (
-                    <button onClick={() => onLock([])} className="typewrite text-[10px] uppercase tracking-[0.14em] text-chalk/55 underline decoration-dashed underline-offset-4 hover:text-chalk/85">
+                    <button onClick={() => onLock([])} className="font-body text-sm text-chalk/60 underline decoration-dashed underline-offset-4 hover:text-chalk/90 transition-colors">
                       skip extras
                     </button>
                   )}
@@ -289,19 +291,19 @@ export default function AgentChat({
 
             {/* Q&A quick calls */}
             {showChips && question && (
-              <div className="animate-rise ml-6 flex max-w-[92%] flex-wrap items-center gap-1.5">
+              <div className="animate-rise ml-6 flex max-w-[92%] flex-wrap items-center gap-2">
                 {question.chips.map((c) => (
-                  <button key={c} onClick={() => onAnswer(c)} className={`chalk-pill px-3 py-1 text-[17px] leading-tight ${question.key === "sources" && c === "scout's choice" ? "border-maize-400/90 bg-maize-400/10" : ""}`}>
+                  <button key={c} onClick={() => onAnswer(c)} className={`chalk-pill ${question.key === "sources" && c === "scout's choice" ? "border-maize-400/90 bg-maize-400/10" : ""}`}>
                     {c}
                   </button>
                 ))}
-                <span className="typewrite ml-1 text-[9px] uppercase tracking-[0.16em] text-chalk/45">or chalk your own below</span>
+                <span className="font-body ml-2 text-sm text-chalk/60">or chalk your own below</span>
               </div>
             )}
 
             {phase === "ready" && (
-              <div className="animate-rise ml-6 max-w-[92%] rounded-md border border-maize-400/40 bg-navy-900/70 px-3.5 py-2.5">
-                <span className="chalk-text text-[19px] text-maize-200">
+              <div className="animate-rise ml-6 max-w-[92%] rounded-md border border-maize-400/40 bg-navy-900/70 px-4 py-3">
+                <span className="chalk-text text-lg text-maize-200 leading-relaxed">
                   Bundle's on the desk. Build it, scrimmage it in the sandbox, or ship it — the right panel handles the rest.
                 </span>
               </div>
@@ -313,20 +315,20 @@ export default function AgentChat({
         <div className="shrink-0 border-t-[3px] border-maize-400/60 bg-wood-800 px-3 pb-2.5 pt-2 shadow-[inset_0_6px_12px_rgba(0,0,0,0.35)]">
           {/* document status indicator */}
           {parsedDoc && (
-            <div className="mb-2 flex items-center gap-2 rounded-md border border-maize-400/30 bg-navy-900/50 px-3 py-1.5">
-              <IconFile className="h-3.5 w-3.5 text-maize-400" />
-              <span className="typewrite text-[10px] text-chalk/70">
+            <div className="mb-2 flex items-center gap-3 rounded-md border border-maize-400/30 bg-navy-900/50 px-3 py-2">
+              <IconFile className="h-4 w-4 text-maize-400" />
+              <span className="font-body text-sm text-chalk/80 font-medium">
                 {parsedDoc.title}
               </span>
-              <span className="typewrite ml-auto text-[9px] uppercase tracking-[0.16em] text-maize-400/60">
+              <span className="font-body ml-auto text-xs text-maize-400/70 font-semibold">
                 {parsedDoc.features.length} features
               </span>
               <button
                 onClick={handleDownloadReport}
-                className="flex items-center gap-1 rounded border border-maize-400/40 bg-navy-800 px-2 py-0.5 font-display text-[9px] tracking-[0.12em] text-maize-300 transition-all hover:border-maize-400/70 hover:bg-navy-700"
+                className="flex items-center gap-1.5 rounded border border-maize-400/40 bg-navy-800 px-3 py-1 font-body text-xs font-semibold text-maize-300 transition-all hover:border-maize-400/70 hover:bg-navy-700"
                 title="Download detailed report"
               >
-                <IconDownload className="h-3 w-3" />
+                <IconDownload className="h-3.5 w-3.5" />
                 REPORT
               </button>
             </div>
@@ -337,9 +339,9 @@ export default function AgentChat({
               e.preventDefault();
               submit();
             }}
-            className="flex items-center gap-2 rounded-lg border-2 border-maize-400/40 bg-navy-900 px-3 py-2 shadow-[0_4px_12px_rgba(0,0,0,0.4)] transition-colors focus-within:border-maize-400/80"
+            className="flex items-center gap-3 rounded-lg border-2 border-maize-400/40 bg-navy-900 px-4 py-3 shadow-[0_4px_12px_rgba(0,0,0,0.4)] transition-colors focus-within:border-maize-400/80"
           >
-            <IconBall className="h-4 w-4 shrink-0 text-maize-400/70" />
+            <IconBall className="h-5 w-5 shrink-0 text-maize-400/70" />
             <input
               ref={inputRef}
               value={val}
@@ -351,7 +353,7 @@ export default function AgentChat({
                     ? "call a new play, or open a fresh binder…"
                     : "tell CODEWRIGHT what NCAA 27 should do differently…"
               }
-              className="chalk-text min-w-0 flex-1 bg-transparent text-[20px] text-chalk caret-maize-400 placeholder:text-chalk/35 focus:outline-none"
+              className="chalk-text min-w-0 flex-1 bg-transparent text-lg text-chalk caret-maize-400 placeholder:text-chalk/40 focus:outline-none"
               spellCheck={false}
             />
             
@@ -369,18 +371,18 @@ export default function AgentChat({
               className="group relative shrink-0 cursor-pointer"
               title="Attach requirements document"
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-md border border-maize-400/40 bg-navy-800 text-maize-400/70 transition-all hover:border-maize-400/70 hover:bg-navy-700 hover:text-maize-400">
-                <IconPaperclip className="h-4 w-4" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-md border border-maize-400/40 bg-navy-800 text-maize-400/70 transition-all hover:border-maize-400/70 hover:bg-navy-700 hover:text-maize-400">
+                <IconPaperclip className="h-5 w-5" />
               </div>
               {parsedDoc && (
-                <div className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-maize-400 shadow-[0_0_6px_rgba(255,203,5,0.8)]" />
+                <div className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-maize-400 shadow-[0_0_8px_rgba(255,203,5,0.9)]" />
               )}
             </label>
             
             <button
               type="submit"
               disabled={!val.trim() || busy}
-              className="shrink-0 rounded-md bg-maize-400 px-3.5 py-1.5 font-display text-[12px] tracking-[0.16em] text-navy-950 shadow-[0_3px_0_#8f7100] transition-all hover:brightness-110 active:translate-y-0.5 active:shadow-[0_1px_0_#8f7100] disabled:cursor-not-allowed disabled:opacity-35"
+              className="shrink-0 rounded-md bg-maize-400 px-5 py-2 font-body text-sm font-bold tracking-wide text-navy-950 shadow-[0_3px_0_#8f7100] transition-all hover:brightness-110 active:translate-y-0.5 active:shadow-[0_1px_0_#8f7100] disabled:cursor-not-allowed disabled:opacity-35"
             >
               CHALK IT
             </button>

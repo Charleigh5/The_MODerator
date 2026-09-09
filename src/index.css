@@ -64,6 +64,15 @@
   --font-mono: "IBM Plex Mono", monospace;
 }
 
+/* Base typography improvements */
+body {
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
 html,
 body,
 #root {
@@ -151,20 +160,25 @@ body {
 
 /* ---------------- type helpers ---------------- */
 .chalk-text {
-  font-family: var(--font-chalk);
+  font-family: var(--font-body);
+  font-weight: 500;
   color: #f2efe4;
+  letter-spacing: 0.01em;
   text-shadow:
-    0 0 1px rgba(242, 239, 228, 0.5),
-    0 0 9px rgba(242, 239, 228, 0.14);
+    0 0 1px rgba(242, 239, 228, 0.3),
+    0 1px 2px rgba(0, 0, 0, 0.4);
 }
 .chalk-yellow {
   color: #ffcb05;
+  font-weight: 600;
   text-shadow:
-    0 0 1px rgba(255, 203, 5, 0.55),
-    0 0 10px rgba(255, 203, 5, 0.18);
+    0 0 1px rgba(255, 203, 5, 0.4),
+    0 1px 3px rgba(0, 0, 0, 0.5);
 }
 .typewrite {
-  font-family: var(--font-type);
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  letter-spacing: 0.02em;
 }
 
 .plaque {
@@ -254,27 +268,32 @@ body {
 
 /* chalk pills on the blue board — maize dashes */
 .chalk-pill {
-  font-family: var(--font-chalk);
-  border: 1.6px dashed rgba(255, 203, 5, 0.55);
-  border-radius: 999px;
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 15px;
+  border: 2px dashed rgba(255, 203, 5, 0.6);
+  border-radius: 8px;
   color: #ffe98f;
   transition: all 0.18s ease;
-  text-shadow: 0 0 6px rgba(255, 203, 5, 0.25);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  padding: 8px 16px;
+  line-height: 1.4;
 }
 .chalk-pill:hover {
-  background: rgba(255, 203, 5, 0.14);
+  background: rgba(255, 203, 5, 0.15);
   border-style: solid;
   border-color: rgba(255, 203, 5, 0.95);
-  transform: translateY(-1.5px) rotate(-0.6deg);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 203, 5, 0.2);
 }
 .chalk-pill-on {
-  background: rgba(255, 203, 5, 0.92);
+  background: rgba(255, 203, 5, 0.95);
   color: #00182f;
   border-style: solid;
   border-color: #ffcb05;
   text-shadow: none;
-  font-weight: 700;
-  box-shadow: 0 3px 10px rgba(255, 203, 5, 0.35);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(255, 203, 5, 0.4);
 }
 
 .led-glow {
