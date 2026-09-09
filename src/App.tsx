@@ -41,6 +41,12 @@ import AgentChat from "./components/AgentChat";
 import Workbench from "./components/Workbench";
 import Terminal from "./components/Terminal";
 import DemoController from "./components/DemoController";
+import ModLibraryPanel from "./components/ModLibraryPanel";
+import {
+  loadModLibrary,
+  addModToLibrary,
+  type ModEntry,
+} from "./lib/modStore";
 
 const GREETING_BASE =
   "CODEWRIGHT here — forged in Ann Arbor, bleeds maize and blue. Chalk up what NCAA 27 should do differently in plain English. I'll pin some stretch ideas to the board first, grill you on the details — including which proven vault mods to borrow code from — then weave it all into a signed, game-ready bundle. Go Blue. Prefer the terminal? I obey the CLI too — type `help` below.";
@@ -92,6 +98,8 @@ export default function App() {
   const [termOpen, setTermOpen] = useState(false);
   const [demoActive, setDemoActive] = useState(false);
   const [demoStep, setDemoStep] = useState(0);
+  const [showModLibrary, setShowModLibrary] = useState(false);
+  const [modLibrary, setModLibrary] = useState(() => loadModLibrary());
 
   const idRef = useRef(boot.maxId + 1);
   const timers = useRef<number[]>([]);
@@ -582,6 +590,54 @@ export default function App() {
     }
   };
 
+  /* ---------- mod library handlers --------------------------------------- */
+  const handleResumeMod = (mod: ModEntry) => {
+    // Load the mod's session
+    const session = loadSessions().find((s) => s.id === mod.sessionId);
+    if (session) {
+      hydrate(session);
+      pushMsg("sys", `resumed mod "${mod.name}" from library`);
+      termPush("out", `resumed mod: ${mod.name} (v${mod.currentVersion})`);
+    }
+    setShowModLibrary(false);
+  };
+
+  const handleEditMod = (mod: ModEntry) => {
+    // Load the mod's session for editing
+    const session = loadSessions().find((s) => s.id === mod.sessionId);
+    if (session) {
+      hydrate(session);
+      pushMsg("sys", `editing mod "${mod.name}" - make your changes and save`);
+      termPush("out", `editing mod: ${mod.name}`);
+    }
+    setShowModLibrary(false);
+  };
+
+  const handleSaveModToLibrary = () => {
+    if (!bundle || !activeId) {
+      termPush("err", "no mod to save - create a bundle first");
+      return;
+    }
+
+    const category = qa?.category || "unknown";
+    const mod = addModToLibrary(
+      modLibrary,
+      {
+        name: metaRef.current.name || "Untitled Mod",
+        description: `Mod created on ${new Date().toLocaleDateString()}`,
+        category,
+        sessionId: activeId,
+        tags: [],
+        status: "active",
+      },
+      bundle
+    );
+
+    setModLibrary({ ...modLibrary });
+    pushMsg("sys", `saved "${mod.name}" to mod library (v${mod.currentVersion})`);
+    termPush("ok", `mod saved: ${mod.name} → library`);
+  };
+
   /* ---------- render ---------------------------------------------------- */
   const motes = [
     { left: "72%", top: "30%", dur: 12, delay: 0 },
@@ -609,6 +665,10 @@ export default function App() {
         kbCount={kb.length}
         onNew={createSession}
         canReset={phase !== "generating"}
+        modCount={modLibrary.mods.length}
+        onToggleLibrary={() => setShowModLibrary(!showModLibrary)}
+        onSaveMod={handleSaveModToLibrary}
+        canSave={!!bundle && !!activeId}
       />
 
       {/* Demo Controller */}
@@ -686,6 +746,22 @@ export default function App() {
       <div className="relative z-10 shrink-0 px-3 pb-3">
         <Terminal lines={termLines} onCommand={execCommand} open={termOpen} onToggle={() => setTermOpen((o) => !o)} />
       </div>
+
+      {/* Mod Library Panel */}
+      {showModLibrary && (
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+            onClick={() => setShowModLibrary(false)}
+          />
+          <div className="fixed right-0 top-0 z-50 h-full w-96 shadow-2xl">
+            <ModLibraryPanel
+              onResumeMod={handleResumeMod}
+              onEditMod={handleEditMod}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 }

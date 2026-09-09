@@ -1,5 +1,6 @@
 import type { Phase } from "../types";
 import { TICKER_ITEMS } from "../data/modLibrary";
+import { IconFolder, IconSave } from "./icons";
 
 const STEPS: { label: string; sub: string; phase: Phase }[] = [
   { label: "1 · BRIEF", sub: "talk to the coach", phase: "idle" },
@@ -13,11 +14,19 @@ export default function TopBar({
   kbCount,
   onNew,
   canReset,
+  modCount,
+  onToggleLibrary,
+  onSaveMod,
+  canSave,
 }: {
   phase: Phase;
   kbCount: number;
   onNew: () => void;
   canReset: boolean;
+  modCount: number;
+  onToggleLibrary: () => void;
+  onSaveMod: () => void;
+  canSave: boolean;
 }) {
   const activeIdx = STEPS.findIndex((s) => s.phase === phase);
   const ticker = [...TICKER_ITEMS, ...TICKER_ITEMS];
@@ -75,6 +84,37 @@ export default function TopBar({
           <div className="tape hidden rotate-[-1.5deg] px-2.5 py-1 font-type text-[10.5px] text-[#5c4a2a] md:block">
             KB: {kbCount} patterns scouted
           </div>
+          
+          {/* Mod Library Button */}
+          <button
+            onClick={onToggleLibrary}
+            className="group relative flex items-center gap-2 rounded-md border-2 border-navy-600 bg-navy-900 px-3 py-1.5 transition-all hover:border-maize-400/60 hover:bg-navy-800"
+            title="Mod Library"
+          >
+            <IconFolder className="h-4 w-4 text-maize-400" />
+            <span className="font-display text-[11px] tracking-[0.12em] text-maize-400">
+              LIBRARY
+            </span>
+            {modCount > 0 && (
+              <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-maize-400 font-mono text-[9px] font-bold text-navy-950">
+                {modCount}
+              </span>
+            )}
+          </button>
+          
+          {/* Save Mod Button */}
+          <button
+            onClick={onSaveMod}
+            disabled={!canSave}
+            className="group relative flex items-center gap-2 rounded-md border-2 border-maize-400 bg-navy-900 px-3 py-1.5 shadow-[0_0_12px_rgba(255,203,5,0.15)] transition-all hover:bg-navy-800 hover:shadow-[0_0_18px_rgba(255,203,5,0.25)] active:translate-y-0.5 disabled:cursor-not-allowed disabled:border-navy-600 disabled:opacity-35"
+            title="Save current mod to library"
+          >
+            <IconSave className="h-4 w-4 text-maize-400" />
+            <span className="font-display text-[11px] tracking-[0.12em] text-maize-400">
+              SAVE
+            </span>
+          </button>
+          
           <button
             onClick={onNew}
             disabled={!canReset}
