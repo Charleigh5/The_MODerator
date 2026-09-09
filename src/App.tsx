@@ -87,7 +87,7 @@ export default function App() {
   const [testLog, setTestLog] = useState<TermLine[]>([]);
   const [testing, setTesting] = useState(false);
   const [termLines, setTermLines] = useState<TermLine[]>([]);
-  const [termOpen, setTermOpen] = useState(true);
+  const [termOpen, setTermOpen] = useState(false);
 
   const idRef = useRef(boot.maxId + 1);
   const timers = useRef<number[]>([]);
@@ -603,7 +603,7 @@ export default function App() {
         canReset={phase !== "generating"}
       />
 
-      <main className="relative z-10 grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-y-auto p-3 lg:grid-cols-[240px_minmax(0,1fr)_320px] lg:overflow-visible">
+      <main className="relative z-10 grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-y-auto p-3 lg:grid-cols-[200px_minmax(0,1fr)_280px] lg:overflow-visible">
         <div className="h-[560px] min-h-0 lg:h-auto">
           <SourcesPanel kb={kb} onPull={pullMod} />
         </div>
