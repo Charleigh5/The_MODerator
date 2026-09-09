@@ -254,7 +254,7 @@ export default function AgentChat({
             )}
 
             {/* stretch ideas — expand the coach's idea */}
-            {showExpansions && cat && (
+            {showExpansions && cat && qa && (
               <div data-demo-id="stretch-ideas" className="animate-rise ml-6 max-w-[92%] rounded-lg border-2 border-dashed border-maize-400/60 bg-navy-900/70 p-4 backdrop-blur-[1px]">
                 <div className="flex items-center gap-2 mb-3">
                   <IconBolt className="h-5 w-5 text-maize-400" />
@@ -262,7 +262,7 @@ export default function AgentChat({
                   <span className="font-body ml-auto text-xs text-chalk/60">pick any · wired as hot-reload extensions</span>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {cat.expansions.map((e, idx) => {
+                  {qa.expansions.map((e, idx) => {
                     const on = sel.includes(e);
                     return (
                       <button key={e} data-demo-id={`stretch-idea-${idx + 1}`} onClick={() => setSel((s) => (on ? s.filter((x) => x !== e) : [...s, e]))} className={`chalk-pill ${on ? "chalk-pill-on" : ""}`}>

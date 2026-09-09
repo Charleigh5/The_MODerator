@@ -18,6 +18,7 @@ import {
   CATEGORIES,
   SOURCES,
 } from "./lib/agentEngine";
+import { generateContextualStretchIdeas } from "./lib/stretchIdeas";
 import {
   type Memory,
   type Session,
@@ -287,6 +288,10 @@ export default function App() {
     if (phaseRef.current === "generating") return;
     const cat = detectCategory(text);
     const name = slugifyName(text);
+    
+    // Generate contextual stretch ideas based on the brief
+    const contextualExpansions = generateContextualStretchIdeas(text, cat.id, 3);
+    
     metaRef.current = { ...metaRef.current, name };
     mutateMem((m) => ({ ...m, briefs: [...m.briefs, text].slice(-6) }));
     setPhase("qa");
@@ -294,7 +299,7 @@ export default function App() {
     after(550, () => pushMsg("agent", cat.opener(text), "scout"));
     after(1150, () => pushMsg("sys", "stretch ideas pinned to the board — pick any, then we drill", "compiler"));
     termPush("out", `brief accepted · route: ${cat.label} · scout report ready`);
-    setQa({ category: cat.id, index: 0, answers: {}, brief: text, expansions: [], expLocked: false });
+    setQa({ category: cat.id, index: 0, answers: {}, brief: text, expansions: contextualExpansions, expLocked: false });
   };
 
   const lockExpansions = (selected: string[]) => {
