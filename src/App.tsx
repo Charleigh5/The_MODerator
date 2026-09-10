@@ -20,6 +20,15 @@ import {
 } from "./lib/agentEngine";
 import { generateContextualStretchIdeas } from "./lib/stretchIdeas";
 import {
+  createInitialContext,
+  updateContext,
+  generateConversationalResponse,
+  shouldTransitionToRefining,
+  shouldTransitionToReady,
+  suggestNextStep,
+  type ConversationContext,
+} from "./lib/conversationEngine";
+import {
   type Memory,
   type Session,
   type SessionSummary,
@@ -112,6 +121,8 @@ export default function App() {
     isGenerating: false,
   });
   const [modLibrary, setModLibrary] = useState(() => loadModLibrary());
+  const [conversationContext, setConversationContext] = useState<ConversationContext>(createInitialContext());
+  const [conversationPhase, setConversationPhase] = useState<"exploring" | "refining" | "ready">("exploring");
 
   const idRef = useRef(boot.maxId + 1);
   const timers = useRef<number[]>([]);
@@ -306,20 +317,49 @@ export default function App() {
   /* ---------- agent flow ----------------------------------------------- */
   const startBrief = (text: string) => {
     if (phaseRef.current === "generating") return;
-    const cat = detectCategory(text);
+    
+    // Initialize conversation context with the brief
+    const initialContext = updateContext(createInitialContext(), text);
+    setConversationContext(initialContext);
+    setConversationPhase("exploring");
+    
     const name = slugifyName(text);
-    
-    // Generate contextual stretch ideas based on the brief
-    const contextualExpansions = generateContextualStretchIdeas(text, cat.id, 3);
-    
     metaRef.current = { ...metaRef.current, name };
     mutateMem((m) => ({ ...m, briefs: [...m.briefs, text].slice(-6) }));
-    setPhase("qa");
+    
     pushMsg("user", text);
-    after(550, () => pushMsg("agent", cat.opener(text), "scout"));
-    after(1150, () => pushMsg("sys", "stretch ideas pinned to the board — pick any, then we drill", "compiler"));
-    termPush("out", `brief accepted · route: ${cat.label} · scout report ready`);
-    setQa({ category: cat.id, index: 0, answers: {}, brief: text, expansions: contextualExpansions, expLocked: false });
+    
+    // Start with a conversational response
+    after(600, () => {
+      const response = generateConversationalResponse(initialContext, text, "exploring");
+      pushMsg("agent", response);
+    });
+    
+    termPush("out", `conversation started · let's build this mod together`);
+  };
+  
+  // Transition to QA phase when ready to compile
+  const transitionToQA = () => {
+    if (phaseRef.current === "generating") return;
+    
+    const context = conversationContext;
+    if (!context.category || context.keyFeatures.length === 0) {
+      pushMsg("agent", "I need a bit more detail before we can start building. What specific features would you like this mod to include?");
+      return;
+    }
+    
+    const cat = CATEGORIES.find(c => c.id === context.category)!;
+    const contextualExpansions = generateContextualStretchIdeas(context.modIdea, cat.id, 3);
+    
+    setPhase("qa");
+    after(500, () => {
+      pushMsg("agent", `Alright, I've got a solid understanding of what you want! Let me pin some stretch ideas to the board — these are bonus features that would make your mod even better.`, "scout");
+    });
+    after(1200, () => {
+      pushMsg("sys", "stretch ideas pinned to the board — pick any, then we drill", "compiler");
+    });
+    termPush("out", `route: ${cat.label} · scout report ready`);
+    setQa({ category: cat.id, index: 0, answers: {}, brief: context.modIdea, expansions: contextualExpansions, expLocked: false });
   };
 
   const lockExpansions = (selected: string[]) => {
@@ -500,8 +540,57 @@ export default function App() {
   const onSend = (text: string) => {
     const t = text.trim();
     if (!t) return;
-    if (phaseRef.current === "qa") answer(t);
-    else startBrief(t);
+    
+    // If we're in QA phase, use the existing answer logic
+    if (phaseRef.current === "qa") {
+      answer(t);
+      return;
+    }
+    
+    // Check if user wants to compile/build
+    const lowerText = t.toLowerCase();
+    if (conversationPhase === "ready" && (lowerText.includes("ready") || lowerText.includes("build") || lowerText.includes("compile") || lowerText.includes("go"))) {
+      transitionToQA();
+      return;
+    }
+    
+    // Update conversation context
+    const updatedContext = updateContext(conversationContext, t);
+    setConversationContext(updatedContext);
+    
+    // Add user message
+    pushMsg("user", t);
+    
+    // Check for phase transitions
+    if (conversationPhase === "exploring" && shouldTransitionToRefining(updatedContext)) {
+      setConversationPhase("refining");
+      after(500, () => {
+        pushMsg("agent", "Great! I'm getting a clear picture. Let's refine some details to make sure this mod is exactly what you want.", "refining");
+      });
+      return;
+    }
+    
+    if (conversationPhase === "refining" && shouldTransitionToReady(updatedContext)) {
+      setConversationPhase("ready");
+      after(500, () => {
+        pushMsg("agent", "Perfect! I think we have enough detail to start building. Are you ready to compile this mod, or would you like to add anything else?", "ready");
+      });
+      return;
+    }
+    
+    // Generate conversational response
+    after(800, () => {
+      const response = generateConversationalResponse(updatedContext, t, conversationPhase);
+      pushMsg("agent", response);
+      
+      // Suggest next step if available
+      const suggestion = suggestNextStep(updatedContext);
+      if (suggestion && Math.random() > 0.5) {
+        after(1500, () => {
+          pushMsg("sys", `💡 Suggestion: ${suggestion}`);
+        });
+      }
+    });
   };
 
   const resetAll = () => {
@@ -516,6 +605,8 @@ export default function App() {
     setBuildLog([]);
     setTestLog([]);
     setTesting(false);
+    setConversationContext(createInitialContext());
+    setConversationPhase("exploring");
   };
 
   const execCommand = (raw: string) => {
