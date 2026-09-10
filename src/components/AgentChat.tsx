@@ -33,23 +33,45 @@ function Doodle() {
   );
 }
 
-function Msg({ m }: { m: ChatMsg }) {
+function TypingIndicator() {
+  return (
+    <div className="message-enter flex items-start gap-3 pr-8">
+      <span className="mt-4 h-2.5 w-2.5 shrink-0 rotate-45 bg-maize-400/60 shadow-[0_0_10px_rgba(255,203,5,0.5)]" />
+      <div className="flex-1">
+        <div className="text-xs uppercase tracking-[0.15em] text-chalk/60 mb-1.5 font-semibold" style={{ fontFamily: 'Inter, sans-serif' }}>
+          CODEWRIGHT
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="typing-dot inline-block h-2 w-2 rounded-full bg-chalk/60" style={{ animationDelay: '0s' }} />
+          <span className="typing-dot inline-block h-2 w-2 rounded-full bg-chalk/60" style={{ animationDelay: '0.2s' }} />
+          <span className="typing-dot inline-block h-2 w-2 rounded-full bg-chalk/60" style={{ animationDelay: '0.4s' }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Msg({ m, isTyping = false }: { m: ChatMsg; isTyping?: boolean }) {
   if (m.role === "user") {
     return (
-      <div className="animate-rise flex justify-end pl-10">
+      <div className="message-enter flex justify-end pl-10">
         <div className="max-w-[90%] text-right">
           <div className="text-xs uppercase tracking-[0.15em] text-maize-400/70 mb-1 font-semibold" style={{ fontFamily: 'Inter, sans-serif' }}>you · coach</div>
-          <div className="whitespace-pre-wrap text-[22px] font-medium leading-[1.5] text-maize-300" style={{ fontFamily: 'Inter, sans-serif' }}>{m.text}</div>
+          <div className="whitespace-pre-wrap text-[22px] font-medium leading-[1.5] text-maize-300" style={{ fontFamily: 'Inter, sans-serif' }}>
+            {m.text}
+          </div>
         </div>
       </div>
     );
   }
   if (m.role === "sys") {
     return (
-      <div className="animate-rise flex items-start gap-3 pr-10">
+      <div className="message-enter flex items-start gap-3 pr-10">
         <span className="mt-1.5 shrink-0 font-mono text-sm text-maize-400/80">▸</span>
         <div className="flex-1">
-          <span className="whitespace-pre-wrap text-[15px] leading-[1.6] text-chalk/90" style={{ fontFamily: 'Inter, sans-serif' }}>{m.text}</span>
+          <span className="whitespace-pre-wrap text-[15px] leading-[1.6] text-chalk/90" style={{ fontFamily: 'Inter, sans-serif' }}>
+            {m.text}
+          </span>
           {m.tag && m.tag !== "learn" && (
             <span className="font-mono ml-2 inline-block text-xs uppercase tracking-[0.15em] text-maize-400/70">[{m.tag}]</span>
           )}
@@ -58,13 +80,20 @@ function Msg({ m }: { m: ChatMsg }) {
     );
   }
   return (
-    <div className="animate-rise flex items-start gap-3 pr-8">
-      <span className="mt-4 h-2.5 w-2.5 shrink-0 rotate-45 bg-maize-400 shadow-[0_0_10px_rgba(255,203,5,0.7)]" />
+    <div className="message-enter flex items-start gap-3 pr-8">
+      <span className={`mt-4 h-2.5 w-2.5 shrink-0 rotate-45 shadow-[0_0_10px_rgba(255,203,5,0.7)] transition-all duration-500 ${
+                        isTyping ? 'bg-maize-400/60' : 'bg-maize-400'
+                      }`} />
       <div className="flex-1">
         <div className="text-xs uppercase tracking-[0.15em] text-chalk/60 mb-1.5 font-semibold" style={{ fontFamily: 'Inter, sans-serif' }}>
           CODEWRIGHT {m.tag ? `· ${m.tag}` : ""}
         </div>
-        <div className="whitespace-pre-wrap text-[19px] font-medium leading-[1.55] text-chalk" style={{ fontFamily: 'Inter, sans-serif' }}>{m.text}</div>
+        <div className={`whitespace-pre-wrap text-[19px] font-medium leading-[1.55] text-chalk transition-all duration-500 ${
+                          isTyping ? 'opacity-80' : 'opacity-100'
+                        }`} style={{ fontFamily: 'Inter, sans-serif' }}>
+          {m.text}
+          {isTyping && <span className="typing-cursor inline-block ml-1">▊</span>}
+        </div>
       </div>
     </div>
   );
@@ -91,6 +120,7 @@ export default function AgentChat({
   const [sel, setSel] = useState<string[]>([]);
   const [parsedDoc, setParsedDoc] = useState<ParsedDocument | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [typingMessageId, setTypingMessageId] = useState<number | null>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -111,6 +141,23 @@ export default function AgentChat({
     const el = bodyRef.current;
     if (el) el.scrollTop = el.scrollHeight;
   }, [messages, phase, showExpansions, showChips]);
+
+  // Show typing indicator for new agent messages
+  useEffect(() => {
+    if (messages.length === 0) return;
+    
+    const lastMsg = messages[messages.length - 1];
+    if (lastMsg.role === "agent") {
+      setTypingMessageId(lastMsg.id);
+      
+      // Remove typing indicator after a brief delay to simulate natural typing
+      const timer = setTimeout(() => {
+        setTypingMessageId(null);
+      }, 800);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [messages]);
 
   const submit = () => {
     const t = val.trim();
@@ -239,19 +286,10 @@ export default function AgentChat({
           <Doodle />
           <div ref={bodyRef} className="relative z-10 h-full space-y-4 overflow-y-auto px-5 py-5">
             {messages.map((m) => (
-              <Msg key={m.id} m={m} />
+              <Msg key={m.id} m={m} isTyping={typingMessageId === m.id} />
             ))}
 
-            {thinking && (
-              <div className="flex items-center gap-2 pl-4">
-                <span className="h-2 w-2 rotate-45 bg-maize-400/70" />
-                <span className="chalk-text text-[20px] text-chalk/80">
-                  <span className="typing-dot inline-block">·</span>
-                  <span className="typing-dot inline-block" style={{ animationDelay: "0.15s" }}>·</span>
-                  <span className="typing-dot inline-block" style={{ animationDelay: "0.3s" }}>·</span>
-                </span>
-              </div>
-            )}
+            {thinking && <TypingIndicator />}
 
             {/* stretch ideas — expand the coach's idea */}
             {showExpansions && cat && qa && (
