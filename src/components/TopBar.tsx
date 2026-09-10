@@ -16,6 +16,7 @@ export default function TopBar({
   canReset,
   modCount,
   onToggleLibrary,
+  onBrowseVault,
   onSaveMod,
   canSave,
 }: {
@@ -25,6 +26,7 @@ export default function TopBar({
   canReset: boolean;
   modCount: number;
   onToggleLibrary: () => void;
+  onBrowseVault: () => void;
   onSaveMod: () => void;
   canSave: boolean;
 }) {
@@ -100,6 +102,21 @@ export default function TopBar({
                 {modCount}
               </span>
             )}
+          </button>
+
+          {/* Vault Browser Button */}
+          <button
+            onClick={onBrowseVault}
+            className="group relative flex items-center gap-2 rounded-md border-2 border-maize-400/60 bg-navy-900 px-3 py-1.5 transition-all hover:border-maize-400 hover:bg-navy-800"
+            title="Browse Vault Mods"
+          >
+            <IconFolder className="h-4 w-4 text-maize-400" />
+            <span className="font-display text-[11px] tracking-[0.12em] text-maize-400">
+              VAULT
+            </span>
+            <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-inkgreen font-mono text-[9px] font-bold text-navy-950">
+              9
+            </span>
           </button>
           
           {/* Save Mod Button */}

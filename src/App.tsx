@@ -42,11 +42,14 @@ import Workbench from "./components/Workbench";
 import Terminal from "./components/Terminal";
 import DemoController from "./components/DemoController";
 import ModLibraryPanel from "./components/ModLibraryPanel";
+import ModLibraryBrowser from "./components/ModLibraryBrowser";
+import CodeViewport from "./components/CodeViewport";
 import {
   loadModLibrary,
   addModToLibrary,
   type ModEntry,
 } from "./lib/modStore";
+import type { ModEntry as VaultModEntry } from "./types";
 
 const GREETING_BASE =
   "CODEWRIGHT here — forged in Ann Arbor, bleeds maize and blue. Chalk up what NCAA 27 should do differently in plain English. I'll pin some stretch ideas to the board first, grill you on the details — including which proven vault mods to borrow code from — then weave it all into a signed, game-ready bundle. Go Blue. Prefer the terminal? I obey the CLI too — type `help` below.";
@@ -99,6 +102,15 @@ export default function App() {
   const [demoActive, setDemoActive] = useState(false);
   const [demoStep, setDemoStep] = useState(0);
   const [showModLibrary, setShowModLibrary] = useState(false);
+  const [showModLibraryBrowser, setShowModLibraryBrowser] = useState(false);
+  const [showCodeViewport, setShowCodeViewport] = useState(false);
+  const [codeViewportState, setCodeViewportState] = useState({
+    activeFile: '',
+    code: '',
+    currentLine: 0,
+    modifiedLines: [] as number[],
+    isGenerating: false,
+  });
   const [modLibrary, setModLibrary] = useState(() => loadModLibrary());
 
   const idRef = useRef(boot.maxId + 1);
@@ -638,6 +650,46 @@ export default function App() {
     termPush("ok", `mod saved: ${mod.name} → library`);
   };
 
+  const handleUseVaultMod = (mod: VaultModEntry) => {
+    // Import the mod as a starting point
+    pushMsg("sys", `imported vault mod "${mod.name}" as starting point`);
+    termPush("out", `imported mod: ${mod.name} from ${mod.platform}`);
+    
+    // Pull patterns from this mod
+    const pats = PATTERNS.filter((p) => mod.patternIds.includes(p.id));
+    setKb((old) => {
+      const have = new Set(old.map((p) => p.id));
+      return [...old, ...pats.filter((p) => !have.has(p.id))];
+    });
+    
+    termPush("ok", `pulled ${pats.length} patterns from ${mod.name}`);
+    setShowModLibraryBrowser(false);
+  };
+
+  const handleModifyVaultMod = (mod: VaultModEntry) => {
+    // Load the mod for modification
+    pushMsg("sys", `loading vault mod "${mod.name}" for modification`);
+    termPush("out", `modifying mod: ${mod.name} from ${mod.platform}`);
+    
+    // Pull patterns and show code viewport
+    const pats = PATTERNS.filter((p) => mod.patternIds.includes(p.id));
+    setKb((old) => {
+      const have = new Set(old.map((p) => p.id));
+      return [...old, ...pats.filter((p) => !have.has(p.id))];
+    });
+    
+    // Show code viewport with the mod's excerpt
+    setCodeViewportState({
+      activeFile: mod.files[0]?.name || 'main.lua',
+      code: mod.excerpt,
+      currentLine: 0,
+      modifiedLines: [],
+      isGenerating: false,
+    });
+    setShowCodeViewport(true);
+    setShowModLibraryBrowser(false);
+  };
+
   /* ---------- render ---------------------------------------------------- */
   const motes = [
     { left: "72%", top: "30%", dur: 12, delay: 0 },
@@ -667,6 +719,7 @@ export default function App() {
         canReset={phase !== "generating"}
         modCount={modLibrary.mods.length}
         onToggleLibrary={() => setShowModLibrary(!showModLibrary)}
+        onBrowseVault={() => setShowModLibraryBrowser(true)}
         onSaveMod={handleSaveModToLibrary}
         canSave={!!bundle && !!activeId}
       />
@@ -762,6 +815,25 @@ export default function App() {
           </div>
         </>
       )}
+
+      {/* Mod Library Browser */}
+      <ModLibraryBrowser
+        isOpen={showModLibraryBrowser}
+        onClose={() => setShowModLibraryBrowser(false)}
+        onUseMod={handleUseVaultMod}
+        onModifyMod={handleModifyVaultMod}
+      />
+
+      {/* Code Viewport */}
+      <CodeViewport
+        isOpen={showCodeViewport}
+        onClose={() => setShowCodeViewport(false)}
+        activeFile={codeViewportState.activeFile}
+        code={codeViewportState.code}
+        currentLine={codeViewportState.currentLine}
+        modifiedLines={codeViewportState.modifiedLines}
+        isGenerating={codeViewportState.isGenerating}
+      />
     </div>
   );
 }
