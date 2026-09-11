@@ -245,3 +245,24 @@ export const IconSave = (p: SVGProps<SVGSVGElement>) => (
     <polyline points="7 3 7 8 15 8" />
   </S>
 );
+
+export const IconZap = (p: SVGProps<SVGSVGElement>) => (
+  <S {...p}>
+    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+  </S>
+);
+
+export const IconTarget = (p: SVGProps<SVGSVGElement>) => (
+  <S {...p}>
+    <circle cx="12" cy="12" r="10" />
+    <circle cx="12" cy="12" r="6" />
+    <circle cx="12" cy="12" r="2" />
+  </S>
+);
+
+export const IconTrendingUp = (p: SVGProps<SVGSVGElement>) => (
+  <S {...p}>
+    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+    <polyline points="17 6 23 6 23 12" />
+  </S>
+);

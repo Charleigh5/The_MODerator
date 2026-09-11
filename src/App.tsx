@@ -53,6 +53,7 @@ import DemoController from "./components/DemoController";
 import ModLibraryPanel from "./components/ModLibraryPanel";
 import ModLibraryBrowser from "./components/ModLibraryBrowser";
 import CodeViewport from "./components/CodeViewport";
+import FeatureRoadmap from "./components/FeatureRoadmap";
 import {
   loadModLibrary,
   addModToLibrary,
@@ -113,6 +114,7 @@ export default function App() {
   const [showModLibrary, setShowModLibrary] = useState(false);
   const [showModLibraryBrowser, setShowModLibraryBrowser] = useState(false);
   const [showCodeViewport, setShowCodeViewport] = useState(false);
+  const [showRoadmap, setShowRoadmap] = useState(false);
   const [codeViewportState, setCodeViewportState] = useState({
     activeFile: '',
     code: '',
@@ -813,6 +815,7 @@ export default function App() {
         onBrowseVault={() => setShowModLibraryBrowser(true)}
         onSaveMod={handleSaveModToLibrary}
         canSave={!!bundle && !!activeId}
+        onShowRoadmap={() => setShowRoadmap(true)}
       />
 
       {/* Demo Controller */}
@@ -925,6 +928,19 @@ export default function App() {
         modifiedLines={codeViewportState.modifiedLines}
         isGenerating={codeViewportState.isGenerating}
       />
+
+      {/* Feature Roadmap Modal */}
+      {showRoadmap && (
+        <>
+          <div
+            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
+            onClick={() => setShowRoadmap(false)}
+          />
+          <div className="fixed inset-4 z-50 overflow-hidden rounded-xl border-2 border-maize-400 bg-navy-950 shadow-2xl">
+            <FeatureRoadmap />
+          </div>
+        </>
+      )}
     </div>
   );
 }

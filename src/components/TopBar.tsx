@@ -1,6 +1,6 @@
 import type { Phase } from "../types";
 import { TICKER_ITEMS } from "../data/modLibrary";
-import { IconFolder, IconSave } from "./icons";
+import { IconFolder, IconSave, IconTrendingUp } from "./icons";
 
 const STEPS: { label: string; sub: string; phase: Phase }[] = [
   { label: "1 · BRIEF", sub: "talk to the coach", phase: "idle" },
@@ -19,6 +19,7 @@ export default function TopBar({
   onBrowseVault,
   onSaveMod,
   canSave,
+  onShowRoadmap,
 }: {
   phase: Phase;
   kbCount: number;
@@ -29,6 +30,7 @@ export default function TopBar({
   onBrowseVault: () => void;
   onSaveMod: () => void;
   canSave: boolean;
+  onShowRoadmap: () => void;
 }) {
   const activeIdx = STEPS.findIndex((s) => s.phase === phase);
   const ticker = [...TICKER_ITEMS, ...TICKER_ITEMS];
@@ -117,6 +119,18 @@ export default function TopBar({
             </span>
             <span className="absolute -right-1 -top-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-inkgreen font-mono text-[8px] font-bold text-navy-950">
               9
+            </span>
+          </button>
+
+          {/* Roadmap Button - compact */}
+          <button
+            onClick={onShowRoadmap}
+            className="group relative flex items-center gap-1.5 rounded-md border-2 border-maize-400/60 bg-navy-900 px-2 py-1 transition-all hover:border-maize-400 hover:bg-navy-800"
+            title="Feature Roadmap"
+          >
+            <IconTrendingUp className="h-3.5 w-3.5 text-maize-400" />
+            <span className="hidden font-display text-[10px] tracking-[0.1em] text-maize-400 sm:inline">
+              ROADMAP
             </span>
           </button>
           
