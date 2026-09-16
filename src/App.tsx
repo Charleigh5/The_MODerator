@@ -520,11 +520,11 @@ export default function App() {
     }
     setTesting(true);
     setTestLog([]);
-    const lines = [
-      { kind: "ok" as const, line: "source bindings present" },
-      { kind: "ok" as const, line: "proof receipt present" },
-      { kind: "ok" as const, line: "rollback recipe present" },
-      { kind: "dim" as const, line: "in-game/runtime test NOT_RUN — requires exact game inputs/environment" },
+    const lines: TermLine[] = [
+      { kind: "ok", text: "source bindings present" },
+      { kind: "ok", text: "proof receipt present" },
+      { kind: "ok", text: "rollback recipe present" },
+      { kind: "dim", text: "in-game/runtime test NOT_RUN — requires exact game inputs/environment" },
     ];
     lines.forEach((line, i) => after(i * 260, () => setTestLog((l) => [...l, line])));
     after(lines.length * 260 + 120, () => {
