@@ -1,6 +1,6 @@
 import { LUA_HOOK_CERTIFIED_BUILDS, PILE_LEAP_EXP001, type ExperimentEvidence } from "../data/gameplayExperimentCatalog.js";
 export interface LabEnvironment { offline:boolean; exeSha256?:string; assetInventoryReady:boolean; baselineTrials:number; captureFps?:number; }
-export interface LabReadiness { status:"READY_ASSET_DISCOVERY"|"READY_ASSET_EXPERIMENT"|"READY_RUNTIME"|"BLOCKED"; runtimeCertified:boolean; blockers:string[]; next:string[]; }
+export interface LabReadiness { status:"READY_ASSET_DISCOVERY"|"BASELINE_REQUIRED"|"READY_ASSET_EXPERIMENT"|"READY_RUNTIME"|"BLOCKED"; runtimeCertified:boolean; blockers:string[]; next:string[]; }
 export interface TrialObservation { condition:string; attempts:number; branchOccurrences:number; tackleSuccesses:number; blockerStops:number; apexProxyMean?:number; horizontalTravelMean?:number; recoveryMsMean?:number; }
 export interface PromotionInput { current:ExperimentEvidence; artifactRoundTrip:boolean; runtimeObserved:boolean; replicatedRuns:number; effectObserved:boolean; contradictoryRegression:boolean; }
 export function runtimeBuildCertified(sha?:string):boolean {
@@ -15,8 +15,8 @@ export function assessPileLeapReadiness(env:LabEnvironment):LabReadiness {
   if(!runtimeCertified) next.push("runtime instrumentation remains blocked until the exact executable hash is added as diagnostic/certified by cfb27-lua-hook");
   if(blockers.length)return{status:"BLOCKED",runtimeCertified,blockers,next};
   if(!env.assetInventoryReady)return{status:"READY_ASSET_DISCOVERY",runtimeCertified,blockers,next};
-  if(env.assetInventoryReady&&env.baselineTrials>=20)return{status:runtimeCertified?"READY_RUNTIME":"READY_ASSET_EXPERIMENT",runtimeCertified,blockers,next};
-  return{status:"READY_ASSET_EXPERIMENT",runtimeCertified,blockers,next};
+  if(env.baselineTrials<20)return{status:"BASELINE_REQUIRED",runtimeCertified,blockers,next};
+  return{status:runtimeCertified?"READY_RUNTIME":"READY_ASSET_EXPERIMENT",runtimeCertified,blockers,next};
 }
 export function summarizeObservation(o:TrialObservation){
   const rate=(n:number)=>o.attempts?Number((n/o.attempts).toFixed(3)):0;
