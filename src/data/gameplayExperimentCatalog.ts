@@ -27,8 +27,8 @@ export const PILE_LEAP_EXP001:GameplayExperiment = {
   },
   components:[
     {id:"trigger",label:"user tackle/dive trigger",evidence:"UNKNOWN",source:"input/gameplay",hypothesis:"Input and situation gate whether a leap/dive branch is eligible."},
-    {id:"selection",label:"defensive tackle animation selection",evidence:"CORRELATED",source:"FROSTBITE_ANIMATION",hypothesis:"A specific defensive animation family or selector chooses the airborne tackle."},
-    {id:"root-motion",label:"launch/root-motion trajectory",evidence:"TARGET",source:"FROSTBITE_ANIMATION",hypothesis:"Animation/root-motion data determines vertical apex and forward displacement."},
+    {id:"selection",label:"defensive tackle animation selection",evidence:"TARGET",source:"FROSTBITE_ANIMATION",hypothesis:"A specific defensive animation family or selector chooses the airborne tackle."},
+    {id:"root-motion",label:"launch/root-motion trajectory",evidence:"UNKNOWN",source:"FROSTBITE_ANIMATION",hypothesis:"Animation/root-motion data determines vertical apex and forward displacement."},
     {id:"reach",label:"tackle reach/target acquisition",evidence:"UNKNOWN",source:"gameplay attribsys/tuning",hypothesis:"Target-acquisition windows determine whether contact can attach across/over blockers."},
     {id:"blocker-collision",label:"blocker collision clearance",evidence:"UNKNOWN",source:"gameplay attribsys/physics",hypothesis:"Collision filtering or contact response determines whether the defender is stopped by the pile."},
     {id:"airborne-contact",label:"airborne tackle contact",evidence:"UNKNOWN",source:"gameplay attribsys/physics",hypothesis:"Airborne contact rules determine whether a valid tackle can resolve before landing."},
