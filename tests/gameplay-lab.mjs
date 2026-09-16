@@ -4,6 +4,8 @@ import { assessPileLeapReadiness, runtimeBuildCertified, summarizeObservation, p
 import { compileModIntent } from "../.gauntlet-build/lib/modIntentCompiler.js";
 assert.equal(PILE_LEAP_EXP001.id,"CFB27-GAMEPLAY-EXP-001-PILE-LEAP");
 assert.equal(PILE_LEAP_EXP001.components.find(c=>c.id==="character-gameplay-negative")?.evidence,"NEGATIVE_EVIDENCE");
+assert.equal(PILE_LEAP_EXP001.components.find(c=>c.id==="selection")?.evidence,"TARGET");
+assert.equal(PILE_LEAP_EXP001.components.find(c=>c.id==="root-motion")?.evidence,"UNKNOWN");
 assert(PILE_LEAP_EXP001.conditions.some(c=>c.id==="C0")&&PILE_LEAP_EXP001.conditions.some(c=>c.id==="C7"));
 const pile=compileModIntent("CFB27: make my safety leap over a blocker pile for a tackle with more airborne reach and root motion");
 const primary=pile.effects.flatMap(e=>e.matches.slice(0,1).map(m=>m.capability.id));
