@@ -29,7 +29,7 @@ export function resolveCapabilities(input:string, universe:Universe="CFB27", lim
     for (const t of tokens(cap.title)) if (qt.has(t)) score += 1;
 
     if (routeHint === "TEAM_BUILDER") {
-      if (cap.id.startsWith("TB-")) { score += 12; reasons.push("route:team-builder"); }
+      if (cap.id.startsWith("TB-")) { score += 2; reasons.push("route:team-builder"); }
       if (/\b(helmet|facemask|shell|finish|material|chrome|matte)\b/.test(q) && cap.id === "TB-HELMET-MAT") score += 16;
       if (/\b(number font|jersey font|font)\b/.test(q) && cap.id === "TB-NUM-FONT") score += 16;
       if (/\b(number spacing|spacing|kerning|tighter)\b/.test(q) && cap.id === "TB-NUM-SPACING") score += 16;
@@ -48,7 +48,7 @@ export function resolveCapabilities(input:string, universe:Universe="CFB27", lim
     if (/jersey|renumber|number/.test(q) && routeHint !== "TEAM_BUILDER" && ["PLYR-JERSEY","JERSEY-POS-RULES","JERSEY-LEGALITY"].includes(cap.id)) score += 8;
     if (explicitRatingIntent && cap.id === "PLYR-RATINGS-51") score += 10;
     if (/\b(visor|facemask|mouthpiece|towel|wrist|wristband|gloves|cleats|backplate|equipment|gear)\b/.test(q) && routeHint !== "TEAM_BUILDER" && cap.id === "PLYR-GEAR-46") score += 10;
-    if (/team builder/.test(q) && cap.id.startsWith("TB-")) score += 9;
+    if (/team builder/.test(q) && cap.id.startsWith("TB-")) score += 4;
     if (animationMechanic && ["FTC-ANIM-TARGET","RUNTIME-INSTRUMENT","PLYR-ANIM-TRIPLE"].includes(cap.id)) score += 11;
     if (/recruit/.test(q) && ["FTC-RECRUIT-GEN","FTC-PROGRESSION","LIVE-RECRUIT-CONTACT","PIPELINE-MODEL"].includes(cap.id)) score += 5;
     if (/\b(progression|xp|skill points|skill costs|development|dev trait|cap breaker)\b/.test(q) && cap.id === "FTC-PROGRESSION") score += 8;
