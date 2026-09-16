@@ -17,6 +17,8 @@ assert(!runtimeBuildCertified("DEADBEEF"));
 const current=assessPileLeapReadiness({offline:true,assetInventoryReady:false,baselineTrials:0,captureFps:60});
 assert.equal(current.status,"READY_ASSET_DISCOVERY");
 assert.equal(current.runtimeCertified,false);
+const baselineRequired=assessPileLeapReadiness({offline:true,assetInventoryReady:true,baselineTrials:8,captureFps:60});
+assert.equal(baselineRequired.status,"BASELINE_REQUIRED");
 const assetReady=assessPileLeapReadiness({offline:true,assetInventoryReady:true,baselineTrials:24,captureFps:60});
 assert.equal(assetReady.status,"READY_ASSET_EXPERIMENT");
 const certified=assessPileLeapReadiness({offline:true,exeSha256:july,assetInventoryReady:true,baselineTrials:24,captureFps:60});
