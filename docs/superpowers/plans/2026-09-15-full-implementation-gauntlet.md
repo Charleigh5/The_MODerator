@@ -17,7 +17,20 @@
 - [x] T6 Six vertical-slice fixtures + Madden negative control + ontology/profile assertions.
 - [x] T7 Integrate readiness into existing conversation engine/App and retire false game-ready claims.
 - [x] T8 Repository typecheck/build/gauntlet CI definition.
-- [ ] T9 Independent review, fix largest defect, rerun gauntlet/CI.
+- [x] T9 Independent/adversarial review completed; primary defects corrected and push + PR gauntlets rerun successfully.
+
+## Review corrections
+1. **Mechanics-vs-rating ambiguity:** pile-leap/tackle language must prioritize animation/runtime mechanics rather than accidentally treating `tackle` as a scalar rating request.
+2. **Fail-closed recipe truth:** `BLOCKED` and `NEEDS_INPUT` intents now retain those states in generated build recipes instead of being mislabeled executable.
+3. **Cross-plane compatibility:** different manipulation planes remain `UNKNOWN` unless combined behavior is actually verified; lower binary-collision risk is not proof of semantic compatibility.
+4. **Legacy generator containment:** synthetic Lua/XML output remains `LEGACY_DEMO_ONLY` and cannot pass the evidence build/test/export path as an installable mod.
+
+## Final verification
+- Branch: `feature/full-implementation-gauntlet-20260915`
+- Hardened code/test head before this documentation closeout: `2117b4d38fcdcebe81bcabd98c6c31bab7c1096a`
+- Push workflow run `35049497923`: PASS — npm ci, typecheck, production build, gauntlet.
+- Pull-request workflow run `35049501493`: PASS — npm ci, typecheck, production build, gauntlet.
+- Draft PR: #5, mergeable, not merged.
 
 ## Stop conditions
-Do not merge/deploy. Do not claim runtime/game verification without observed game evidence. Team Builder exact internal JSON paths remain blocked until the distributed ZIP can be extracted and indexed.
+Do not merge/deploy. Do not claim runtime/game verification without observed game evidence. Team Builder exact internal JSON paths remain blocked until the distributed ZIP can be extracted and indexed. Madden 27 save/table parity remains blocked until title-specific schema bindings are proven.
