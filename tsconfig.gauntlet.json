@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "outDir": ".gauntlet-build",
+    "rootDir": "src"
+  },
+  "include": [
+    "src/data/capabilityRegistry.ts",
+    "src/data/madden27Parity.ts",
+    "src/data/teamBuilderSchema.ts",
+    "src/data/gameOntology.ts",
+    "src/lib/capabilityResolver.ts",
+    "src/lib/modIntentCompiler.ts",
+    "src/lib/compatibilityEngine.ts",
+    "src/lib/proofEngine.ts",
+    "src/lib/buildRecipe.ts",
+    "src/types.ts",
+    "src/lib/evidenceBundle.ts"
+  ]
+}
