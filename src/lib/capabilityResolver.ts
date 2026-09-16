@@ -15,6 +15,7 @@ export function resolveCapabilities(input:string, universe:Universe="CFB27", lim
   const q = input.toLowerCase();
   const qt = new Set(tokens(q));
   const animationMechanic = /\b(pile|leap|airborne|root motion|dive|collision|impulse|launch|recovery)\b/.test(q);
+  const styleAnimationIntent = /\b(throw style|running style|run style|carry style|ball carrier style|locomotion style)\b/.test(q);
   const explicitRatingIntent = /\b(rating|ratings|overall)\b/.test(q) || /\b(speed|acceleration|tackle|tackling|coverage|throw power|catching|strength|jumping)\b\s*(?:to|=|at)?\s*\d{2}\b/.test(q);
   const explicitSaveIntent = /\b(save|roster|dynasty|franchise|renumber|duplicate jersey)\b/.test(q);
 
