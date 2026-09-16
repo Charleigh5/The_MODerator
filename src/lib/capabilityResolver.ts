@@ -49,7 +49,7 @@ export function resolveCapabilities(input:string, universe:Universe="CFB27", lim
     if (explicitRatingIntent && cap.id === "PLYR-RATINGS-51") score += 10;
     if (/\b(visor|facemask|mouthpiece|towel|wrist|wristband|gloves|cleats|backplate|equipment|gear)\b/.test(q) && routeHint !== "TEAM_BUILDER" && cap.id === "PLYR-GEAR-46") score += 10;
     if (/team builder/.test(q) && cap.id.startsWith("TB-")) score += 4;
-    if (animationMechanic && ["FTC-ANIM-TARGET","RUNTIME-INSTRUMENT","PLYR-ANIM-TRIPLE"].includes(cap.id)) score += 11;
+    if (animationMechanic && ["FTC-ANIM-TARGET","RUNTIME-INSTRUMENT"].includes(cap.id)) { score += 13; reasons.push("mechanics:engine-or-runtime"); }\n    if (animationMechanic && cap.id === "PLYR-ANIM-TRIPLE" && !styleAnimationIntent) { score -= 10; reasons.push("negative-evidence:throw-run-carry-style-not-defensive-tackle-selection"); }\n    if (styleAnimationIntent && cap.id === "PLYR-ANIM-TRIPLE") { score += 12; reasons.push("style:character-gameplay"); }
     if (/recruit/.test(q) && ["FTC-RECRUIT-GEN","FTC-PROGRESSION","LIVE-RECRUIT-CONTACT","PIPELINE-MODEL"].includes(cap.id)) score += 5;
     if (/\b(progression|xp|skill points|skill costs|development|dev trait|cap breaker)\b/.test(q) && cap.id === "FTC-PROGRESSION") score += 8;
     const parity = universe === "MADDEN27" ? parityForSurface(cap.surface).state : "CONFIRMED_SHARED";
