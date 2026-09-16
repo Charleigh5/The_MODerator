@@ -28,6 +28,7 @@ import {
   suggestNextStep,
   type ConversationContext,
 } from "./lib/conversationEngine";
+import { createEvidenceBundle, isEvidenceBundle } from "./lib/evidenceBundle";
 import {
   type Memory,
   type Session,
@@ -62,7 +63,7 @@ import {
 import type { ModEntry as VaultModEntry } from "./types";
 
 const GREETING_BASE =
-  "CODEWRIGHT here — forged in Ann Arbor, bleeds maize and blue. Chalk up what NCAA 27 should do differently in plain English. I'll pin some stretch ideas to the board first, grill you on the details — including which proven vault mods to borrow code from — then weave it all into a signed, game-ready bundle. Go Blue. Prefer the terminal? I obey the CLI too — type `help` below.";
+  "CODEWRIGHT here. Describe what CFB27 or Madden 27 should do differently in plain English. I’ll resolve the request against source-backed capabilities, title parity, conflicts, required inputs, and proof gates before I call anything buildable. Build commands create governed execution packages first; game artifacts and runtime verification are never implied until they actually run.";
 
 function memoryFacts(m: Memory): string {
   const parts: string[] = [];
@@ -382,7 +383,7 @@ export default function App() {
       }));
     } else {
       pushMsg("user", "no extras — keep it lean");
-      after(450, () => pushMsg("agent", "Lean it is. Core mod only, no extensions — still signed, still game-ready."));
+      after(450, () => pushMsg("agent", "Lean it is. Core plan only, no extensions. Build and runtime status remain evidence-gated."));
     }
     const cat = CATEGORIES.find((c) => c.id === q.category)!;
     after(1000, () => pushMsg("agent", cat.questions[0].ask));
@@ -453,11 +454,11 @@ export default function App() {
   ) => {
     setPhase("generating");
     const stages = [
-      "stage 1/5 · resolving manifest against ncaa27-mod/3.1",
-      "stage 2/5 · matching brief against warm patterns in the vault",
-      "stage 3/5 · synthesizing schema + hot-reload var table",
-      "stage 4/5 · writing logic hooks · conflict scan clean",
-      "stage 5/5 · signing bundle",
+      "LEGACY_DEMO_ONLY · resolving visualization manifest",
+      "LEGACY_DEMO_ONLY · matching mock vault patterns",
+      "LEGACY_DEMO_ONLY · synthesizing preview schema",
+      "LEGACY_DEMO_ONLY · rendering non-executable logic preview",
+      "LEGACY_DEMO_ONLY · packaging visualization preview",
     ];
     stages.forEach((s, i) => after(1000 + i * 620, () => pushMsg("sys", s, "compiler")));
     after(1000 + stages.length * 620, () => {
@@ -475,9 +476,9 @@ export default function App() {
       const n = memRef.current.built.length;
       pushMsg(
         "agent",
-        `Bundle's on your desk — "${b.title}" v${b.version}, ${b.files.length} files, ${b.kbUsed.length} vault patterns woven in. Blueprints in the right panel.\nThat's mod #${n} on your record, coach — I'll remember it in every binder from here on.`
+        `Legacy visualization preview created — "${b.title}" v${b.version}, ${b.files.length} preview files. This is NOT an installable CFB27/Madden27 mod and carries no runtime proof.\nPreview #${n} is retained only for UI/demo compatibility.`
       );
-      termPush("ok", `bundle signed · ${b.id} · ${b.files.length} files · ${b.hash}`);
+      termPush("dim", `LEGACY_DEMO_ONLY · ${b.id} · ARTIFACT_NOT_BUILT · RUNTIME_NOT_RUN`);
     });
   };
 
@@ -485,57 +486,79 @@ export default function App() {
   const runBuild = () => {
     const b = bundleRef.current;
     if (!b || buildStatus === "building") return;
+    if (!isEvidenceBundle(b)) {
+      termPush("err", "legacy synthetic bundle build disabled · use a source-resolved MOD_INTENT_V1 package");
+      pushMsg("sys", "Legacy preview cannot be promoted to a game artifact. Start a new natural-language brief so capability/evidence gates can run.", "compiler");
+      return;
+    }
     setBuildStatus("building");
     setBuildProgress(0);
     setBuildLog([]);
-    const steps = buildSteps(b);
+    const steps = [
+      { kind: "out" as const, text: "validate MOD_INTENT_V1 bindings" },
+      { kind: "out" as const, text: "validate title parity + evidence gates" },
+      { kind: "out" as const, text: "validate build recipes + rollback" },
+      { kind: "ok" as const, text: "execution package internally consistent" },
+      { kind: "dim" as const, text: "GAME_ARTIFACT = NOT_BUILT · RUNTIME = NOT_RUN" },
+    ];
     steps.forEach((step, i) => {
-      after(i * 520, () => setBuildLog((l) => [...l, { kind: step.kind, text: step.line }]));
-      after(i * 520 + 150, () => setBuildProgress(Math.round(((i + 1) / steps.length) * 100)));
+      after(i * 260, () => setBuildLog((l) => [...l, step]));
+      after(i * 260 + 80, () => setBuildProgress(Math.round(((i + 1) / steps.length) * 100)));
     });
-    after(steps.length * 520 + 200, () => {
+    after(steps.length * 260 + 120, () => {
       setBuildStatus("built");
-      termPush("ok", `build clean · ${b.files.reduce((a, f) => a + f.bytes, 0)} bytes · 0 conflicts`);
+      termPush("ok", "execution package validated · GAME_ARTIFACT_NOT_BUILT · RUNTIME_NOT_RUN");
     });
   };
 
   const runTest = () => {
     const b = bundleRef.current;
     if (!b || testing) return;
+    if (!isEvidenceBundle(b)) {
+      termPush("err", "legacy synthetic scrimmage disabled · no runtime claim generated");
+      return;
+    }
     setTesting(true);
     setTestLog([]);
-    const lines = testLines(b);
-    lines.forEach((line, i) =>
-      after(i * 430, () => setTestLog((l) => [...l, { kind: line.kind, text: line.line }]))
-    );
-    after(lines.length * 430 + 200, () => {
+    const lines = [
+      { kind: "ok" as const, line: "source bindings present" },
+      { kind: "ok" as const, line: "proof receipt present" },
+      { kind: "ok" as const, line: "rollback recipe present" },
+      { kind: "dim" as const, line: "in-game/runtime test NOT_RUN — requires exact game inputs/environment" },
+    ];
+    lines.forEach((line, i) => after(i * 260, () => setTestLog((l) => [...l, line])));
+    after(lines.length * 260 + 120, () => {
       setTesting(false);
-      termPush("ok", "scrimmage complete · 4 quarters · 0 errors");
+      termPush("ok", "plan verification complete · runtime remains NOT_RUN");
     });
   };
 
   const exportBundle = () => {
     const b = bundleRef.current;
     if (!b) return;
+    if (!isEvidenceBundle(b)) {
+      termPush("err", "legacy preview export disabled · it is not an installable mod format");
+      return;
+    }
     const payload = {
       id: b.id,
       title: b.title,
       slug: b.slug,
       version: b.version,
-      format: "ncaa27-mod/3.1",
+      format: "MOD_INTENT_V1_EXECUTION_PACKAGE",
+      truth: { gameArtifact: "NOT_BUILT", runtime: "NOT_RUN" },
       hash: b.hash,
-      installed: b.kbUsed.map((p) => ({ id: p.id, name: p.name, source: p.source })),
       files: b.files.map((f) => ({ path: f.path, lang: f.lang, bytes: f.bytes, content: f.content })),
     };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `${b.slug}.ncaa27mod.json`;
+    a.download = `${b.slug}.moderator-plan.json`;
     a.click();
     URL.revokeObjectURL(url);
-    pushMsg("sys", `exported ${b.slug}.ncaa27mod.json — drop it in /mods and fire up the game`, "export");
-    termPush("ok", `exported → ${b.slug}.ncaa27mod.json`);
+    pushMsg("sys", `exported ${b.slug}.moderator-plan.json — execution plan only; not an installable game mod`, "export");
+    termPush("ok", `exported governed plan → ${b.slug}.moderator-plan.json`);
   };
 
   /* ---------- agent / cli input ---------------------------------------- */
@@ -549,10 +572,34 @@ export default function App() {
       return;
     }
     
-    // Check if user wants to compile/build
+    // Build/package requests route through evidence gates, not the legacy synthetic generator.
     const lowerText = t.toLowerCase();
-    if (conversationPhase === "ready" && (lowerText.includes("ready") || lowerText.includes("build") || lowerText.includes("compile") || lowerText.includes("go"))) {
-      transitionToQA();
+    const wantsPackage = lowerText.includes("ready") || lowerText.includes("build") || lowerText.includes("compile") || lowerText === "go";
+    if (wantsPackage && conversationContext.intentSpec) {
+      const spec = conversationContext.intentSpec;
+      if (spec.readiness === "BLOCKED") {
+        pushMsg("agent", `Build blocked: ${spec.effects.find((e) => e.disposition === "BLOCKED")?.reason ?? "source/title evidence is insufficient"}`);
+        termPush("err", "evidence gate blocked execution package");
+        return;
+      }
+      if (spec.readiness === "NEEDS_INPUT") {
+        pushMsg("agent", `Before I generate the execution package I need: ${spec.missingInputs[0]}. ${spec.quickReplies.length ? `Options: ${spec.quickReplies.join(" | ")}` : ""}`);
+        termPush("out", `waiting for material input · ${spec.missingInputs.join(", ")}`);
+        return;
+      }
+      const b = createEvidenceBundle(spec);
+      setBundle(b);
+      setPhase("ready");
+      setBuildStatus("unbuilt");
+      setBuildProgress(0);
+      pushMsg(
+        "agent",
+        spec.readiness === "NEEDS_VERIFICATION"
+          ? "Controlled experiment package generated. It contains source bindings, build recipes, compatibility findings, proof gates, and rollback. GAME_ARTIFACT = NOT_BUILT; RUNTIME = NOT_RUN."
+          : "Evidence-gated execution package generated. It is ready for an authorized build adapter with exact inputs. GAME_ARTIFACT = NOT_BUILT; RUNTIME = NOT_RUN.",
+        "compiler"
+      );
+      termPush("ok", `MOD_INTENT_V1 package · ${b.id} · ${spec.readiness}`);
       return;
     }
     
@@ -566,17 +613,13 @@ export default function App() {
     // Check for phase transitions
     if (conversationPhase === "exploring" && shouldTransitionToRefining(updatedContext)) {
       setConversationPhase("refining");
-      after(500, () => {
-        pushMsg("agent", "Great! I'm getting a clear picture. Let's refine some details to make sure this mod is exactly what you want.", "refining");
-      });
+      after(500, () => pushMsg("agent", generateConversationalResponse(updatedContext, t, "refining"), "refining"));
       return;
     }
     
     if (conversationPhase === "refining" && shouldTransitionToReady(updatedContext)) {
       setConversationPhase("ready");
-      after(500, () => {
-        pushMsg("agent", "Perfect! I think we have enough detail to start building. Are you ready to compile this mod, or would you like to add anything else?", "ready");
-      });
+      after(500, () => pushMsg("agent", generateConversationalResponse(updatedContext, t, "ready"), "ready"));
       return;
     }
     
