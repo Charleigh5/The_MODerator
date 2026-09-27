@@ -13,11 +13,13 @@
     "src/data/madden27Parity.ts",
     "src/data/teamBuilderSchema.ts",
     "src/data/gameOntology.ts",
+    "src/data/gameplayExperimentCatalog.ts",
     "src/lib/capabilityResolver.ts",
     "src/lib/modIntentCompiler.ts",
     "src/lib/compatibilityEngine.ts",
     "src/lib/proofEngine.ts",
     "src/lib/buildRecipe.ts",
+    "src/lib/gameplayExperimentLab.ts",
     "src/types.ts",
     "src/lib/evidenceBundle.ts"
   ]
