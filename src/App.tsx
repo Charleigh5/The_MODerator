@@ -55,6 +55,8 @@ import ModLibraryPanel from "./components/ModLibraryPanel";
 import ModLibraryBrowser from "./components/ModLibraryBrowser";
 import CodeViewport from "./components/CodeViewport";
 import FeatureRoadmap from "./components/FeatureRoadmap";
+import ChatGPTPlanPanel from "./components/ChatGPTPlanPanel";
+import { buildModeratorInput, buildModeratorInstructions } from "./lib/aiOrchestrator";
 import {
   loadModLibrary,
   addModToLibrary,
@@ -126,6 +128,17 @@ export default function App() {
   const [modLibrary, setModLibrary] = useState(() => loadModLibrary());
   const [conversationContext, setConversationContext] = useState<ConversationContext>(createInitialContext());
   const [conversationPhase, setConversationPhase] = useState<"exploring" | "refining" | "ready">("exploring");
+  const [chatGPTPanelOpen, setChatGPTPanelOpen] = useState(false);
+  const [chatGPTStatus, setChatGPTStatus] = useState<ChatGPTAuthStatus>({
+    desktop: Boolean(window.moderatorDesktop),
+    connected: false,
+    planEnabled: false,
+  });
+  const [chatGPTModels, setChatGPTModels] = useState<ChatGPTModelOption[]>([]);
+  const [chatGPTModel, setChatGPTModel] = useState(() => localStorage.getItem("moderator.chatgpt.model") ?? "");
+  const [chatGPTBusy, setChatGPTBusy] = useState(false);
+  const [chatGPTError, setChatGPTError] = useState<string | null>(null);
+  const [desktopFile, setDesktopFile] = useState<ModeratorLocalFile | null>(null);
 
   const idRef = useRef(boot.maxId + 1);
   const timers = useRef<number[]>([]);
@@ -150,6 +163,31 @@ export default function App() {
   };
   useEffect(() => () => timers.current.forEach((t) => window.clearTimeout(t)), []);
 
+  useEffect(() => {
+    const bridge = window.moderatorDesktop;
+    if (!bridge) return;
+    let alive = true;
+    (async () => {
+      try {
+        const status = await bridge.auth.status();
+        if (!alive) return;
+        setChatGPTStatus(status);
+        if (status.connected && status.planEnabled) {
+          const models = await bridge.ai.models();
+          if (!alive) return;
+          setChatGPTModels(models);
+          const saved = localStorage.getItem("moderator.chatgpt.model") ?? "";
+          const selected = models.some((m) => m.slug === saved) ? saved : models[0]?.slug ?? "";
+          setChatGPTModel(selected);
+          if (selected) localStorage.setItem("moderator.chatgpt.model", selected);
+        }
+      } catch (err) {
+        if (alive) setChatGPTError(err instanceof Error ? err.message : String(err));
+      }
+    })();
+    return () => { alive = false; };
+  }, []);
+
   /* ---------- writers ------------------------------------------------- */
   const pushMsg = (role: ChatMsg["role"], text: string, tag?: string) =>
     setMessages((m) => [...m, { id: idRef.current++, role, text, tag }]);
@@ -161,6 +199,88 @@ export default function App() {
     memRef.current = n;
     saveMemory(n);
     setMem(n);
+  };
+
+  const refreshChatGPTModels = async () => {
+    const bridge = window.moderatorDesktop;
+    if (!bridge) return;
+    setChatGPTBusy(true);
+    setChatGPTError(null);
+    try {
+      const models = await bridge.ai.models();
+      setChatGPTModels(models);
+      const selected = models.some((m) => m.slug === chatGPTModel) ? chatGPTModel : models[0]?.slug ?? "";
+      setChatGPTModel(selected);
+      if (selected) localStorage.setItem("moderator.chatgpt.model", selected);
+    } catch (err) {
+      setChatGPTError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setChatGPTBusy(false);
+    }
+  };
+
+  const signInChatGPT = async () => {
+    const bridge = window.moderatorDesktop;
+    if (!bridge) return;
+    setChatGPTBusy(true);
+    setChatGPTError(null);
+    try {
+      const status = await bridge.auth.signIn();
+      setChatGPTStatus(status);
+      if (status.planEnabled) {
+        const models = await bridge.ai.models();
+        setChatGPTModels(models);
+        const selected = models[0]?.slug ?? "";
+        setChatGPTModel(selected);
+        if (selected) localStorage.setItem("moderator.chatgpt.model", selected);
+      }
+      pushMsg("sys", status.planEnabled ? "ChatGPT plan connected · model intelligence online" : "ChatGPT account connected · plan usage permission not granted");
+    } catch (err) {
+      setChatGPTError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setChatGPTBusy(false);
+    }
+  };
+
+  const disconnectChatGPT = async () => {
+    const bridge = window.moderatorDesktop;
+    if (!bridge) return;
+    setChatGPTBusy(true);
+    setChatGPTError(null);
+    try {
+      const status = await bridge.auth.disconnect();
+      setChatGPTStatus(status);
+      setChatGPTModels([]);
+      setChatGPTModel("");
+      localStorage.removeItem("moderator.chatgpt.model");
+      pushMsg("sys", "ChatGPT credentials cleared from this PC");
+    } catch (err) {
+      setChatGPTError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setChatGPTBusy(false);
+    }
+  };
+
+  const pickDesktopFile = async () => {
+    const bridge = window.moderatorDesktop;
+    if (!bridge) return;
+    setChatGPTBusy(true);
+    setChatGPTError(null);
+    try {
+      const file = await bridge.files.pick();
+      if (!file) return;
+      setDesktopFile(file);
+      pushMsg("sys", `local source selected · ${file.name} · SHA-256 ${file.sha256.slice(0, 12)}… · original untouched`);
+    } catch (err) {
+      setChatGPTError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setChatGPTBusy(false);
+    }
+  };
+
+  const chooseChatGPTModel = (model: string) => {
+    setChatGPTModel(model);
+    if (model) localStorage.setItem("moderator.chatgpt.model", model);
   };
 
   /* ---------- boot effect --------------------------------------------- */
@@ -562,7 +682,7 @@ export default function App() {
   };
 
   /* ---------- agent / cli input ---------------------------------------- */
-  const onSend = (text: string) => {
+  const onSend = async (text: string) => {
     const t = text.trim();
     if (!t) return;
     
@@ -610,7 +730,39 @@ export default function App() {
     // Add user message
     pushMsg("user", t);
     
-    // Check for phase transitions
+    // Use the signed-in ChatGPT plan for reasoning when the desktop bridge is authorized.
+    const bridge = window.moderatorDesktop;
+    const spec = updatedContext.intentSpec;
+    if (bridge && chatGPTStatus.connected && chatGPTStatus.planEnabled && chatGPTModel && spec) {
+      setChatGPTBusy(true);
+      setChatGPTError(null);
+      try {
+        const sourceContext = desktopFile
+          ? `\n\nLocal source explicitly selected by the user:\nname=${desktopFile.name}\nsize=${desktopFile.size}\nsha256=${desktopFile.sha256}${desktopFile.preview ? `\ntext preview:\n${desktopFile.preview.slice(0, 30000)}` : "\ncontent=binary/not sent to model"}`
+          : "";
+        const result = await bridge.ai.chat({
+          requestId: crypto.randomUUID(),
+          model: chatGPTModel,
+          instructions: buildModeratorInstructions(spec) + sourceContext,
+          input: buildModeratorInput(messages, t),
+        });
+        pushMsg("agent", result.text, `ChatGPT · ${chatGPTModel}`);
+        if (shouldTransitionToReady(updatedContext)) setConversationPhase("ready");
+        else if (shouldTransitionToRefining(updatedContext)) setConversationPhase("refining");
+        const suggestion = suggestNextStep(updatedContext);
+        if (suggestion) pushMsg("sys", `next evidence move · ${suggestion}`);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : String(err);
+        setChatGPTError(message);
+        pushMsg("sys", `ChatGPT plan request failed · using local evidence responder · ${message}`);
+        pushMsg("agent", generateConversationalResponse(updatedContext, t, conversationPhase), "local fallback");
+      } finally {
+        setChatGPTBusy(false);
+      }
+      return;
+    }
+
+    // Browser/offline fallback keeps the deterministic compiler useful without model access.
     if (conversationPhase === "exploring" && shouldTransitionToRefining(updatedContext)) {
       setConversationPhase("refining");
       after(500, () => pushMsg("agent", generateConversationalResponse(updatedContext, t, "refining"), "refining"));
@@ -623,18 +775,11 @@ export default function App() {
       return;
     }
     
-    // Generate conversational response
     after(800, () => {
       const response = generateConversationalResponse(updatedContext, t, conversationPhase);
       pushMsg("agent", response);
-      
-      // Suggest next step if available
       const suggestion = suggestNextStep(updatedContext);
-      if (suggestion && Math.random() > 0.5) {
-        after(1500, () => {
-          pushMsg("sys", `💡 Suggestion: ${suggestion}`);
-        });
-      }
+      if (suggestion) after(1500, () => pushMsg("sys", `next evidence move · ${suggestion}`));
     });
   };
 
@@ -859,6 +1004,9 @@ export default function App() {
         onSaveMod={handleSaveModToLibrary}
         canSave={!!bundle && !!activeId}
         onShowRoadmap={() => setShowRoadmap(true)}
+        onOpenAI={() => setChatGPTPanelOpen(true)}
+        aiConnected={chatGPTStatus.connected && chatGPTStatus.planEnabled}
+        aiModel={chatGPTModel}
       />
 
       {/* Demo Controller */}
@@ -914,7 +1062,7 @@ export default function App() {
             onSend={onSend}
             onAnswer={answer}
             onLock={lockExpansions}
-            busy={phase === "generating"}
+            busy={phase === "generating" || chatGPTBusy}
           />
         </div>
         <div className="h-[520px] min-h-0 lg:h-auto">
@@ -970,6 +1118,22 @@ export default function App() {
         currentLine={codeViewportState.currentLine}
         modifiedLines={codeViewportState.modifiedLines}
         isGenerating={codeViewportState.isGenerating}
+      />
+
+      <ChatGPTPlanPanel
+        open={chatGPTPanelOpen}
+        status={chatGPTStatus}
+        models={chatGPTModels}
+        selectedModel={chatGPTModel}
+        busy={chatGPTBusy}
+        error={chatGPTError}
+        file={desktopFile}
+        onClose={() => setChatGPTPanelOpen(false)}
+        onSignIn={signInChatGPT}
+        onDisconnect={disconnectChatGPT}
+        onSelectModel={chooseChatGPTModel}
+        onRefreshModels={refreshChatGPTModels}
+        onPickFile={pickDesktopFile}
       />
 
       {/* Feature Roadmap Modal */}
