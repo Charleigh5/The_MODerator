@@ -10,6 +10,8 @@
 .m27-brand small { display:block; margin-top:4px; font-size:9px; color:#7aa5c8; letter-spacing:.2em; }
 .m27-new { display:flex; align-items:center; justify-content:center; gap:10px; background:#1374c7; border:1px solid #278de0; border-radius:9px; padding:13px 10px; color:white; font-weight:700; font-size:12px; }
 .m27-new:hover { background:#258be0; }
+.m27-library-launch { background:#12334f; border-color:#42789e; color:#e2f1ff; }
+.m27-library-launch:hover { background:#1b527a; }
 .m27-rail-heading,.m27-section-label { color:#6889a6; font-size:10px; font-weight:750; letter-spacing:.16em; }
 .m27-rail-heading { margin:26px 8px 10px; }
 .m27-template { width:100%; border:1px solid transparent; text-align:left; background:transparent; color:var(--m27-ink); display:flex; align-items:flex-start; gap:11px; border-radius:8px; padding:11px 8px; }

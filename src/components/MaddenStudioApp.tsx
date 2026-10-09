@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowDownToLine, ArrowUp, CheckCircle2, HelpCircle, Cpu, FileSearch, FileUp, Layers3, LockKeyhole, Plus, ShieldCheck, Sparkles, AlertTriangle } from "lucide-react";
+import { ArrowDownToLine, ArrowUp, BookOpen, CheckCircle2, HelpCircle, Cpu, FileSearch, FileUp, Layers3, LockKeyhole, Plus, ShieldCheck, Sparkles, AlertTriangle } from "lucide-react";
 import { buildModeratorInstructions } from "../lib/aiOrchestrator";
 import { compileStudioIntent, createStudioPlan, type StudioSource } from "../lib/maddenStudio";
 import type { ModIntentSpec } from "../lib/modIntentCompiler";
+import ModIntelligenceLibrary from "./ModIntelligenceLibrary";
+import type { ModCatalogEntry } from "../data/modIntelligence";
 import "./MaddenStudioApp.css";
 
 type Message = { id: number; role: "user" | "studio"; text: string; via?: string };
@@ -26,6 +28,7 @@ const initial = [GREETING];
 export default function MaddenStudioApp() {
   const [messages, setMessages] = useState<Message[]>(initial);
   const [draft, setDraft] = useState("");
+  const [libraryOpen, setLibraryOpen] = useState(false);
   const [lastPrompt, setLastPrompt] = useState("");
   const [spec, setSpec] = useState<ModIntentSpec | null>(null);
   const [source, setSource] = useState<StudioSource | null>(null);
@@ -148,6 +151,7 @@ export default function MaddenStudioApp() {
       <aside className="m27-rail" aria-label="Studio navigation">
         <div className="m27-brand"><span className="m27-brand-mark">M<span>27</span></span><div><strong>MODERATOR</strong><small>THE MOD STUDIO</small></div></div>
         <button className="m27-new" onClick={restart}><Plus size={17}/> New design session</button>
+        <button className="m27-new m27-library-launch" onClick={() => setLibraryOpen(true)}><BookOpen size={17}/> Mod intelligence library</button>
         <div className="m27-rail-heading">DESIGN LABS</div>
         {EXAMPLES.map((item, i) => (
           <button className="m27-template" key={item.title} onClick={() => { setDraft(item.prompt); promptRef.current?.focus(); }}>
@@ -159,7 +163,7 @@ export default function MaddenStudioApp() {
 
       <main className="m27-main">
         <header className="m27-top"><div className="m27-crumb">MOD STUDIO <span>/</span> WORKSPACE <span>/</span> MADDEN 27</div>
-          <div className="m27-top-right"><span className="m27-pulse"/> {desktop ? "WINDOWS COMPANION DETECTED" : "BROWSER STUDIO"} <span className="m27-version">PHASE 1</span></div>
+          <div className="m27-top-right"><span className="m27-pulse"/> {desktop ? "WINDOWS COMPANION DETECTED" : "BROWSER STUDIO"} <span className="m27-version">RESEARCH LAB</span></div>
         </header>
         <div className="m27-conversation" aria-label="Design conversation">
           <div className="m27-conversation-width">
@@ -227,6 +231,11 @@ export default function MaddenStudioApp() {
           {error && <p className="m27-error" role="alert">{error}</p>}
         </div>
       </aside>
+      {libraryOpen && <ModIntelligenceLibrary onClose={() => setLibraryOpen(false)} onUse={(item:ModCatalogEntry) => {
+        setDraft(`Madden 27: I want to design an original modification inspired by ${item.category.toLowerCase()} functionality: ${item.description} Do not assume the reference mod is licensed, compatible, or reusable.`);
+        setLibraryOpen(false);
+        promptRef.current?.focus();
+      }}/>}
     </div>
   );
 }

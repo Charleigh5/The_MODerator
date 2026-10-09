@@ -337,7 +337,13 @@ function createWindow(){
         const promptReady = Boolean(document.querySelector("#m27-prompt")?.value?.includes("visor"));
         buttons().find(b => b.textContent?.includes("Analyze request"))?.click();
         await new Promise(resolve => setTimeout(resolve, 250));
+        buttons().find(b => b.textContent?.includes("Mod intelligence library"))?.click();
+        await new Promise(resolve => setTimeout(resolve, 220));
+        const libraryCards = document.querySelectorAll(".m27-lib-card").length;
+        const libraryOpen = Boolean(document.querySelector(".m27-lib[role=dialog]"));
         return {
+          libraryOpen,
+          libraryCards,
           title: document.title,
           bridge: Boolean(window.moderatorDesktop?.isDesktop),
           studio: Boolean(document.querySelector(".m27-shell")),
@@ -347,8 +353,8 @@ function createWindow(){
         };
       })()`);
       console.log("MODERATOR_DESKTOP_SMOKE "+JSON.stringify(result));
-      const code=result.bridge&&result.studio&&result.promptReady&&result.messageCount>=3&&result.planEnabled?0:2;
-      await fs.writeFile(userPath("desktop-studio.png"),(await mainWindow.webContents.capturePage()).toPNG());
+      const code=result.bridge&&result.studio&&result.promptReady&&result.messageCount>=3&&result.planEnabled&&result.libraryOpen&&result.libraryCards>=37?0:2;
+      await fs.writeFile(userPath("desktop-mod-intelligence.png"),(await mainWindow.webContents.capturePage()).toPNG());
       await fs.writeFile(userPath("desktop-smoke.json"),JSON.stringify({
         at:new Date().toISOString(),
         code,

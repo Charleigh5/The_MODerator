@@ -1,0 +1,761 @@
+// Source-attributed research catalog. No third-party mod binaries or proprietary assets are embedded.
+// This file stores discovery metadata, never a claim that code/game modifications were tested.
+export interface ModCatalogEntry {
+  id:string; title:string; author:string; kind:"Community mod"|"Code & tools"; category:string;
+  description:string; evidence:string; url:string; compatibility:string;
+  distributionUrl?:string; access?:string; sentiment?:string; caveat?:string; license?:string;
+  platform?:string[]; target?:string; publishedEvidenceDate?:string;
+  language?:string; paths?:string; reuse?:string;
+}
+export const MOD_INTELLIGENCE_UPDATED="2026-10-09";
+export const MOD_INTELLIGENCE_SOURCES=[
+  "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+  "https://www.nexusmods.com/maddennfl27/mods/1",
+  "https://www.nexusmods.com/maddennfl27/mods/1?tab=posts",
+  "https://www.youtube.com/watch?v=hHmNCKg-TE8",
+  "https://github.com/FMTDev/FMT.Madden26Plugin",
+  "https://github.com/bep713/madden-franchise"
+];
+export const modIntelligenceCatalog:ModCatalogEntry[]=[
+  {
+    "id": "mod-001",
+    "title": "X-2357 Ultimate Roster",
+    "author": "X2357",
+    "kind": "Community mod",
+    "category": "Roster",
+    "description": "Combined current NFL players and all-time teams; save-file install.",
+    "evidence": "NEXUS_LISTING",
+    "url": "https://www.nexusmods.com/maddennfl27/mods/1",
+    "distributionUrl": "https://www.nexusmods.com/maddennfl27/mods/1",
+    "access": "MANUAL_ACCOUNT",
+    "sentiment": "MIXED_COMMENTS",
+    "caveat": "Roster selection, legends, ratings; some commenters report missing limbs on unofficial repacks; author disputes reproducibility on legitimate build.",
+    "license": "REHOST_PROHIBITED",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-10-05"
+  },
+  {
+    "id": "mod-002",
+    "title": "SABOS Franchise Mod 1.2",
+    "author": "SABOS",
+    "kind": "Community mod",
+    "category": "Franchise",
+    "description": "Sim-stat tuning, regression/progression, injuries, retirements and mini-game rewards.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Early release as of Sep 25; full gameplay/franchise package was pending; exact latest version unverified.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-003",
+    "title": "SABOS Speed Mod 1.0",
+    "author": "SABOS",
+    "kind": "Community mod",
+    "category": "Gameplay",
+    "description": "Player ball-carrier movement speed tuning and gameplay feel.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Early companion; do not stack with other gameplay overhauls without verified conflict analysis.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-004",
+    "title": "Madden 27 Unlocked",
+    "author": "MMC community contributors",
+    "kind": "Community mod",
+    "category": "Equipment",
+    "description": "Additional cleats, sleeves, jersey fits, pants, tattoos and equipment customization.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Equipment unlocks reported; dependent avatar and head combinations can clip; licensing unverified.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-005",
+    "title": "Realistic Franchise Mod",
+    "author": "Community collaborators",
+    "kind": "Community mod",
+    "category": "Franchise",
+    "description": "Authentic weekly updates, draft classes, portraits, transactions, depth charts and player equipment.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Reported to require Unlocked for gear; author/version and exact patch support need confirmation.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-006",
+    "title": "NFL Broadcast Scorebugs",
+    "author": "Sim League TV",
+    "kind": "Community mod",
+    "category": "Presentation",
+    "description": "Alternative Prime Video, CBS and Fox style score overlays.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Overlaps with full presentation packages; broadcast branding permission not established.",
+    "license": "RIGHTS_REVIEW",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-007",
+    "title": "ESPN Monday Night Presentation",
+    "author": "icicle22",
+    "kind": "Community mod",
+    "category": "Presentation",
+    "description": "Monday Night Football themed presentation and audio.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Broad replacement scope; may conflict with other UI/sound packs; proprietary media rights.",
+    "license": "RIGHTS_REVIEW",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-008",
+    "title": "Thursday Night Presentation",
+    "author": "icicle22",
+    "kind": "Community mod",
+    "category": "Presentation",
+    "description": "Prime Video / Thursday Night Football themed presentation.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "More extensive than scorebug; choose one overlapping broadcast package.",
+    "license": "RIGHTS_REVIEW",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-009",
+    "title": "Real Broadcast Music",
+    "author": "WiiMaster",
+    "kind": "Community mod",
+    "category": "Audio",
+    "description": "Broadcast themes and music for multiple TV networks.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Commercial broadcast music is not cleared for hosting or commercial derivative assets.",
+    "license": "RIGHTS_REVIEW",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-010",
+    "title": "Realistic Entrance Music",
+    "author": "smoovy",
+    "kind": "Community mod",
+    "category": "Audio",
+    "description": "Stadium entrance music associated with NFL teams.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Music and trademark licensing unresolved; metadata only.",
+    "license": "RIGHTS_REVIEW",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-011",
+    "title": "EJ Gameplay",
+    "author": "EJ",
+    "kind": "Community mod",
+    "category": "Gameplay",
+    "description": "All-Pro / All-Madden gameplay tuning and optional auto-playcalling.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Alternative to SABOS gameplay; do not stack overlapping gameplay mods.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-012",
+    "title": "Coach Mode / SlowSim",
+    "author": "Buhbooh",
+    "kind": "Community mod",
+    "category": "Gameplay",
+    "description": "CPU-versus-CPU realism and coaching-oriented balance.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Tuned for Coach Mode; other settings and patch compatibility untested.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-013",
+    "title": "Stadium Experience",
+    "author": "aholbert and collaborators",
+    "kind": "Community mod",
+    "category": "Stadium",
+    "description": "Stadium ribbon boards, jumbotron displays and location-specific signage.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Assets may contain real advertising trademarks and copyrighted video; no reuse rights inferred.",
+    "license": "RIGHTS_REVIEW",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-014",
+    "title": "Coach Wardrobe Tool",
+    "author": "WiiMaster",
+    "kind": "Community mod",
+    "category": "Customization",
+    "description": "Randomized or contextual sideline coach apparel.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Temperature-aware rule described; code and trigger integration not independently inspected.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-015",
+    "title": "Franchise to Roster Converter",
+    "author": "Chancellor LarrySZNN",
+    "kind": "Community mod",
+    "category": "Save tools",
+    "description": "Convert Madden 24–27 franchise state to roster data.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Multi-title support claimed by editorial source, but precise schema and field fidelity unverified.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-016",
+    "title": "Madden 26→27 Franchise Converter",
+    "author": "Bry",
+    "kind": "Community mod",
+    "category": "Save tools",
+    "description": "Convert a Madden 26 franchise into a Madden 27 franchise.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "High-risk save conversion; require copies, readback and exact patch-specific validation.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-017",
+    "title": "CFB27→Madden27 Draft Importer",
+    "author": "ChanceDaWrapper",
+    "kind": "Community mod",
+    "category": "Draft tools",
+    "description": "Transfer outgoing College Football dynasty players into a Madden 27 draft class.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Cross-title mapping and direct save writes claimed; no independent byte-level proof here.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-018",
+    "title": "2017–18 Historical Roster",
+    "author": "WiiMaster",
+    "kind": "Community mod",
+    "category": "Historical",
+    "description": "2017-era uniforms, rosters, teams, fields and period rules.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Reported beta, not franchise-ready as of Sep 25.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-019",
+    "title": "2020–21 Historical Roster",
+    "author": "ccbvls",
+    "kind": "Community mod",
+    "category": "Historical",
+    "description": "2020-era rosters and historical football presentation.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Reported beta as of Sep 25; precise file contents unknown.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-020",
+    "title": "Madden 14 Historical Roster",
+    "author": "Ju3tinYT",
+    "kind": "Community mod",
+    "category": "Historical",
+    "description": "Historical Madden 14-era roster data for Madden 27.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "NOT_ASSESSED",
+    "caveat": "Editorial source mentions availability; detail/version unverified.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-021",
+    "title": "Madden 05 Historical Roster",
+    "author": "Ju3tinYT",
+    "kind": "Community mod",
+    "category": "Historical",
+    "description": "Historical Madden 05-era roster data for Madden 27.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "NOT_ASSESSED",
+    "caveat": "Editorial source mentions availability; detail/version unverified.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-022",
+    "title": "91-Year Draft Class Generator",
+    "author": "Bluechummy",
+    "kind": "Community mod",
+    "category": "Draft tools",
+    "description": "Reported historical draft generator spanning 91 classes and configurable player ratings.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Counts in editorial source are author claims, not audited dataset; player photo rights unresolved.",
+    "license": "RIGHTS_REVIEW",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-023",
+    "title": "Division Realignment Tool",
+    "author": "Chancellor LarrySZNN",
+    "kind": "Community mod",
+    "category": "Save tools",
+    "description": "Re-map Madden franchise divisions and rename them.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Save-data boundaries and supported builds unknown.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-024",
+    "title": "Regenerate Franchise Schedule",
+    "author": "WiiMaster",
+    "kind": "Community mod",
+    "category": "Save tools",
+    "description": "Regenerate franchise schedules beyond the initial season.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Schedule integrity/readback unverified.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-025",
+    "title": "CFB-Style Behind-QB Camera",
+    "author": "49UNCFAN",
+    "kind": "Community mod",
+    "category": "Camera",
+    "description": "College-football-style quarterback camera positioning in Madden 27.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Experimental visual preference; potential collisions with other camera mods.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-026",
+    "title": "Next-Gen Dynamic SkyCam",
+    "author": "Judah",
+    "kind": "Community mod",
+    "category": "Camera",
+    "description": "Stadium cable-camera-inspired in-game viewpoints.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Camera scope and gameplay side effects require in-game verification.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-027",
+    "title": "Broadcast Camera",
+    "author": "CujoMatty",
+    "kind": "Community mod",
+    "category": "Camera",
+    "description": "Broadcast-angle camera adjustment for Madden 27.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Alternative camera modification; avoid overlapping camera configuration mods.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-028",
+    "title": "Remove Ultimate Team Menu",
+    "author": "Community creator not verified",
+    "kind": "Community mod",
+    "category": "User interface",
+    "description": "Remove or hide Ultimate Team entry from main menu.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "NOT_ASSESSED",
+    "caveat": "Specific creator/build/package not attributed in article.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-029",
+    "title": "Skip Startup Videos",
+    "author": "Community creator not verified",
+    "kind": "Community mod",
+    "category": "User interface",
+    "description": "Remove or shorten bootflow video presentation.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "NOT_ASSESSED",
+    "caveat": "Exact method and game-version compatibility unknown.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-030",
+    "title": "60 FPS Main Menu",
+    "author": "WiiMaster",
+    "kind": "Community mod",
+    "category": "User interface",
+    "description": "Menu framerate option reportedly unlocked to 60 FPS.",
+    "evidence": "EDITORIAL_REPORT",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "EDITORIAL_POSITIVE",
+    "caveat": "Performance/compatibility not measured on reference device.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-09-25"
+  },
+  {
+    "id": "mod-031",
+    "title": "Trix Player Hair Fix",
+    "author": "Trix",
+    "kind": "Community mod",
+    "category": "Equipment",
+    "description": "Correct a small group of helmet hair styles including Kyler Murray's hairstyle.",
+    "evidence": "VIDEO_DEMONSTRATION",
+    "url": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+    "distributionUrl": "https://discord.com/invite/maddenmoddingcommunity",
+    "access": "DISCORD",
+    "sentiment": "NOT_ASSESSED",
+    "caveat": "Shown in Shady Mike's Madden 27 tutorial, package and current patch not independently inspected.",
+    "license": "PERMISSION_UNKNOWN",
+    "platform": [
+      "Windows PC"
+    ],
+    "target": "MADDEN27",
+    "compatibility": "EXACT_BUILD_NOT_VERIFIED",
+    "publishedEvidenceDate": "2026-08-11"
+  },
+  {
+    "id": "dev-fmt-madden-27-profile-compiler",
+    "title": "FMT Madden 27 Profile & Compiler",
+    "author": "FMTDev",
+    "kind": "Code & tools",
+    "category": "Developer",
+    "description": "Frostbite asset profile, EBX/RES/chunk mapping, TOC/CAS compilation infrastructure; game-launch and mesh-import switches explicitly false.",
+    "language": "C# / .NET 10",
+    "paths": "Madden27Profile.json; Source/Core/Compiler/Madden27AssetCompiler.cs",
+    "license": "CC-BY-NC-ND-4.0",
+    "evidence": "SOURCE_INSPECTED",
+    "url": "https://github.com/FMTDev/FMT.Madden26Plugin",
+    "reuse": "NO_DERIVATIVE_REUSE",
+    "compatibility": "MADDEN27_NOT_GAME_VERIFIED"
+  },
+  {
+    "id": "dev-madden-franchise-parser",
+    "title": "madden-franchise parser",
+    "author": "bep713",
+    "kind": "Code & tools",
+    "category": "Developer",
+    "description": "Read/parse franchise container; event-based ready state, table parsing, schema-based data access. Madden27 field parity unverified.",
+    "language": "JavaScript / Node.js",
+    "paths": "src/FranchiseFile.js; package.json",
+    "license": "MIT_PACKAGE_METADATA",
+    "evidence": "SOURCE_INSPECTED",
+    "url": "https://github.com/bep713/madden-franchise",
+    "reuse": "REVIEW_REUSE_POSSIBLE",
+    "compatibility": "MADDEN27_NOT_GAME_VERIFIED"
+  },
+  {
+    "id": "dev-mmc-frosty-modding-tools",
+    "title": "MMC Frosty Modding Tools",
+    "author": "bphit4 / MMC",
+    "kind": "Code & tools",
+    "category": "Developer",
+    "description": "Community packaging and UI workflow reference; exact Madden27 release binary and runtime compatibility not inspected.",
+    "language": "Packaged binaries + documentation",
+    "paths": "README.md; GitHub Releases",
+    "license": "UNKNOWN",
+    "evidence": "DOCS_INSPECTED",
+    "url": "https://github.com/bphit4/MMC-Frosty-Modding-Tools",
+    "reuse": "NO_CODE_EXTRACTED",
+    "compatibility": "MADDEN27_NOT_GAME_VERIFIED"
+  },
+  {
+    "id": "dev-frostytoolsuite-reference",
+    "title": "FrostyToolsuite reference",
+    "author": "CadeEvs",
+    "kind": "Code & tools",
+    "category": "Developer",
+    "description": "Historical Frostbite tooling architecture reference; no claimed Madden27 runtime support.",
+    "language": "C#",
+    "paths": "Frosty editor/mod manager/sdk",
+    "license": "UNKNOWN",
+    "evidence": "REPOSITORY_DISCOVERED",
+    "url": "https://github.com/CadeEvs/FrostyToolsuite",
+    "reuse": "NO_CODE_EXTRACTED",
+    "compatibility": "MADDEN27_NOT_GAME_VERIFIED"
+  },
+  {
+    "id": "dev-cfb27-dynasty-research",
+    "title": "CFB27 dynasty research",
+    "author": "eric-levinson",
+    "kind": "Code & tools",
+    "category": "Developer",
+    "description": "Separate universe; pattern reference only; never inherit CFB identifiers or save schemas into Madden27.",
+    "language": "Various code and schemas",
+    "paths": "CFB27-specific save writer and table documentation",
+    "license": "UNKNOWN",
+    "evidence": "REPOSITORY_DISCOVERED",
+    "url": "https://github.com/eric-levinson/cfb27-dynasty-modding",
+    "reuse": "NO_MADDEN_PARITY",
+    "compatibility": "MADDEN27_NOT_GAME_VERIFIED"
+  },
+  {
+    "id": "dev-suspicious-madden-27-manager-listing",
+    "title": "Suspicious Madden 27 Manager listing",
+    "author": "MilliHairdresserWire",
+    "kind": "Code & tools",
+    "category": "Developer",
+    "description": "README advertises full roster/load-order editing but only one 53-byte Python source file observed; no credible functional implementation.",
+    "language": "Python",
+    "paths": "manager.py (53 bytes)",
+    "license": "UNKNOWN",
+    "evidence": "INSUFFICIENT_IMPLEMENTATION",
+    "url": "https://github.com/MilliHairdresserWire/Madden-27-Mod-Manager",
+    "reuse": "DO_NOT_RECOMMEND",
+    "compatibility": "MADDEN27_NOT_GAME_VERIFIED"
+  }
+];
