@@ -22,6 +22,7 @@
     "src/lib/gameplayExperimentLab.ts",
     "src/types.ts",
     "src/lib/evidenceBundle.ts",
+    "src/lib/maddenStudio.ts",
     "src/lib/aiOrchestrator.ts"
   ]
 }

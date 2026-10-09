@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
-    "gauntlet": "tsc -p tsconfig.gauntlet.json && node tests/gauntlet.mjs && node tests/gameplay-lab.mjs && node tests/filter-asset-inventory.mjs && node tests/ai-orchestrator.mjs && node tests/siwc-core.mjs",
+    "gauntlet": "tsc -p tsconfig.gauntlet.json && node tests/gauntlet.mjs && node tests/gameplay-lab.mjs && node tests/filter-asset-inventory.mjs && node tests/ai-orchestrator.mjs && node tests/siwc-core.mjs && node tests/madden-studio.mjs && node tests/studio-plan.mjs",
     "desktop": "npm run build && electron .",
     "desktop:pack": "npm run build && electron-builder --win nsis portable"
   },
@@ -38,7 +38,7 @@
     "vite": "^6.3.5"
   },
   "version": "0.1.0",
-  "description": "Evidence-gated Madden and College Football mod intelligence workbench",
+  "description": "Madden NFL 27 PC mod studio and local Windows verification companion",
   "main": "desktop/main.mjs",
   "build": {
     "appId": "com.charleigh5.moderator",

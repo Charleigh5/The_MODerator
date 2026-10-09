@@ -13,6 +13,7 @@ import {
   consumeResponseEvent,
   normalizeModels,
 } from "./lib/siwc-core.mjs";
+import { inspectStudioPlan } from "./lib/studio-plan.mjs";
 
 const APP_NAME="MODerator Desktop";
 const TOKEN_ENDPOINT="https://auth.openai.com/api/accounts/oauth/token";
@@ -297,6 +298,19 @@ async function pickLocalFile(){
   return {path:file,name:path.basename(file),extension:ext,size:stat.size,sha256:await hashFile(file),preview};
 }
 
+async function importStudioPlan() {
+  const chosen = await dialog.showOpenDialog(mainWindow, {
+    title: "Inspect a Madden 27 Studio plan",
+    properties: ["openFile"],
+    filters: [{ name: "Madden Studio JSON plan", extensions: ["json"] }],
+  });
+  if (chosen.canceled || !chosen.filePaths[0]) return null;
+  const file = chosen.filePaths[0];
+  const stat = await fs.stat(file);
+  if (!stat.isFile() || stat.size > 1024 * 1024) throw new Error("Plan must be a JSON file under 1 MiB.");
+  return { name: path.basename(file), ...inspectStudioPlan(await fs.readFile(file, "utf8")) };
+}
+
 function createWindow(){
   mainWindow=new BrowserWindow({
     width:1440,height:960,minWidth:1100,minHeight:720,
@@ -315,14 +329,26 @@ function createWindow(){
   mainWindow.webContents.once("did-finish-load",async()=>{
     if(process.env.MODERATOR_SMOKE_TEST!=="1") return;
     try {
-      const result=await mainWindow.webContents.executeJavaScript(`({
-        title: document.title,
-        bridge: Boolean(window.moderatorDesktop?.isDesktop),
-        chatgptControl: Array.from(document.querySelectorAll("button")).some((b)=>b.textContent?.includes("CHATGPT")),
-        bodyText: document.body.innerText.slice(0,120)
-      })`);
+      const result=await mainWindow.webContents.executeJavaScript(`(async () => {
+        const buttons = () => Array.from(document.querySelectorAll("button"));
+        const sample = buttons().find(b => b.textContent?.includes("Player equipment"));
+        sample?.click();
+        await new Promise(resolve => setTimeout(resolve, 100));
+        const promptReady = Boolean(document.querySelector("#m27-prompt")?.value?.includes("visor"));
+        buttons().find(b => b.textContent?.includes("Analyze request"))?.click();
+        await new Promise(resolve => setTimeout(resolve, 250));
+        return {
+          title: document.title,
+          bridge: Boolean(window.moderatorDesktop?.isDesktop),
+          studio: Boolean(document.querySelector(".m27-shell")),
+          promptReady,
+          messageCount: document.querySelectorAll(".m27-message").length,
+          planEnabled: Boolean(buttons().find(b => b.textContent?.includes("Download evidence plan") && !b.disabled))
+        };
+      })()`);
       console.log("MODERATOR_DESKTOP_SMOKE "+JSON.stringify(result));
-      const code=result.bridge&&result.chatgptControl?0:2;
+      const code=result.bridge&&result.studio&&result.promptReady&&result.messageCount>=3&&result.planEnabled?0:2;
+      await fs.writeFile(userPath("desktop-studio.png"),(await mainWindow.webContents.capturePage()).toPNG());
       await fs.writeFile(userPath("desktop-smoke.json"),JSON.stringify({
         at:new Date().toISOString(),
         code,
@@ -355,6 +381,7 @@ app.whenReady().then(()=>{
   ipcMain.handle("moderator:list-models",listModels);
   ipcMain.handle("moderator:chat",runResponse);
   ipcMain.handle("moderator:pick-file",pickLocalFile);
+  ipcMain.handle("moderator:import-studio-plan",importStudioPlan);
   createWindow();
   app.on("activate",()=>{if(BrowserWindow.getAllWindows().length===0)createWindow();});
 });

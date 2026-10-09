@@ -37,6 +37,17 @@ declare global {
       onDelta:(callback:(payload:{requestId:string;delta:string})=>void)=>()=>void;
     };
     files:{pick:()=>Promise<ModeratorLocalFile|null>};
+    studio:{importPlan:()=>Promise<{
+      name:string;
+      status:"PLAN_IMPORTED_UNVERIFIED";
+      target:"MADDEN27";
+      requestedReadiness:string;
+      sourceState:string;
+      localArtifactBuilt:boolean;
+      gameRuntimeTested:boolean;
+      sha256:string;
+      caveat:string;
+    }|null>};
   }
   interface Window { moderatorDesktop?:ModeratorDesktopBridge; }
 }
