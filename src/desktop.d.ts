@@ -37,6 +37,7 @@ declare global {
       onDelta:(callback:(payload:{requestId:string;delta:string})=>void)=>()=>void;
     };
     files:{pick:()=>Promise<ModeratorLocalFile|null>};
+    modWatch:{snapshot:()=>Promise<{schema:"MOD_WATCH_SNAPSHOT_V1";observedAt:string;status:"OK"|"PARTIAL";counts:{totalObserved:number;newItems:number;failedSources:number;sourcesSucceeded:number};sourceStatus:Array<{id:string;status:"OK"|"ERROR";errorCode:string|null}>;events:Array<{id:string;sourceId:string;kind:"TOOL_RELEASE"|"TOOL_COMMIT"|"PATCH_CANDIDATE"|"EA_NEWS";provider:"GITHUB"|"EA_OFFICIAL";modId:string|null;title:string;publishedDate:string|null;observedAt:string;detection:"INITIAL_BASELINE"|"NEW_SOURCE_ITEM";url:string;status:string;summary:string}>}|null>};
     studio:{importPlan:()=>Promise<{
       name:string;
       status:"PLAN_IMPORTED_UNVERIFIED";

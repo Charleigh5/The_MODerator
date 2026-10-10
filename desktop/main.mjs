@@ -14,6 +14,7 @@ import {
   normalizeModels,
 } from "./lib/siwc-core.mjs";
 import { inspectStudioPlan } from "./lib/studio-plan.mjs";
+import { readOnlyWatchSnapshot } from "./lib/mod-watch-read.mjs";
 
 const APP_NAME="MODerator Desktop";
 const TOKEN_ENDPOINT="https://auth.openai.com/api/accounts/oauth/token";
@@ -342,11 +343,13 @@ function createWindow(){
         const libraryCards = document.querySelectorAll(".m27-lib-card").length;
         const libraryOpen = Boolean(document.querySelector(".m27-lib[role=dialog]"));
         buttons().find(b => b.textContent?.includes("Community quality audit"))?.click();
-        await new Promise(resolve => setTimeout(resolve, 180));
+        await new Promise(resolve => setTimeout(resolve, 450));
+        const liveWatchItems = document.querySelectorAll(".m27-ci-live-items a").length;
         const patchCards = document.querySelectorAll(".m27-ci-patch").length;
         const assessmentRows = document.querySelectorAll(".m27-ci-row").length;
         const communityPanel = Boolean(document.querySelector(".m27-ci"));
         return {
+          liveWatchItems,
           patchCards,
           assessmentRows,
           communityPanel,
@@ -361,8 +364,8 @@ function createWindow(){
         };
       })()`);
       console.log("MODERATOR_DESKTOP_SMOKE "+JSON.stringify(result));
-      const code=result.bridge&&result.studio&&result.promptReady&&result.messageCount>=3&&result.planEnabled&&result.libraryOpen&&result.libraryCards>=37&&result.communityPanel&&result.patchCards===2&&result.assessmentRows===37?0:2;
-      await fs.writeFile(userPath("desktop-community-intelligence.png"),(await mainWindow.webContents.capturePage()).toPNG());
+      const code=result.bridge&&result.studio&&result.promptReady&&result.messageCount>=3&&result.planEnabled&&result.libraryOpen&&result.libraryCards>=37&&result.communityPanel&&result.patchCards===2&&result.assessmentRows===37&&result.liveWatchItems>=1?0:2;
+      await fs.writeFile(userPath("desktop-mod-watch.png"),(await mainWindow.webContents.capturePage()).toPNG());
       await fs.writeFile(userPath("desktop-smoke.json"),JSON.stringify({
         at:new Date().toISOString(),
         code,
@@ -396,6 +399,10 @@ app.whenReady().then(()=>{
   ipcMain.handle("moderator:chat",runResponse);
   ipcMain.handle("moderator:pick-file",pickLocalFile);
   ipcMain.handle("moderator:import-studio-plan",importStudioPlan);
+  ipcMain.handle("moderator:mod-watch-snapshot",async()=>{
+    try { return readOnlyWatchSnapshot(await fs.readFile(path.join(app.getPath("userData"),"mod-watch","latest.json"),"utf8")); }
+    catch(err){if(err.code==="ENOENT")return null;throw err;}
+  });
   createWindow();
   app.on("activate",()=>{if(BrowserWindow.getAllWindows().length===0)createWindow();});
 });

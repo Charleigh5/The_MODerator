@@ -18,4 +18,5 @@ contextBridge.exposeInMainWorld("moderatorDesktop",{
   },
   files:{pick:()=>ipcRenderer.invoke("moderator:pick-file")},
   studio:{importPlan:()=>ipcRenderer.invoke("moderator:import-studio-plan")},
+  modWatch:{snapshot:()=>ipcRenderer.invoke("moderator:mod-watch-snapshot")},
 });
