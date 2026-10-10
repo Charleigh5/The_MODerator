@@ -25,6 +25,8 @@
     "src/lib/maddenStudio.ts",
     "src/data/modIntelligence.ts",
     "src/lib/modLibrarySearch.ts",
+    "src/data/communityEvidence.ts",
+    "src/lib/communityScoring.ts",
     "src/lib/aiOrchestrator.ts"
   ]
 }

@@ -2,11 +2,14 @@ import { useEffect,useMemo,useState } from "react";
 import {ArrowRight, BookOpen, Code2, ExternalLink, Filter, Search, ShieldAlert, X} from "lucide-react";
 import {modIntelligenceCatalog,MOD_INTELLIGENCE_UPDATED,type ModCatalogEntry} from "../data/modIntelligence";
 import {searchModCatalog} from "../lib/modLibrarySearch";
+import {communityAssessments} from "../lib/communityScoring";
+import CommunityIntelligencePanel from "./CommunityIntelligencePanel";
 import "./ModIntelligenceLibrary.css";
 
 type Props={onClose:()=>void;onUse:(item:ModCatalogEntry)=>void};
 export default function ModIntelligenceLibrary({onClose,onUse}:Props){
  const [query,setQuery]=useState("");
+ const [communityOpen,setCommunityOpen]=useState(false);
  const [kind,setKind]=useState<"All"|"Community mod"|"Code & tools">("All");
  const [category,setCategory]=useState("All");
  const categories=useMemo(()=>["All",...new Set(modIntelligenceCatalog.filter(item=>kind==="All"||item.kind===kind).map(x=>x.category))].sort((a,b)=>a==="All"?-1:b==="All"?1:a.localeCompare(b)),[kind]);
@@ -23,21 +26,23 @@ export default function ModIntelligenceLibrary({onClose,onUse}:Props){
    <div className="m27-lib-controls">
     <label className="m27-lib-search"><Search size={18}/><input aria-label="Search mod knowledge" value={query} onChange={e=>setQuery(e.target.value)} placeholder="Ask: realistic franchise development, dark visors, camera angles, stadiums…"/></label>
     <div className="m27-lib-filters"><label><BookOpen size={15}/> Source type<select value={kind} onChange={e=>{setKind(e.target.value as typeof kind);setCategory("All");}}><option>All</option><option>Community mod</option><option>Code & tools</option></select></label>
-    <label><Filter size={15}/> Category<select value={category} onChange={e=>setCategory(e.target.value)}>{categories.map(c=><option key={c}>{c}</option>)}</select></label></div>
+    <label><Filter size={15}/> Category<select value={category} onChange={e=>setCategory(e.target.value)}>{categories.map(c=><option key={c}>{c}</option>)}</select></label><button type="button" className="m27-lib-audit-btn" onClick={()=>setCommunityOpen(x=>!x)}>{communityOpen?"Return to mod catalog":"Community quality audit"}</button></div>
    </div>
    <div className="m27-lib-notice"><ShieldAlert size={18}/><span><b>Research intelligence, not a verified download repository.</b> Search uses transparent intent-keyword expansion, not embeddings. Source reports are not game tests. License, patch compatibility and security must pass before installing or reusing files.</span></div>
-   <div className="m27-lib-results-heading">{matches.length} sources match <span>{query?"intent keyword search":"all categories"} · Madden 27 research</span></div>
+   <div className="m27-lib-results-heading">{communityOpen?"Community quality, evidence & patch timeline":`${matches.length} sources match`} <span>{communityOpen?"Source-derived, confidence-gated scores":`${query?"intent keyword search":"all categories"} · Madden 27 research`}</span></div>
    <div className="m27-lib-list" aria-live="polite">
+   {communityOpen ? <CommunityIntelligencePanel/> : <>
     {matches.map(m=><article className="m27-lib-card" key={m.id}>
      <div className="m27-lib-card-header"><div className="m27-lib-icon">{m.kind==="Code & tools"?<Code2 size={18}/>:<BookOpen size={18}/>}</div><div><div className="m27-lib-tags"><span>{m.category}</span><span>{m.evidence.replace(/_/g," ")}</span></div><h3>{m.title}</h3><div className="m27-lib-author">by {m.author} • {m.kind}</div></div></div>
      <p>{m.description}</p>
      <div className="m27-lib-caution">{m.caveat??`License: ${m.license??"UNKNOWN"} • Reuse policy: ${m.reuse??"NOT_VERIFIED"}.`}</div>
-     <div className="m27-lib-lower"><span className="m27-lib-state">{m.kind==="Community mod"?"MADDEN27 CLAIM • NOT TESTED":"CODE REFERENCE • NOT GAME VERIFIED"}</span>
+     <div className="m27-lib-lower"><span className="m27-lib-state">{m.kind==="Community mod"?"MADDEN27 CLAIM • NOT TESTED":"CODE REFERENCE • NOT GAME VERIFIED"} · EVIDENCE {communityAssessments.find(x=>x.id===m.id)?.evidenceScore??0}/100 · USER QUALITY UNRATED</span>
      <div className="m27-lib-buttons"><a target="_blank" rel="noopener noreferrer" href={m.url}>Read source <ExternalLink size={13}/></a>
      {m.distributionUrl&&m.distributionUrl!==m.url&&<a target="_blank" rel="noopener noreferrer" href={m.distributionUrl}>Creator community <ExternalLink size={13}/></a>}
      <button onClick={()=>onUse(m)}>Use as inspiration <ArrowRight size={13}/></button></div></div>
     </article>)}
     {!matches.length&&<div className="m27-lib-empty">No entries match these filters. Try an equipment, franchise, camera, stadium, or source-code description.</div>}
+   </>}
    </div>
    <footer className="m27-lib-foot"><span>Mod listings remain owned by their respective creators. No copyrighted binary/code distribution or anti-cheat operations are provided here.</span><button onClick={onClose}>Return to studio</button></footer>
   </section>

@@ -6,7 +6,7 @@
     "dev": "vite",
     "build": "vite build",
     "typecheck": "tsc --noEmit",
-    "gauntlet": "tsc -p tsconfig.gauntlet.json && node tests/gauntlet.mjs && node tests/gameplay-lab.mjs && node tests/filter-asset-inventory.mjs && node tests/ai-orchestrator.mjs && node tests/siwc-core.mjs && node tests/madden-studio.mjs && node tests/studio-plan.mjs && node tests/mod-intelligence.mjs",
+    "gauntlet": "tsc -p tsconfig.gauntlet.json && node tests/gauntlet.mjs && node tests/gameplay-lab.mjs && node tests/filter-asset-inventory.mjs && node tests/ai-orchestrator.mjs && node tests/siwc-core.mjs && node tests/madden-studio.mjs && node tests/studio-plan.mjs && node tests/mod-intelligence.mjs && node tests/community-intelligence.mjs",
     "desktop": "npm run build && electron .",
     "desktop:pack": "npm run build && electron-builder --win nsis portable"
   },

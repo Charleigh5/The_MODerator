@@ -1,0 +1,1477 @@
+{
+  "schema": "COMMUNITY_INTELLIGENCE_V1",
+  "researchedThrough": "2026-10-09",
+  "target": "MADDEN27_PC",
+  "sourceAuthority": "EA_PATCHES > HOST_METADATA_AND_DIRECT_POSTS > NAMED_EDITORIAL > INFERENCE",
+  "status": "RESEARCH_NOT_MOD_TESTING",
+  "interpretation": {
+    "evidenceScore": "0-100 source coverage / explainable evidence sufficiency, NOT community satisfaction. Capped at 65 absent game runtime proof.",
+    "qualityScore": "null until >=3 independent firsthand reports and verified exact-build game test.",
+    "deduplication": "same mod + issue + reporter + game-install context = one cluster; raw post count preserved.",
+    "patch": "surface-overlap is a retest suggestion, never proof of incompatibility.",
+    "limitations": "Selected sources, not exhaustive Discord access or statistically representative community sampling."
+  },
+  "officialPatches": [
+    {
+      "id": "EA-M27-2026-08-26",
+      "effectiveDate": "2026-08-26",
+      "notesPublishedDate": "2026-08-25",
+      "sourceUrl": "https://www.ea.com/games/madden-nfl/madden-nfl-27/news/m27-title-update-august-26-2026",
+      "title": "Madden 27 August 26 Title Update",
+      "official": true,
+      "knownBuildNumber": null,
+      "impactedDomains": [
+        "Franchise",
+        "Roster",
+        "Equipment",
+        "Customization",
+        "Historical"
+      ],
+      "changes": [
+        "CPU wear-and-tear and injury handling",
+        "Custom roster Franchise import behavior",
+        "Contract void-year calculation",
+        "Nike Rivalries uniforms and Superstar stability"
+      ]
+    },
+    {
+      "id": "EA-M27-2026-09-16",
+      "effectiveDate": "2026-09-16",
+      "notesPublishedDate": "2026-09-15",
+      "sourceUrl": "https://www.ea.com/games/madden-nfl/madden-nfl-27/news/madden-nfl-27-title-update-september-16",
+      "title": "Madden 27 September 16 Title Update",
+      "official": true,
+      "knownBuildNumber": null,
+      "impactedDomains": [
+        "Gameplay",
+        "Franchise",
+        "Roster",
+        "Equipment",
+        "Customization",
+        "Presentation",
+        "Camera",
+        "Stadium",
+        "Historical",
+        "Audio"
+      ],
+      "changes": [
+        "Passing/coverage and defensive tuning",
+        "Free agency, contract, retirement and salary-cap updates",
+        "Scorebug, broadcast packages, camera and stadium changes",
+        "New cleats, facemasks, Guardian Caps and presentation fixes"
+      ]
+    }
+  ],
+  "evidenceRecords": [
+    {
+      "id": "nexus-metadata-v5",
+      "modId": "mod-001",
+      "issueKey": "RELEASE_METADATA",
+      "reporterKey": "nexus-listing",
+      "role": "HOST_METADATA",
+      "date": "2026-10-05",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://www.nexusmods.com/maddennfl27/mods/1",
+      "stance": "NEUTRAL",
+      "scope": "UNSPECIFIED",
+      "statement": "Nexus listing reports version 5, updated October 5; public host metadata and virus-scan label are not independent game tests.",
+      "sourceStrength": "DIRECT",
+      "independenceKey": "nexus-listing-1",
+      "issueOutcome": "NOT_APPLICABLE"
+    },
+    {
+      "id": "nexus-complaint-0929",
+      "modId": "mod-001",
+      "issueKey": "PLAYER_APPEARANCE_MISSING_LIMBS",
+      "reporterKey": "nexus-reviewer-A",
+      "role": "PLAYER_REPORT",
+      "date": "2026-09-29",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://www.nexusmods.com/maddennfl27/mods/1?tab=posts",
+      "stance": "UNFAVORABLE",
+      "scope": "UNOFFICIAL_REPACK",
+      "statement": "User reports missing legs, transparent bodies and incomplete portraits while describing an unofficial repacked game build.",
+      "sourceStrength": "DIRECT",
+      "independenceKey": "nexus-reviewer-A",
+      "issueOutcome": "DISPUTED"
+    },
+    {
+      "id": "nexus-complaint-0930",
+      "modId": "mod-001",
+      "issueKey": "PLAYER_APPEARANCE_MISSING_LIMBS",
+      "reporterKey": "nexus-reviewer-A",
+      "role": "PLAYER_REPORT",
+      "date": "2026-09-30",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://www.nexusmods.com/maddennfl27/mods/1?tab=posts",
+      "stance": "UNFAVORABLE",
+      "scope": "UNOFFICIAL_REPACK",
+      "statement": "Same user expands affected team list, without presenting a separate independent install.",
+      "sourceStrength": "DIRECT",
+      "independenceKey": "nexus-reviewer-A",
+      "issueOutcome": "DISPUTED"
+    },
+    {
+      "id": "nexus-complaint-1001",
+      "modId": "mod-001",
+      "issueKey": "PLAYER_APPEARANCE_MISSING_LIMBS",
+      "reporterKey": "nexus-reviewer-A",
+      "role": "PLAYER_REPORT",
+      "date": "2026-10-01",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://www.nexusmods.com/maddennfl27/mods/1?tab=posts",
+      "stance": "UNFAVORABLE",
+      "scope": "UNOFFICIAL_REPACK",
+      "statement": "Same reporter repeats missing-limbs concerns on revised roster file.",
+      "sourceStrength": "DIRECT",
+      "independenceKey": "nexus-reviewer-A",
+      "issueOutcome": "DISPUTED"
+    },
+    {
+      "id": "nexus-complaint-1003",
+      "modId": "mod-001",
+      "issueKey": "PLAYER_APPEARANCE_MISSING_LIMBS",
+      "reporterKey": "nexus-reviewer-A",
+      "role": "PLAYER_REPORT",
+      "date": "2026-10-03",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://www.nexusmods.com/maddennfl27/mods/1?tab=posts",
+      "stance": "UNFAVORABLE",
+      "scope": "UNOFFICIAL_REPACK",
+      "statement": "Same reporter explicitly confirms unofficial repack as the installation context; this is not a second distinct user.",
+      "sourceStrength": "DIRECT",
+      "independenceKey": "nexus-reviewer-A",
+      "issueOutcome": "DISPUTED"
+    },
+    {
+      "id": "nexus-ratings-1001",
+      "modId": "mod-001",
+      "issueKey": "ROSTER_RATING_CALIBRATION",
+      "reporterKey": "nexus-reviewer-A",
+      "role": "PLAYER_REPORT",
+      "date": "2026-10-01",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://www.nexusmods.com/maddennfl27/mods/1?tab=posts",
+      "stance": "MIXED",
+      "scope": "UNOFFICIAL_REPACK",
+      "statement": "One reporter says legend-team overall ratings were lowered and calls the outcome incorrect.",
+      "sourceStrength": "DIRECT",
+      "independenceKey": "nexus-reviewer-A",
+      "issueOutcome": "AUTHOR_ACKNOWLEDGED"
+    },
+    {
+      "id": "nexus-author-1001",
+      "modId": "mod-001",
+      "issueKey": "ROSTER_RATING_CALIBRATION",
+      "reporterKey": "nexus-author-X2357",
+      "role": "AUTHOR_RESPONSE",
+      "date": "2026-10-01",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://www.nexusmods.com/maddennfl27/mods/1?tab=posts",
+      "stance": "NEUTRAL",
+      "scope": "LEGITIMATE_GAME_CLAIM",
+      "statement": "Author confirms intentionally lowering ratings to improve franchise balance; not a confirmation of a broken mod.",
+      "sourceStrength": "DIRECT",
+      "independenceKey": "nexus-author-X2357",
+      "issueOutcome": "AUTHOR_ACKNOWLEDGED"
+    },
+    {
+      "id": "nexus-author-1003",
+      "modId": "mod-001",
+      "issueKey": "PLAYER_APPEARANCE_MISSING_LIMBS",
+      "reporterKey": "nexus-author-X2357",
+      "role": "AUTHOR_RESPONSE",
+      "date": "2026-10-03",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://www.nexusmods.com/maddennfl27/mods/1?tab=posts",
+      "stance": "NEUTRAL",
+      "scope": "LEGITIMATE_GAME_CLAIM",
+      "statement": "Author says missing limbs/equipment are not reproduced on their legitimate copy; no independent resolution confirmed.",
+      "sourceStrength": "DIRECT",
+      "independenceKey": "nexus-author-X2357",
+      "issueOutcome": "DISPUTED"
+    },
+    {
+      "id": "nexus-feature-request-1002",
+      "modId": "mod-001",
+      "issueKey": "FEATURE_REQUEST_UPDATED_ROSTER",
+      "reporterKey": "nexus-reviewer-B",
+      "role": "PLAYER_REPORT",
+      "date": "2026-10-02",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://www.nexusmods.com/maddennfl27/mods/1?tab=posts",
+      "stance": "NEUTRAL",
+      "scope": "UNOFFICIAL_REPACK",
+      "statement": "A different user requests a regular-season updated roster for an unofficial repack; not a quality failure report.",
+      "sourceStrength": "DIRECT",
+      "independenceKey": "nexus-reviewer-B",
+      "issueOutcome": "NOT_APPLICABLE"
+    },
+    {
+      "id": "os-sabos-franchise",
+      "modId": "mod-002",
+      "issueKey": "FRANCHISE_SIM_FEATURES",
+      "reporterKey": "os-chase-becotte",
+      "role": "EDITORIAL_REVIEW",
+      "date": "2026-09-25",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+      "stance": "FAVORABLE",
+      "scope": "UNSPECIFIED",
+      "statement": "Editorial writer describes SABOS Franchise 1.2 sim stats, regression, progression, retirement and injury tuning; full package still pending.",
+      "sourceStrength": "SECONDARY",
+      "independenceKey": "os-article-2026-09-25",
+      "issueOutcome": "NOT_APPLICABLE"
+    },
+    {
+      "id": "os-sabos-speed",
+      "modId": "mod-003",
+      "issueKey": "PLAYER_SPEED_FEATURES",
+      "reporterKey": "os-chase-becotte",
+      "role": "EDITORIAL_REVIEW",
+      "date": "2026-09-25",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+      "stance": "FAVORABLE",
+      "scope": "UNSPECIFIED",
+      "statement": "Writer describes the early 1.0 Speed Mod as ball-carrier speed tuning, not a measured benchmark.",
+      "sourceStrength": "SECONDARY",
+      "independenceKey": "os-article-2026-09-25",
+      "issueOutcome": "NOT_APPLICABLE"
+    },
+    {
+      "id": "os-unlocked",
+      "modId": "mod-004",
+      "issueKey": "EQUIPMENT_UNLOCKS",
+      "reporterKey": "os-chase-becotte",
+      "role": "EDITORIAL_REVIEW",
+      "date": "2026-09-25",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+      "stance": "FAVORABLE",
+      "scope": "UNSPECIFIED",
+      "statement": "Writer documents additional sleeves, cleats, jersey styles, tattoos and helmet removal; warns some balaclavas may not fit Madden heads.",
+      "sourceStrength": "SECONDARY",
+      "independenceKey": "os-article-2026-09-25",
+      "issueOutcome": "NOT_APPLICABLE"
+    },
+    {
+      "id": "os-realistic-franchise",
+      "modId": "mod-005",
+      "issueKey": "ROSTER_REALISM",
+      "reporterKey": "os-chase-becotte",
+      "role": "EDITORIAL_REVIEW",
+      "date": "2026-09-25",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+      "stance": "FAVORABLE",
+      "scope": "UNSPECIFIED",
+      "statement": "Writer describes weekly roster, appearance, draft and franchise updates, with dependency on Unlocked.",
+      "sourceStrength": "SECONDARY",
+      "independenceKey": "os-article-2026-09-25",
+      "issueOutcome": "NOT_APPLICABLE"
+    },
+    {
+      "id": "os-scorebugs",
+      "modId": "mod-006",
+      "issueKey": "BROADCAST_OVERLAP",
+      "reporterKey": "os-chase-becotte",
+      "role": "EDITORIAL_REVIEW",
+      "date": "2026-09-25",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+      "stance": "FAVORABLE",
+      "scope": "UNSPECIFIED",
+      "statement": "Writer describes optional broadcast scorebugs and warns presentation mod stacking is more complex and riskier.",
+      "sourceStrength": "SECONDARY",
+      "independenceKey": "os-article-2026-09-25",
+      "issueOutcome": "NOT_APPLICABLE"
+    },
+    {
+      "id": "os-mnf",
+      "modId": "mod-007",
+      "issueKey": "PRESENTATION_OVERLAP",
+      "reporterKey": "os-chase-becotte",
+      "role": "EDITORIAL_REVIEW",
+      "date": "2026-09-25",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+      "stance": "FAVORABLE",
+      "scope": "UNSPECIFIED",
+      "statement": "Writer says expansive MNF presentation and music replacement should be selected for matching game contexts.",
+      "sourceStrength": "SECONDARY",
+      "independenceKey": "os-article-2026-09-25",
+      "issueOutcome": "NOT_APPLICABLE"
+    },
+    {
+      "id": "os-ej",
+      "modId": "mod-011",
+      "issueKey": "GAMEPLAY_OVERLAP",
+      "reporterKey": "os-chase-becotte",
+      "role": "EDITORIAL_REVIEW",
+      "date": "2026-09-25",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+      "stance": "FAVORABLE",
+      "scope": "UNSPECIFIED",
+      "statement": "Writer describes EJ Gameplay support for All-Pro/All-Madden and warns against stacking unrelated gameplay overhauls.",
+      "sourceStrength": "SECONDARY",
+      "independenceKey": "os-article-2026-09-25",
+      "issueOutcome": "NOT_APPLICABLE"
+    },
+    {
+      "id": "os-coach-mode",
+      "modId": "mod-012",
+      "issueKey": "SLOW_SIM_FEATURES",
+      "reporterKey": "os-chase-becotte",
+      "role": "EDITORIAL_REVIEW",
+      "date": "2026-09-25",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+      "stance": "FAVORABLE",
+      "scope": "UNSPECIFIED",
+      "statement": "Writer recommends Buhbooh's Coach Mode/SlowSim for CPU-vs-CPU balancing.",
+      "sourceStrength": "SECONDARY",
+      "independenceKey": "os-article-2026-09-25",
+      "issueOutcome": "NOT_APPLICABLE"
+    },
+    {
+      "id": "os-stadium",
+      "modId": "mod-013",
+      "issueKey": "STADIUM_AUTHENTICITY",
+      "reporterKey": "os-chase-becotte",
+      "role": "EDITORIAL_REVIEW",
+      "date": "2026-09-25",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase",
+      "stance": "FAVORABLE",
+      "scope": "UNSPECIFIED",
+      "statement": "Writer praises stadium advertising, jumbotron and ribbonboard replacements but offers no controlled current-patch benchmark.",
+      "sourceStrength": "SECONDARY",
+      "independenceKey": "os-article-2026-09-25",
+      "issueOutcome": "NOT_APPLICABLE"
+    },
+    {
+      "id": "video-trix-hair",
+      "modId": "mod-031",
+      "issueKey": "HAIR_COSMETIC_DEMO",
+      "reporterKey": "shady-mike-gaming",
+      "role": "VIDEO_DEMONSTRATION",
+      "date": "2026-08-11",
+      "datePrecision": "DAY",
+      "sourceUrl": "https://www.youtube.com/watch?v=hHmNCKg-TE8",
+      "stance": "NEUTRAL",
+      "scope": "UNSPECIFIED",
+      "statement": "Video demonstrates selecting a cosmetic hair-fix through MMC; video is not an independent exact-build compatibility test as of October 9.",
+      "sourceStrength": "SECONDARY",
+      "independenceKey": "shady-mike-video-20260811",
+      "issueOutcome": "NOT_APPLICABLE"
+    }
+  ],
+  "playerReportClusters": [
+    {
+      "id": "mod-001|PLAYER_APPEARANCE_MISSING_LIMBS|nexus-reviewer-A|UNOFFICIAL_REPACK",
+      "modId": "mod-001",
+      "issueKey": "PLAYER_APPEARANCE_MISSING_LIMBS",
+      "reporterKey": "nexus-reviewer-A",
+      "scope": "UNOFFICIAL_REPACK",
+      "reports": 4,
+      "firstSeen": "2026-09-29",
+      "lastSeen": "2026-10-03",
+      "evidenceIds": [
+        "nexus-complaint-0929",
+        "nexus-complaint-0930",
+        "nexus-complaint-1001",
+        "nexus-complaint-1003"
+      ],
+      "sourceUrl": "https://www.nexusmods.com/maddennfl27/mods/1?tab=posts",
+      "distinctReporters": 1
+    },
+    {
+      "id": "mod-001|ROSTER_RATING_CALIBRATION|nexus-reviewer-A|UNOFFICIAL_REPACK",
+      "modId": "mod-001",
+      "issueKey": "ROSTER_RATING_CALIBRATION",
+      "reporterKey": "nexus-reviewer-A",
+      "scope": "UNOFFICIAL_REPACK",
+      "reports": 1,
+      "firstSeen": "2026-10-01",
+      "lastSeen": "2026-10-01",
+      "evidenceIds": [
+        "nexus-ratings-1001"
+      ],
+      "sourceUrl": "https://www.nexusmods.com/maddennfl27/mods/1?tab=posts",
+      "distinctReporters": 1
+    }
+  ],
+  "modAssessments": [
+    {
+      "id": "mod-001",
+      "evidenceScore": 59,
+      "qualityScore": null,
+      "evaluationCode": "B_REVIEW",
+      "promotionStatus": "CANDIDATE_REVIEW",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-08-26",
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 1,
+      "rawPlayerPosts": 5,
+      "duplicatePlayerPosts": 3,
+      "positivePlayers": 0,
+      "negativePlayers": 1,
+      "authorResponses": 2,
+      "editorialReports": 0,
+      "sources": [
+        "https://www.nexusmods.com/maddennfl27/mods/1",
+        "https://www.nexusmods.com/maddennfl27/mods/1?tab=posts"
+      ],
+      "issueClusters": [
+        {
+          "id": "mod-001|PLAYER_APPEARANCE_MISSING_LIMBS|nexus-reviewer-A|UNOFFICIAL_REPACK",
+          "modId": "mod-001",
+          "issueKey": "PLAYER_APPEARANCE_MISSING_LIMBS",
+          "reporterKey": "nexus-reviewer-A",
+          "scope": "UNOFFICIAL_REPACK",
+          "reports": 4,
+          "firstSeen": "2026-09-29",
+          "lastSeen": "2026-10-03",
+          "evidenceIds": [
+            "nexus-complaint-0929",
+            "nexus-complaint-0930",
+            "nexus-complaint-1001",
+            "nexus-complaint-1003"
+          ],
+          "sourceUrl": "https://www.nexusmods.com/maddennfl27/mods/1?tab=posts",
+          "distinctReporters": 1
+        },
+        {
+          "id": "mod-001|ROSTER_RATING_CALIBRATION|nexus-reviewer-A|UNOFFICIAL_REPACK",
+          "modId": "mod-001",
+          "issueKey": "ROSTER_RATING_CALIBRATION",
+          "reporterKey": "nexus-reviewer-A",
+          "scope": "UNOFFICIAL_REPACK",
+          "reports": 1,
+          "firstSeen": "2026-10-01",
+          "lastSeen": "2026-10-01",
+          "evidenceIds": [
+            "nexus-ratings-1001"
+          ],
+          "sourceUrl": "https://www.nexusmods.com/maddennfl27/mods/1?tab=posts",
+          "distinctReporters": 1
+        }
+      ],
+      "lastEvidenceDate": "2026-10-05",
+      "rationale": [
+        "Evidence coverage 59/100; this is not a user satisfaction score.",
+        "5 raw evaluative user posts represent 1 distinct user(s) across 2 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible.",
+        "Some reports concern an unofficial repack; do not generalize to retail builds.",
+        "Author responses are recorded as counterevidence, never additional independent user reviews."
+      ]
+    },
+    {
+      "id": "mod-002",
+      "evidenceScore": 27,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-08-26",
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 1,
+      "sources": [
+        "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase"
+      ],
+      "issueClusters": [],
+      "lastEvidenceDate": "2026-09-25",
+      "rationale": [
+        "Evidence coverage 27/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-003",
+      "evidenceScore": 27,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 1,
+      "sources": [
+        "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase"
+      ],
+      "issueClusters": [],
+      "lastEvidenceDate": "2026-09-25",
+      "rationale": [
+        "Evidence coverage 27/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-004",
+      "evidenceScore": 27,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-08-26",
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 1,
+      "sources": [
+        "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase"
+      ],
+      "issueClusters": [],
+      "lastEvidenceDate": "2026-09-25",
+      "rationale": [
+        "Evidence coverage 27/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-005",
+      "evidenceScore": 27,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-08-26",
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 1,
+      "sources": [
+        "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase"
+      ],
+      "issueClusters": [],
+      "lastEvidenceDate": "2026-09-25",
+      "rationale": [
+        "Evidence coverage 27/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-006",
+      "evidenceScore": 27,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 1,
+      "sources": [
+        "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase"
+      ],
+      "issueClusters": [],
+      "lastEvidenceDate": "2026-09-25",
+      "rationale": [
+        "Evidence coverage 27/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-007",
+      "evidenceScore": 27,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 1,
+      "sources": [
+        "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase"
+      ],
+      "issueClusters": [],
+      "lastEvidenceDate": "2026-09-25",
+      "rationale": [
+        "Evidence coverage 27/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-008",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-009",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-010",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-011",
+      "evidenceScore": 27,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 1,
+      "sources": [
+        "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase"
+      ],
+      "issueClusters": [],
+      "lastEvidenceDate": "2026-09-25",
+      "rationale": [
+        "Evidence coverage 27/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-012",
+      "evidenceScore": 27,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 1,
+      "sources": [
+        "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase"
+      ],
+      "issueClusters": [],
+      "lastEvidenceDate": "2026-09-25",
+      "rationale": [
+        "Evidence coverage 27/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-013",
+      "evidenceScore": 27,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 1,
+      "sources": [
+        "https://newsletter.operationsports.com/p/madden-mods-and-tools-showcase"
+      ],
+      "issueClusters": [],
+      "lastEvidenceDate": "2026-09-25",
+      "rationale": [
+        "Evidence coverage 27/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-014",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-08-26",
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-015",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-08-26",
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-016",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-08-26",
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-017",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-08-26",
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-018",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-08-26",
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-019",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-08-26",
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-020",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-08-26",
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-021",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-08-26",
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-022",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-08-26",
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-023",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-08-26",
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-024",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-08-26",
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-025",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-026",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-027",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-028",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-029",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-030",
+      "evidenceScore": 12,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "PATCH_RELEVANT_BUILD_UNCONFIRMED",
+      "relevantPatchIds": [
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 12/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "Official patch touches related game surface, but it does not prove this mod is incompatible."
+      ]
+    },
+    {
+      "id": "mod-031",
+      "evidenceScore": 22,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "RETEST_REQUIRED",
+      "relevantPatchIds": [
+        "EA-M27-2026-08-26",
+        "EA-M27-2026-09-16"
+      ],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [
+        "https://www.youtube.com/watch?v=hHmNCKg-TE8"
+      ],
+      "issueClusters": [],
+      "lastEvidenceDate": "2026-08-11",
+      "rationale": [
+        "Evidence coverage 22/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "At least one relevant official patch postdates recorded mod evidence; exact-build retest needed."
+      ]
+    },
+    {
+      "id": "dev-fmt-madden-27-profile-compiler",
+      "evidenceScore": 33,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "NO_DIRECT_PATCH_MATCH",
+      "relevantPatchIds": [],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 33/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "No direct domain match among tracked patches."
+      ]
+    },
+    {
+      "id": "dev-madden-franchise-parser",
+      "evidenceScore": 33,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "NO_DIRECT_PATCH_MATCH",
+      "relevantPatchIds": [],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 33/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "No direct domain match among tracked patches."
+      ]
+    },
+    {
+      "id": "dev-mmc-frosty-modding-tools",
+      "evidenceScore": 17,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "NO_DIRECT_PATCH_MATCH",
+      "relevantPatchIds": [],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 17/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "No direct domain match among tracked patches."
+      ]
+    },
+    {
+      "id": "dev-frostytoolsuite-reference",
+      "evidenceScore": 8,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "NO_DIRECT_PATCH_MATCH",
+      "relevantPatchIds": [],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 8/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "No direct domain match among tracked patches."
+      ]
+    },
+    {
+      "id": "dev-cfb27-dynasty-research",
+      "evidenceScore": 8,
+      "qualityScore": null,
+      "evaluationCode": "C_RESEARCH",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "NO_DIRECT_PATCH_MATCH",
+      "relevantPatchIds": [],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 8/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "No direct domain match among tracked patches."
+      ]
+    },
+    {
+      "id": "dev-suspicious-madden-27-manager-listing",
+      "evidenceScore": 0,
+      "qualityScore": null,
+      "evaluationCode": "D_BLOCK",
+      "promotionStatus": "INSUFFICIENT_DATA",
+      "patchSignal": "NO_DIRECT_PATCH_MATCH",
+      "relevantPatchIds": [],
+      "uniqueIndependentPlayers": 0,
+      "rawPlayerPosts": 0,
+      "duplicatePlayerPosts": 0,
+      "positivePlayers": 0,
+      "negativePlayers": 0,
+      "authorResponses": 0,
+      "editorialReports": 0,
+      "sources": [],
+      "issueClusters": [],
+      "lastEvidenceDate": null,
+      "rationale": [
+        "Evidence coverage 0/100; this is not a user satisfaction score.",
+        "0 raw evaluative user posts represent 0 distinct user(s) across 0 context-sensitive issue cluster(s).",
+        "Community quality rating withheld until at least 3 independent legitimate-build reporters AND a human-reviewed same-build game proof.",
+        "No direct domain match among tracked patches."
+      ]
+    }
+  ],
+  "counters": {
+    "modAssessments": 37,
+    "evidenceRecords": 19,
+    "playerReportClusters": 2,
+    "qualifiedCommunityRatings": 0,
+    "officialPatches": 2
+  }
+}

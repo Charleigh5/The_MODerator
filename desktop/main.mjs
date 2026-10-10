@@ -341,7 +341,15 @@ function createWindow(){
         await new Promise(resolve => setTimeout(resolve, 220));
         const libraryCards = document.querySelectorAll(".m27-lib-card").length;
         const libraryOpen = Boolean(document.querySelector(".m27-lib[role=dialog]"));
+        buttons().find(b => b.textContent?.includes("Community quality audit"))?.click();
+        await new Promise(resolve => setTimeout(resolve, 180));
+        const patchCards = document.querySelectorAll(".m27-ci-patch").length;
+        const assessmentRows = document.querySelectorAll(".m27-ci-row").length;
+        const communityPanel = Boolean(document.querySelector(".m27-ci"));
         return {
+          patchCards,
+          assessmentRows,
+          communityPanel,
           libraryOpen,
           libraryCards,
           title: document.title,
@@ -353,8 +361,8 @@ function createWindow(){
         };
       })()`);
       console.log("MODERATOR_DESKTOP_SMOKE "+JSON.stringify(result));
-      const code=result.bridge&&result.studio&&result.promptReady&&result.messageCount>=3&&result.planEnabled&&result.libraryOpen&&result.libraryCards>=37?0:2;
-      await fs.writeFile(userPath("desktop-mod-intelligence.png"),(await mainWindow.webContents.capturePage()).toPNG());
+      const code=result.bridge&&result.studio&&result.promptReady&&result.messageCount>=3&&result.planEnabled&&result.libraryOpen&&result.libraryCards>=37&&result.communityPanel&&result.patchCards===2&&result.assessmentRows===37?0:2;
+      await fs.writeFile(userPath("desktop-community-intelligence.png"),(await mainWindow.webContents.capturePage()).toPNG());
       await fs.writeFile(userPath("desktop-smoke.json"),JSON.stringify({
         at:new Date().toISOString(),
         code,
