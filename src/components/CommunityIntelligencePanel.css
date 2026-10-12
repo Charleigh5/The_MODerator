@@ -10,3 +10,14 @@
 .m27-ci-issue{margin-top:12px;border-left:2px solid #d6a36a;background:#2d302f80;padding:9px 12px;font-size:10px;line-height:1.45}.m27-ci-issue strong{display:block;color:#f0cda2}.m27-ci-issue span{display:block;margin-top:5px;color:#cfbba4}
 .m27-ci-row>p{font-size:10px;color:#9fbacf;line-height:1.55;margin:12px 0 0}.m27-ci-footer{border-top:1px solid #ffffff1a;padding:18px 0 0;color:#94adc4;font-size:11px;line-height:1.6}
 @media(max-width:970px){.m27-ci-overview{flex-direction:column}.m27-ci-numbers{align-self:flex-start}.m27-ci-rows{grid-template-columns:1fr}}@media(max-width:630px){.m27-ci-patch-grid{grid-template-columns:1fr}.m27-ci-numbers{width:100%;flex-wrap:wrap}.m27-ci-numbers>div{flex:1}.m27-ci-overview{padding:16px}}
+
+.m27-ci-review-inbox{padding:20px 23px;background:#122a3d;border:1px solid #496e83;border-radius:8px}
+.m27-ci-review-inbox>p{color:#b0c7d8;font-size:12px;line-height:1.6}
+.m27-ci-review-actions{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.m27-ci-review-actions strong{font-size:11px;color:#d6ecfc}
+.m27-ci-review-actions button{background:#23618a;color:#f0f7ff;border:1px solid #5692be;border-radius:6px;padding:10px 13px;cursor:pointer}
+.m27-ci-review-actions button:disabled{opacity:.5;cursor:not-allowed}
+.m27-ci-review-item{padding:11px 13px;margin-top:8px;background:#0c2133;border-left:2px solid #c9965f}
+.m27-ci-review-item span{font-size:10px;color:#ddbb89}
+.m27-ci-review-item p{font-size:11px;color:#bdccdd}
+.m27-ci-review-item a{font-size:10px;color:#8bc7ef;display:flex;align-items:center;gap:5px}

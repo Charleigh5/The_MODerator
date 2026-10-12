@@ -15,6 +15,7 @@ import {
 } from "./lib/siwc-core.mjs";
 import { inspectStudioPlan } from "./lib/studio-plan.mjs";
 import { readOnlyWatchSnapshot } from "./lib/mod-watch-read.mjs";
+import {inspectNexusReviewPack,mergeNexusInbox,emptyNexusInbox} from "./lib/nexus-review-offline.mjs";
 
 const APP_NAME="MODerator Desktop";
 const TOKEN_ENDPOINT="https://auth.openai.com/api/accounts/oauth/token";
@@ -312,6 +313,51 @@ async function importStudioPlan() {
   return { name: path.basename(file), ...inspectStudioPlan(await fs.readFile(file, "utf8")) };
 }
 
+const reviewInboxPath=()=>userPath("nexus-review-inbox.json");
+async function reviewInbox(){
+ const parse=async(file)=>{
+  const parsed=JSON.parse(await fs.readFile(file,"utf8"));
+  if(parsed.schema!=="MODERATOR_NEXUS_REVIEW_INBOX_V1"||!Array.isArray(parsed.records)||
+    parsed.records.length>1000||parsed.automaticScoringEnabled!==false)throw Error("INVALID_REVIEW_INBOX");
+  // Local JSON edits cannot self-promote a review into trusted scoring evidence.
+  return {...parsed,records:parsed.records.map(r=>({...r,
+    provenanceState:"USER_ATTESTED_PENDING_VERIFICATION",
+    qualityVoteEligible:false,gameRuntimeVerified:false}))};
+ };
+ try{return await parse(reviewInboxPath());}
+ catch(err){
+  if(err.code!=="ENOENT")throw err;
+  try{return await parse(reviewInboxPath()+".previous");}
+  catch(backupErr){if(backupErr.code!=="ENOENT")throw backupErr;return emptyNexusInbox();}
+ }
+}
+async function importNexusReviewPack(){
+ const selection=await dialog.showOpenDialog(mainWindow,{
+   title:"Import authorized review summary JSON — no Nexus network access",
+   properties:["openFile"],filters:[{name:"Authorized MODerator evidence",extensions:["json"]}]
+ });
+ if(selection.canceled||!selection.filePaths[0])return null;
+ const file=selection.filePaths[0];
+ const fileInfo=await fs.stat(file);
+ if(!fileInfo.isFile()||fileInfo.size>256*1024)throw Error("PACK_TOO_LARGE");
+ const verifiedStructure=inspectNexusReviewPack(await fs.readFile(file,"utf8"));
+ const merged=mergeNexusInbox(await reviewInbox(),verifiedStructure);
+ const temp=reviewInboxPath()+".new";
+ const backup=reviewInboxPath()+".previous";
+ // Preserve an independent recovery copy; Windows can deny rename-over-existing.
+ await fs.writeFile(temp,JSON.stringify(merged,null,2),"utf8");
+ const existing=await fs.stat(reviewInboxPath()).then(()=>true).catch(err=>{if(err.code==="ENOENT")return false;throw err;});
+ if(existing){
+  await fs.copyFile(reviewInboxPath(),backup);
+  await fs.unlink(reviewInboxPath());
+ }
+ try{await fs.rename(temp,reviewInboxPath());}
+ catch(err){if(existing)await fs.copyFile(backup,reviewInboxPath()).catch(()=>{});throw err;}
+ finally{await fs.unlink(temp).catch(()=>{});}
+ return {added:merged.added,conflicts:merged.conflicts,recordCount:merged.records.length,
+   promotion:"PENDING_PERMISSION_AND_SOURCE_VERIFICATION",scoringApplied:false,
+   userNotice:"User attestation is not independent permission verification."};
+}
 function createWindow(){
   mainWindow=new BrowserWindow({
     width:1440,height:960,minWidth:1100,minHeight:720,
@@ -348,11 +394,14 @@ function createWindow(){
         const patchCards = document.querySelectorAll(".m27-ci-patch").length;
         const assessmentRows = document.querySelectorAll(".m27-ci-row").length;
         const communityPanel = Boolean(document.querySelector(".m27-ci"));
+        const reviewAdapterReady = Boolean(document.querySelector(".m27-ci-review-inbox button"));
+        document.querySelector(".m27-ci-review-inbox")?.scrollIntoView({block:"center"});
         return {
           liveWatchItems,
           patchCards,
           assessmentRows,
           communityPanel,
+          reviewAdapterReady,
           libraryOpen,
           libraryCards,
           title: document.title,
@@ -364,8 +413,8 @@ function createWindow(){
         };
       })()`);
       console.log("MODERATOR_DESKTOP_SMOKE "+JSON.stringify(result));
-      const code=result.bridge&&result.studio&&result.promptReady&&result.messageCount>=3&&result.planEnabled&&result.libraryOpen&&result.libraryCards>=37&&result.communityPanel&&result.patchCards===2&&result.assessmentRows===37&&result.liveWatchItems>=1?0:2;
-      await fs.writeFile(userPath("desktop-mod-watch.png"),(await mainWindow.webContents.capturePage()).toPNG());
+      const code=result.bridge&&result.studio&&result.promptReady&&result.messageCount>=3&&result.planEnabled&&result.libraryOpen&&result.libraryCards>=37&&result.communityPanel&&result.patchCards===2&&result.assessmentRows===37&&result.liveWatchItems>=1&&result.reviewAdapterReady?0:2;
+      await fs.writeFile(userPath("desktop-nexus-review-adapter.png"),(await mainWindow.webContents.capturePage()).toPNG());
       await fs.writeFile(userPath("desktop-smoke.json"),JSON.stringify({
         at:new Date().toISOString(),
         code,
@@ -399,6 +448,8 @@ app.whenReady().then(()=>{
   ipcMain.handle("moderator:chat",runResponse);
   ipcMain.handle("moderator:pick-file",pickLocalFile);
   ipcMain.handle("moderator:import-studio-plan",importStudioPlan);
+  ipcMain.handle("moderator:nexus-review-snapshot",reviewInbox);
+  ipcMain.handle("moderator:nexus-review-import",importNexusReviewPack);
   ipcMain.handle("moderator:mod-watch-snapshot",async()=>{
     try { return readOnlyWatchSnapshot(await fs.readFile(path.join(app.getPath("userData"),"mod-watch","latest.json"),"utf8")); }
     catch(err){if(err.code==="ENOENT")return null;throw err;}

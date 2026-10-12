@@ -19,4 +19,5 @@ contextBridge.exposeInMainWorld("moderatorDesktop",{
   files:{pick:()=>ipcRenderer.invoke("moderator:pick-file")},
   studio:{importPlan:()=>ipcRenderer.invoke("moderator:import-studio-plan")},
   modWatch:{snapshot:()=>ipcRenderer.invoke("moderator:mod-watch-snapshot")},
+  nexusReview:{snapshot:()=>ipcRenderer.invoke("moderator:nexus-review-snapshot"),importPack:()=>ipcRenderer.invoke("moderator:nexus-review-import")},
 });

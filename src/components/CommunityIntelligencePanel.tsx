@@ -9,12 +9,38 @@ export default function CommunityIntelligencePanel(){
  const [focus,setFocus]=useState("All");
  const [live,setLive]=useState<LiveSnapshot|null>(null);
  const [fetchError,setFetchError]=useState("");
+ const [reviewInbox,setReviewInbox]=useState<Awaited<ReturnType<ModeratorDesktopBridge["nexusReview"]["snapshot"]>>|null>(null);
+ const [reviewNotice,setReviewNotice]=useState("");
+ const [reviewBusy,setReviewBusy]=useState(false);
  useEffect(()=>{
    let mounted=true;
+   window.moderatorDesktop?.nexusReview.snapshot().then(x=>{if(mounted)setReviewInbox(x);})
+     .catch(()=>{if(mounted)setReviewNotice("Review inbox could not be validated.");});
    window.moderatorDesktop?.modWatch.snapshot().then(x=>{if(mounted)setLive(x);})
      .catch(()=>{if(mounted)setFetchError("Local snapshot invalid or unavailable");});
    return ()=>{mounted=false;};
  },[]);
+ const importReviews=async()=>{
+  if(!window.moderatorDesktop)return;
+  setReviewBusy(true);setReviewNotice("");
+  try {
+    const result=await window.moderatorDesktop.nexusReview.importPack();
+    if(result){
+      setReviewInbox(await window.moderatorDesktop.nexusReview.snapshot());
+      setReviewNotice(`${result.added} pending item(s) imported; ${result.conflicts} conflict(s). Scoring unchanged.`);
+    }
+  }catch(e){setReviewNotice(`Import blocked: ${e instanceof Error?e.message:"Invalid evidence pack"}`);}
+  finally{setReviewBusy(false);}
+ };
+ // Candidate reviews are intentionally excluded from scoring until source rights and provenance are independently reviewed.
+ const eligibleReviewEvidence:CommunityEvidence[]=useMemo(()=>reviewInbox?.records
+   .filter(x=>x.qualityVoteEligible===true && x.provenanceState==="CONFIRMED")
+   .map(x=>({
+     id:x.id,modId:x.modId,issueKey:x.issueKey,reporterKey:x.reviewerKey,
+     role:x.role,date:x.date,datePrecision:"DAY" as const,sourceUrl:x.sourceUrl,
+     stance:x.stance,scope:x.scope,statement:x.summary,
+     sourceStrength:"DIRECT" as const,independenceKey:x.reviewerKey,issueOutcome:"UNRESOLVED" as const
+   }))??[],[reviewInbox]);
  const observations:CommunityEvidence[]=useMemo(()=>!live?[]:live.events
    .filter(x=>x.provider==="GITHUB"&&x.kind==="TOOL_RELEASE"&&x.modId)
    .map(x=>({
@@ -24,7 +50,7 @@ export default function CommunityIntelligencePanel(){
       statement:"Upstream release metadata observed; no Madden 27 runtime proof.",sourceStrength:"DIRECT" as const,
       independenceKey:x.id,issueOutcome:"NOT_APPLICABLE" as const
    })),[live]);
- const assessments=useMemo(()=>modIntelligenceCatalog.map(x=>evaluateModQuality(x,[...communityEvidence,...observations])),[observations]);
+ const assessments=useMemo(()=>modIntelligenceCatalog.map(x=>evaluateModQuality(x,[...communityEvidence,...observations,...eligibleReviewEvidence])),[observations,eligibleReviewEvidence]);
  const selected=useMemo(()=>assessments.filter(a=>focus==="All"||a.patchSignal===focus)
  .sort((a,b)=>b.evidenceScore-a.evidenceScore||a.id.localeCompare(b.id)),[focus,assessments]);
  return <div className="m27-ci">
@@ -36,6 +62,20 @@ export default function CommunityIntelligencePanel(){
  {live ? <><p>Last successful snapshot: {live.observedAt} · {live.counts.sourcesSucceeded}/7 feeds responding · {live.counts.totalObserved} distinct source observations · {live.counts.newItems} in latest run. Quality ratings remain evidence-gated.</p>
  <div className="m27-ci-live-items">{live.events.slice(0,8).map(item=><a key={item.id} href={item.url} target="_blank" rel="noopener noreferrer"><span>{item.detection==="INITIAL_BASELINE"?"BASELINE": "NEW"} · {item.kind.replace(/_/g," ")}</span><strong>{item.title}</strong><ExternalLink size={12}/></a>)}</div></>
  : <p>{fetchError|| (window.moderatorDesktop?"No valid local snapshot yet. Run the local collector.":"Recurring source-watch data is available through MODerator Desktop on HOMEPC.")}</p>}
+ </section>
+ <section className="m27-ci-review-inbox">
+  <div className="m27-ci-label">NEXUS REVIEW ADAPTER / PERMISSION-GATED OFFLINE INBOX</div>
+  <p>Nexus does not currently authorize MODerator to automatically mine reviews for this AI-assisted intelligence workflow. Only user-supplied, permission-cleared summaries can be imported for inspection. No web scraping, API key entry, or background Nexus polling is enabled.</p>
+  <div className="m27-ci-review-actions">
+   <strong>{reviewInbox?.records.length??0} pending candidate(s) · 0 automatically eligible quality votes</strong>
+   <button type="button" onClick={()=>void importReviews()} disabled={!window.moderatorDesktop||reviewBusy}>{reviewBusy?"Inspecting evidence…":"Import authorized JSON pack"}</button>
+  </div>
+  {reviewNotice&&<p role="status">{reviewNotice}</p>}
+  {(reviewInbox?.records??[]).slice(0,5).map(x=><div className="m27-ci-review-item" key={x.id}>
+   <span>{x.issueKey.replace(/_/g," ")} · {x.scope.replace(/_/g," ")} · {x.date} · PENDING PERMISSION REVIEW</span>
+   <p>{x.summary}</p>
+   <a href={x.sourceUrl} target="_blank" rel="noopener noreferrer">Source reference <ExternalLink size={12}/></a>
+  </div>)}
  </section>
  <div className="m27-ci-patches"><div className="m27-ci-label">OFFICIAL MADDEN 27 PATCH EVENTS</div>
   <div className="m27-ci-patch-grid">{gamePatches.map(p=><article key={p.id} className="m27-ci-patch"><span>{p.effectiveDate}</span><h4>{p.title}</h4><p>{p.changes.join(" · ")}</p><small>Exact executable build number not established. A surface match calls for investigation, not a confirmed broken mod.</small><a href={p.sourceUrl} target="_blank" rel="noopener noreferrer">Official EA notes <ExternalLink size={12}/></a></article>)}</div>
