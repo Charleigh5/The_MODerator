@@ -55,8 +55,11 @@ jobs:
           $proc = Start-Process -FilePath ".\release\win-unpacked\MODerator Desktop.exe" -PassThru -Wait
           if ($proc.ExitCode -ne 0) { throw "Packaged smoke exited $($proc.ExitCode)" }
           $smoke = Get-Content "$env:APPDATA\moderator-desktop\desktop-smoke.json" -Raw | ConvertFrom-Json
-          if (-not $smoke.packaged -or -not $smoke.result.bridge -or -not $smoke.result.chatgptControl) {
-            throw "Packaged smoke receipt did not prove desktop bridge + ChatGPT control"
+          if (-not $smoke.packaged -or -not $smoke.result.bridge -or -not $smoke.result.studio -or
+              -not $smoke.result.libraryOpen -or $smoke.result.libraryCards -lt 37 -or
+              -not $smoke.result.communityPanel -or $smoke.result.assessmentRows -lt 37 -or
+              -not $smoke.result.reviewAdapterReady -or -not $smoke.result.planEnabled) {
+            throw "Packaged smoke receipt did not prove Madden studio, desktop bridge, catalog, quality audit and review adapter"
           }
           Copy-Item "$env:APPDATA\moderator-desktop\desktop-smoke.json" ".\release\desktop-smoke.json"
 

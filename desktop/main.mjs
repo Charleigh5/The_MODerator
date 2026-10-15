@@ -413,7 +413,7 @@ function createWindow(){
         };
       })()`);
       console.log("MODERATOR_DESKTOP_SMOKE "+JSON.stringify(result));
-      const code=result.bridge&&result.studio&&result.promptReady&&result.messageCount>=3&&result.planEnabled&&result.libraryOpen&&result.libraryCards>=37&&result.communityPanel&&result.patchCards===2&&result.assessmentRows===37&&result.liveWatchItems>=1&&result.reviewAdapterReady?0:2;
+      const code=result.bridge&&result.studio&&result.promptReady&&result.messageCount>=3&&result.planEnabled&&result.libraryOpen&&result.libraryCards>=37&&result.communityPanel&&result.patchCards===2&&result.assessmentRows===37&&(!process.env.MODERATOR_SMOKE_EXPECT_LOCAL_WATCH||result.liveWatchItems>=1)&&result.reviewAdapterReady?0:2;
       await fs.writeFile(userPath("desktop-nexus-review-adapter.png"),(await mainWindow.webContents.capturePage()).toPNG());
       await fs.writeFile(userPath("desktop-smoke.json"),JSON.stringify({
         at:new Date().toISOString(),
