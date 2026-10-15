@@ -21,6 +21,7 @@
     "src/lib/buildRecipe.ts",
     "src/lib/gameplayExperimentLab.ts",
     "src/types.ts",
-    "src/lib/evidenceBundle.ts"
+    "src/lib/evidenceBundle.ts",
+    "src/lib/aiOrchestrator.ts"
   ]
 }

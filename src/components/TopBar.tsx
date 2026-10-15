@@ -20,6 +20,9 @@ export default function TopBar({
   onSaveMod,
   canSave,
   onShowRoadmap,
+  onOpenAI,
+  aiConnected,
+  aiModel,
 }: {
   phase: Phase;
   kbCount: number;
@@ -31,6 +34,9 @@ export default function TopBar({
   onSaveMod: () => void;
   canSave: boolean;
   onShowRoadmap: () => void;
+  onOpenAI: () => void;
+  aiConnected: boolean;
+  aiModel: string;
 }) {
   const activeIdx = STEPS.findIndex((s) => s.phase === phase);
   const ticker = [...TICKER_ITEMS, ...TICKER_ITEMS];
@@ -134,6 +140,18 @@ export default function TopBar({
             </span>
           </button>
           
+          {/* ChatGPT Plan - desktop intelligence */}
+          <button
+            onClick={onOpenAI}
+            className={`group relative flex items-center gap-1.5 rounded-md border-2 px-2 py-1 transition-all ${aiConnected ? "border-emerald-400/70 bg-emerald-400/10" : "border-navy-600 bg-navy-900 hover:border-maize-400/60"}`}
+            title={aiConnected ? `ChatGPT plan connected · ${aiModel || "model"}` : "Connect ChatGPT plan"}
+          >
+            <span className={`h-2 w-2 rounded-full ${aiConnected ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]" : "bg-chalk/30"}`} />
+            <span className="hidden font-display text-[10px] tracking-[0.1em] text-maize-400 sm:inline">
+              CHATGPT
+            </span>
+          </button>
+
           {/* Save Mod Button - compact */}
           <button
             onClick={onSaveMod}
