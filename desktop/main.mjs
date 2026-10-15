@@ -13,6 +13,9 @@ import {
   consumeResponseEvent,
   normalizeModels,
 } from "./lib/siwc-core.mjs";
+import { inspectStudioPlan } from "./lib/studio-plan.mjs";
+import { readOnlyWatchSnapshot } from "./lib/mod-watch-read.mjs";
+import {inspectNexusReviewPack,mergeNexusInbox,emptyNexusInbox} from "./lib/nexus-review-offline.mjs";
 
 const APP_NAME="MODerator Desktop";
 const TOKEN_ENDPOINT="https://auth.openai.com/api/accounts/oauth/token";
@@ -297,6 +300,64 @@ async function pickLocalFile(){
   return {path:file,name:path.basename(file),extension:ext,size:stat.size,sha256:await hashFile(file),preview};
 }
 
+async function importStudioPlan() {
+  const chosen = await dialog.showOpenDialog(mainWindow, {
+    title: "Inspect a Madden 27 Studio plan",
+    properties: ["openFile"],
+    filters: [{ name: "Madden Studio JSON plan", extensions: ["json"] }],
+  });
+  if (chosen.canceled || !chosen.filePaths[0]) return null;
+  const file = chosen.filePaths[0];
+  const stat = await fs.stat(file);
+  if (!stat.isFile() || stat.size > 1024 * 1024) throw new Error("Plan must be a JSON file under 1 MiB.");
+  return { name: path.basename(file), ...inspectStudioPlan(await fs.readFile(file, "utf8")) };
+}
+
+const reviewInboxPath=()=>userPath("nexus-review-inbox.json");
+async function reviewInbox(){
+ const parse=async(file)=>{
+  const parsed=JSON.parse(await fs.readFile(file,"utf8"));
+  if(parsed.schema!=="MODERATOR_NEXUS_REVIEW_INBOX_V1"||!Array.isArray(parsed.records)||
+    parsed.records.length>1000||parsed.automaticScoringEnabled!==false)throw Error("INVALID_REVIEW_INBOX");
+  // Local JSON edits cannot self-promote a review into trusted scoring evidence.
+  return {...parsed,records:parsed.records.map(r=>({...r,
+    provenanceState:"USER_ATTESTED_PENDING_VERIFICATION",
+    qualityVoteEligible:false,gameRuntimeVerified:false}))};
+ };
+ try{return await parse(reviewInboxPath());}
+ catch(err){
+  if(err.code!=="ENOENT")throw err;
+  try{return await parse(reviewInboxPath()+".previous");}
+  catch(backupErr){if(backupErr.code!=="ENOENT")throw backupErr;return emptyNexusInbox();}
+ }
+}
+async function importNexusReviewPack(){
+ const selection=await dialog.showOpenDialog(mainWindow,{
+   title:"Import authorized review summary JSON — no Nexus network access",
+   properties:["openFile"],filters:[{name:"Authorized MODerator evidence",extensions:["json"]}]
+ });
+ if(selection.canceled||!selection.filePaths[0])return null;
+ const file=selection.filePaths[0];
+ const fileInfo=await fs.stat(file);
+ if(!fileInfo.isFile()||fileInfo.size>256*1024)throw Error("PACK_TOO_LARGE");
+ const verifiedStructure=inspectNexusReviewPack(await fs.readFile(file,"utf8"));
+ const merged=mergeNexusInbox(await reviewInbox(),verifiedStructure);
+ const temp=reviewInboxPath()+".new";
+ const backup=reviewInboxPath()+".previous";
+ // Preserve an independent recovery copy; Windows can deny rename-over-existing.
+ await fs.writeFile(temp,JSON.stringify(merged,null,2),"utf8");
+ const existing=await fs.stat(reviewInboxPath()).then(()=>true).catch(err=>{if(err.code==="ENOENT")return false;throw err;});
+ if(existing){
+  await fs.copyFile(reviewInboxPath(),backup);
+  await fs.unlink(reviewInboxPath());
+ }
+ try{await fs.rename(temp,reviewInboxPath());}
+ catch(err){if(existing)await fs.copyFile(backup,reviewInboxPath()).catch(()=>{});throw err;}
+ finally{await fs.unlink(temp).catch(()=>{});}
+ return {added:merged.added,conflicts:merged.conflicts,recordCount:merged.records.length,
+   promotion:"PENDING_PERMISSION_AND_SOURCE_VERIFICATION",scoringApplied:false,
+   userNotice:"User attestation is not independent permission verification."};
+}
 function createWindow(){
   mainWindow=new BrowserWindow({
     width:1440,height:960,minWidth:1100,minHeight:720,
@@ -315,14 +376,45 @@ function createWindow(){
   mainWindow.webContents.once("did-finish-load",async()=>{
     if(process.env.MODERATOR_SMOKE_TEST!=="1") return;
     try {
-      const result=await mainWindow.webContents.executeJavaScript(`({
-        title: document.title,
-        bridge: Boolean(window.moderatorDesktop?.isDesktop),
-        chatgptControl: Array.from(document.querySelectorAll("button")).some((b)=>b.textContent?.includes("CHATGPT")),
-        bodyText: document.body.innerText.slice(0,120)
-      })`);
+      const result=await mainWindow.webContents.executeJavaScript(`(async () => {
+        const buttons = () => Array.from(document.querySelectorAll("button"));
+        const sample = buttons().find(b => b.textContent?.includes("Player equipment"));
+        sample?.click();
+        await new Promise(resolve => setTimeout(resolve, 100));
+        const promptReady = Boolean(document.querySelector("#m27-prompt")?.value?.includes("visor"));
+        buttons().find(b => b.textContent?.includes("Analyze request"))?.click();
+        await new Promise(resolve => setTimeout(resolve, 250));
+        buttons().find(b => b.textContent?.includes("Mod intelligence library"))?.click();
+        await new Promise(resolve => setTimeout(resolve, 220));
+        const libraryCards = document.querySelectorAll(".m27-lib-card").length;
+        const libraryOpen = Boolean(document.querySelector(".m27-lib[role=dialog]"));
+        buttons().find(b => b.textContent?.includes("Community quality audit"))?.click();
+        await new Promise(resolve => setTimeout(resolve, 450));
+        const liveWatchItems = document.querySelectorAll(".m27-ci-live-items a").length;
+        const patchCards = document.querySelectorAll(".m27-ci-patch").length;
+        const assessmentRows = document.querySelectorAll(".m27-ci-row").length;
+        const communityPanel = Boolean(document.querySelector(".m27-ci"));
+        const reviewAdapterReady = Boolean(document.querySelector(".m27-ci-review-inbox button"));
+        document.querySelector(".m27-ci-review-inbox")?.scrollIntoView({block:"center"});
+        return {
+          liveWatchItems,
+          patchCards,
+          assessmentRows,
+          communityPanel,
+          reviewAdapterReady,
+          libraryOpen,
+          libraryCards,
+          title: document.title,
+          bridge: Boolean(window.moderatorDesktop?.isDesktop),
+          studio: Boolean(document.querySelector(".m27-shell")),
+          promptReady,
+          messageCount: document.querySelectorAll(".m27-message").length,
+          planEnabled: Boolean(buttons().find(b => b.textContent?.includes("Download evidence plan") && !b.disabled))
+        };
+      })()`);
       console.log("MODERATOR_DESKTOP_SMOKE "+JSON.stringify(result));
-      const code=result.bridge&&result.chatgptControl?0:2;
+      const code=result.bridge&&result.studio&&result.promptReady&&result.messageCount>=3&&result.planEnabled&&result.libraryOpen&&result.libraryCards>=37&&result.communityPanel&&result.patchCards===2&&result.assessmentRows===37&&result.liveWatchItems>=1&&result.reviewAdapterReady?0:2;
+      await fs.writeFile(userPath("desktop-nexus-review-adapter.png"),(await mainWindow.webContents.capturePage()).toPNG());
       await fs.writeFile(userPath("desktop-smoke.json"),JSON.stringify({
         at:new Date().toISOString(),
         code,
@@ -355,6 +447,13 @@ app.whenReady().then(()=>{
   ipcMain.handle("moderator:list-models",listModels);
   ipcMain.handle("moderator:chat",runResponse);
   ipcMain.handle("moderator:pick-file",pickLocalFile);
+  ipcMain.handle("moderator:import-studio-plan",importStudioPlan);
+  ipcMain.handle("moderator:nexus-review-snapshot",reviewInbox);
+  ipcMain.handle("moderator:nexus-review-import",importNexusReviewPack);
+  ipcMain.handle("moderator:mod-watch-snapshot",async()=>{
+    try { return readOnlyWatchSnapshot(await fs.readFile(path.join(app.getPath("userData"),"mod-watch","latest.json"),"utf8")); }
+    catch(err){if(err.code==="ENOENT")return null;throw err;}
+  });
   createWindow();
   app.on("activate",()=>{if(BrowserWindow.getAllWindows().length===0)createWindow();});
 });

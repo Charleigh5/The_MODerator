@@ -22,6 +22,11 @@
     "src/lib/gameplayExperimentLab.ts",
     "src/types.ts",
     "src/lib/evidenceBundle.ts",
+    "src/lib/maddenStudio.ts",
+    "src/data/modIntelligence.ts",
+    "src/lib/modLibrarySearch.ts",
+    "src/data/communityEvidence.ts",
+    "src/lib/communityScoring.ts",
     "src/lib/aiOrchestrator.ts"
   ]
 }
