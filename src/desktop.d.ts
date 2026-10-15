@@ -37,6 +37,34 @@ declare global {
       onDelta:(callback:(payload:{requestId:string;delta:string})=>void)=>()=>void;
     };
     files:{pick:()=>Promise<ModeratorLocalFile|null>};
+    nexusReview:{
+      snapshot:()=>Promise<{
+        schema:"MODERATOR_NEXUS_REVIEW_INBOX_V1";
+        source:"USER_SUPPLIED_ONLY";
+        permissionIndependentlyVerified:false;
+        automaticScoringEnabled:false;
+        records:Array<{id:string;modId:string;sourceId:string;reviewerKey:string;provider:"NEXUS_MODS";
+          date:string;role:"PLAYER_REPORT"|"AUTHOR_RESPONSE";stance:"FAVORABLE"|"UNFAVORABLE"|"MIXED"|"NEUTRAL";
+          scope:"LEGITIMATE_GAME_CLAIM"|"UNOFFICIAL_REPACK"|"UNSPECIFIED";
+          issueKey:string;gameBuild:string|null;sourceUrl:string;summary:string;
+          provenanceState:"USER_ATTESTED_PENDING_VERIFICATION"|"CONFIRMED";qualityVoteEligible:boolean;
+          gameRuntimeVerified:false}>
+      }>;
+      importPack:()=>Promise<{added:number;conflicts:number;recordCount:number;
+        promotion:string;scoringApplied:false;userNotice:string}|null>;
+    };
+    modWatch:{snapshot:()=>Promise<{schema:"MOD_WATCH_SNAPSHOT_V1";observedAt:string;status:"OK"|"PARTIAL";counts:{totalObserved:number;newItems:number;failedSources:number;sourcesSucceeded:number};sourceStatus:Array<{id:string;status:"OK"|"ERROR";errorCode:string|null}>;events:Array<{id:string;sourceId:string;kind:"TOOL_RELEASE"|"TOOL_COMMIT"|"PATCH_CANDIDATE"|"EA_NEWS";provider:"GITHUB"|"EA_OFFICIAL";modId:string|null;title:string;publishedDate:string|null;observedAt:string;detection:"INITIAL_BASELINE"|"NEW_SOURCE_ITEM";url:string;status:string;summary:string}>}|null>};
+    studio:{importPlan:()=>Promise<{
+      name:string;
+      status:"PLAN_IMPORTED_UNVERIFIED";
+      target:"MADDEN27";
+      requestedReadiness:string;
+      sourceState:string;
+      localArtifactBuilt:boolean;
+      gameRuntimeTested:boolean;
+      sha256:string;
+      caveat:string;
+    }|null>};
   }
   interface Window { moderatorDesktop?:ModeratorDesktopBridge; }
 }

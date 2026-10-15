@@ -1,0 +1,47 @@
+import {join} from "node:path";
+import {tmpdir} from "node:os";
+import {mkdtemp,readFile,rm} from "node:fs/promises";
+import {strict as assert} from "node:assert";
+import {MONITOR_SOURCES,extractEvents,runCollector,validateSource} from "../scripts/mod-watch/collector.mjs";
+const folder=await mkdtemp(join(tmpdir(),"moderator-watch-test-"));
+const release={id:234,tag_name:"v2.0",name:"Tool v2",html_url:"https://github.com/FMTDev/FMT.Madden26Plugin/releases/tag/v2.0",published_at:"2026-10-10T12:00:00Z"};
+const commit={sha:"a".repeat(40),html_url:"https://github.com/FMTDev/FMT.Madden26Plugin/commit/"+"a".repeat(40),commit:{message:"Update Madden profile",committer:{date:"2026-10-09T10:00:00Z"}}};
+const eaHtml='<html><a href="/games/madden-nfl/madden-nfl-27/news/madden-nfl-27-title-update-october-9">update</a></html>';
+const sourceEA=MONITOR_SOURCES.find(x=>x.kind==="EA_NEWS");
+const sourceRelease=MONITOR_SOURCES.find(x=>x.id==="fmt-releases");
+const sourceCommit=MONITOR_SOURCES.find(x=>x.id==="fmt-commits");
+assert.equal(MONITOR_SOURCES.length,7);
+assert.throws(()=>validateSource({...sourceEA,url:"https://evil.example/"}),/DISALLOWED_SOURCE/);
+assert.throws(()=>validateSource({...sourceEA,url:"https://www.ea.com/admin/"}),/DISALLOWED_EA_PATH/);
+assert.equal(extractEvents(sourceEA,eaHtml)[0].kind,"PATCH_CANDIDATE");
+assert.equal(extractEvents(sourceRelease,JSON.stringify([release]))[0].kind,"TOOL_RELEASE");
+assert.throws(()=>extractEvents(sourceRelease,JSON.stringify([{...release,html_url:"https://evil.example/payload"}])),/INVALID_RELEASE/);
+const sources=[sourceEA,sourceRelease,sourceCommit];
+let changed=false;
+const mock=async(url)=>{
+ const source=sources.find(x=>x.url===url);
+ const data=source.kind==="EA_NEWS"?eaHtml:source.kind==="GITHUB_RELEASES"?JSON.stringify(changed?[release,{...release,id:235,tag_name:"v2.1",html_url:"https://github.com/FMTDev/FMT.Madden26Plugin/releases/tag/v2.1"}]:[release]):JSON.stringify([commit]);
+ return new Response(data,{status:200,headers:{"content-type":source.kind==="EA_NEWS"?"text/html; charset=utf-8":"application/json"}});
+};
+try {
+ const first=await runCollector({folder,fetchFn:mock,sources,now:new Date("2026-10-10T12:00:00Z")});
+ assert.equal(first.status,"OK");assert.equal(first.added,3);assert(first.baseline);
+ let latest=JSON.parse(await readFile(join(folder,"latest.json"),"utf8"));
+ assert.equal(latest.counts.communityQualityRatingsCreated,0);
+ assert(latest.newItems.every(x=>x.detection==="INITIAL_BASELINE"&&!x.gameRuntimeVerified));
+ const again=await runCollector({folder,fetchFn:mock,sources,now:new Date("2026-10-11T12:00:00Z")});
+ assert.equal(again.added,0);
+ changed=true;
+ const third=await runCollector({folder,fetchFn:mock,sources,now:new Date("2026-10-12T12:00:00Z")});
+ assert.equal(third.added,1);assert(!third.baseline);
+ latest=JSON.parse(await readFile(join(folder,"latest.json"),"utf8"));
+ assert.equal(latest.newItems[0].detection,"NEW_SOURCE_ITEM");
+ assert.equal(latest.counts.totalObserved,4);
+ const broken=await runCollector({folder,fetchFn:async()=>new Response("rate limit",{status:429,headers:{"content-type":"text/plain"}}),sources});
+ assert.equal(broken.status,"FAILED_ALL_SOURCES");
+ latest=JSON.parse(await readFile(join(folder,"latest.json"),"utf8"));
+ assert.equal(latest.counts.totalObserved,4,"failed run must not wipe last good snapshot");
+ const part=await runCollector({folder,fetchFn:async(url)=>url===sourceEA.url?new Response("server error",{status:500}):mock(url),sources});
+ assert.equal(part.status,"PARTIAL");assert.equal(part.added,0);
+ console.log("MOD_WATCH_COLLECTOR_PASS baseline=3 duplicate=0 update=1 fail_preserves=4 partial=1");
+} finally {await rm(folder,{force:true,recursive:true});}

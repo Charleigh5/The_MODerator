@@ -52,8 +52,8 @@ function inferMissing(prompt:string,effects:ModEffect[]):string[]{
  return[...new Set(miss)];
 }
 function replies(missing:string[]):string[]{const r:string[]=[];for(const x of missing){if(x.includes("save"))r.push("Attach copied dynasty save","Attach roster file");else if(x.includes("player"))r.push("Select player by team + position + name/#");else if(x.includes("rating"))r.push("Set exact values","Use realistic position preset");else if(x.includes("Team Builder"))r.push("Attach/export Team Builder payload","Show Team Builder capture steps");}return[...new Set(r)].slice(0,6);}
-export function compileModIntent(prompt:string,build?:string):ModIntentSpec{
- const universe=inferUniverse(prompt);let parts=splitEffects(prompt);if(parts.length>8)parts=[prompt];
+export function compileModIntent(prompt:string,build?:string,forcedUniverse?:Universe):ModIntentSpec{
+ const universe=forcedUniverse??inferUniverse(prompt);let parts=splitEffects(prompt);if(parts.length>8)parts=[prompt];
  const effects=parts.map(raw=>{const hint=inferRouteHint(prompt,raw);const matches=resolveCapabilities(raw,universe,6,hint);const x=disposition(matches,universe);return{raw,matches,disposition:x.d,reason:x.r};});
  if(effects.every(e=>e.matches.length===0)){const matches=resolveCapabilities(prompt,universe,8,inferRouteHint(prompt,prompt));const x=disposition(matches,universe);effects.splice(0,effects.length,{raw:prompt,matches,disposition:x.d,reason:x.r});}
  const missingInputs=inferMissing(prompt,effects);const hasBlocked=effects.some(e=>e.disposition==="BLOCKED"),hasExperiment=effects.some(e=>e.disposition==="EXPERIMENT_REQUIRED");
