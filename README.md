@@ -6,6 +6,7 @@ An evidence-gated, chat-first research and mod-design workbench for **Madden NFL
 
 ## Current application
 
+- **GrillMe mod design:** interactive A–D interview with dependent questions, custom D answers, revision, explicit confirmation and `GRIDIRON_MOD_SPEC_V2` JSON export. The elite-safety IQ scenario tests differences between 95- and 72-rated safeties without claiming engine physics parity. The exported schema remains `GAME_ARTIFACT_NOT_BUILT` / `NOT_RUN` and requires exact-build test evidence.
 - **Madden 27 Studio:** natural-language request entry, deterministic `MOD_INTENT_V1` capability and missing-input analysis, plan export, and visible `GAME_ARTIFACT_NOT_BUILT` / `NOT_RUN` states.
 - **Windows desktop companion:** local file selection and SHA-256 hashing, read-only plan inspection, context-isolated Electron UI, and optionally **Continue with ChatGPT** sign-in with user approval. The initial sign-in model follows [OpenAI's open-source OAuth guidance](https://developers.openai.com/siwc/token-sharing-open-source/sign-in), but actual account authorization and plan eligibility require a separate user-specific test.
 - **Mod Intelligence Library:** 31 sourced mod candidates and six developer/tool references, source links, reuse-rights caveats, and intent-keyword search (not embeddings). Third-party game/mod binaries are not redistributed.
