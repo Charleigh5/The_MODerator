@@ -27,7 +27,7 @@ export function startGrillSession(prompt:string):Session {
  const p=prompt.trim();
  if(!p||p.length>4000)throw Error("Enter a mod request between 1 and 4,000 characters.");
  const safety=/\b(safety|safeties|FS|SS|free safety|strong safety)\b/i.test(p)&&/read|recogn|cover|pursu|anticipat|intelligen|awareness|route|reaction/i.test(p);
- const footballIntent=/\b(recogn|read|pursu|block|cover|route|react|decision|awareness|speed|accel|physics|tackl|pass rush|throw|catch|skill|AI|gap fit|pocket|technique|separat|defend|run fit)/i.test(p);
+ const footballIntent=/\b(recogn|read|pursu|block|cover|route|react|decision|awareness|speed|accel|physics|tackl|pass rush|rush|protect|pressure|shed|vision|timing|throw|catch|skill|AI|gap fit|pocket|technique|separat|defend|run fit)/i.test(p);
  const positionGroup=safety?"SAFETY":footballIntent?inferPositionGroup(p):null;
  return {version:"GRILL_ME_DECISION_TREE_V1",originalPrompt:p,archetype:safety?"SAFETY_RECOGNITION":"GENERAL_MOD",positionGroup,step:0,answers:{},confirmed:false};
 }
