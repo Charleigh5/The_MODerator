@@ -1,0 +1,30 @@
+import assert from "node:assert/strict";
+import {buildFootball22Scenario,validateFootball22Scenario,focusPlayers} from "../.gauntlet-build/lib/football22Model.js";
+const pass=buildFootball22Scenario("PASS_COVER3"),run=buildFootball22Scenario("RUN_OUTSIDE_ZONE");
+for(const model of [pass,run]){
+ assert.equal(model.version,"GRIDIRON_22_TACTIC_V1");
+ assert.equal(model.offense.length,11);
+ assert.equal(model.defense.length,11);
+ assert.equal(model.offense.filter(p=>p.onLine).length,7);
+ assert.equal(new Set([...model.offense,...model.defense].map(p=>p.id)).size,22);
+ assert.equal(validateFootball22Scenario(model).length,0);
+ assert(model.interactions.length>=10);
+ assert(model.interactions.every(e=>e.proof==="COACHING_HYPOTHESIS_NOT_GAME_PROVEN"));
+ assert(model.offense.every(p=>p.assignment&&p.readKey&&p.metric));
+ assert(model.defense.every(p=>p.assignment&&p.readKey&&p.metric));
+ assert.equal(model.state,"TACTICAL_CONCEPT_NOT_GAME_RUNTIME");
+ assert.equal(model.calibration,"NOT_MEASURED");
+}
+assert.equal(focusPlayers(pass,"SAFETY").length,2);
+assert.equal(focusPlayers(pass,"OL").length,5);
+assert.equal(focusPlayers(pass,"QB").length,1);
+assert.equal(focusPlayers(pass,"SPECIAL_TEAMS").length,0);
+assert.notEqual(pass.defense.find(p=>p.id==="D_FS").assignment,run.defense.find(p=>p.id==="D_FS").assignment);
+assert.match(pass.defense.find(p=>p.id==="D_FS").assignment,/Deep middle/);
+assert.match(run.defense.find(p=>p.id==="D_SS").assignment,/force/);
+assert(validateFootball22Scenario({...pass,offense:pass.offense.slice(1)}).includes("REQUIRES_EXACTLY_11_PER_SIDE"));
+assert(validateFootball22Scenario({...pass,offense:[pass.offense[0],pass.offense[0],...pass.offense.slice(2)]}).includes("DUPLICATED_PLAYER_ID"));
+assert(validateFootball22Scenario({...pass,interactions:[...pass.interactions,{...pass.interactions[0],from:"MISSING"}]}).includes("INVALID_MATCHUP_ENDPOINT"));
+assert(validateFootball22Scenario({...pass,calibration:"MEASURED"}).includes("UNSUPPORTED_RUNTIME_PROMOTION"));
+assert.throws(()=>buildFootball22Scenario("CFB27"),/UNKNOWN_SCENARIO/);
+console.log("FOOTBALL_22_PASS offense=11 defense=11 pass_and_run=2 proof_guard=1");
