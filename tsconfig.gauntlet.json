@@ -24,6 +24,8 @@
     "src/lib/evidenceBundle.ts",
     "src/lib/maddenStudio.ts",
     "src/lib/grillMeFlow.ts",
+    "src/data/footballPositionIntelligence.ts",
+    "src/lib/football22Model.ts",
     "src/data/modIntelligence.ts",
     "src/lib/modLibrarySearch.ts",
     "src/data/communityEvidence.ts",
