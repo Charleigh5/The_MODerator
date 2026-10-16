@@ -404,6 +404,13 @@ function createWindow(){
         buttons().find(b => b.textContent?.includes("Analyze request"))?.click();
         await new Promise(resolve => setTimeout(resolve, 220));
         const grillStarted = document.querySelector(".m27-grill")?.getAttribute("data-grill-round") === "MECHANISM";
+        const footballBoardReady = document.querySelector(".m27-film22")?.getAttribute("data-player-count") === "22";
+        const passBoard = document.querySelector(".m27-film22")?.getAttribute("data-scenario")==="PASS_COVER3";
+        Array.from(document.querySelectorAll(".m27-film22-tabs button")).find(b=>b.textContent?.includes("Run / Outside zone"))?.click();
+        await new Promise(resolve=>setTimeout(resolve,100));
+        const runBoard=document.querySelector(".m27-film22")?.getAttribute("data-scenario")==="RUN_OUTSIDE_ZONE";
+        Array.from(document.querySelectorAll(".m27-film22-tabs button")).find(b=>b.textContent?.includes("Pass / Cover 3"))?.click();
+        await new Promise(resolve=>setTimeout(resolve,100));
         for (let i=0;i<3;i++){
           document.querySelector(".m27-grill-choice")?.click();
           await new Promise(resolve => setTimeout(resolve, 130));
@@ -421,6 +428,9 @@ function createWindow(){
           communityPanel,
           reviewAdapterReady,
           grillStarted,
+          footballBoardReady,
+          passBoard,
+          runBoard,
           grillReview,
           grillConfirmed,
           modSpecV2Ready,
@@ -435,7 +445,7 @@ function createWindow(){
         };
       })()`);
       console.log("MODERATOR_DESKTOP_SMOKE "+JSON.stringify(result));
-      const code=result.bridge&&result.studio&&result.promptReady&&result.messageCount>=3&&result.planEnabled&&result.libraryOpen&&result.libraryCards>=37&&result.communityPanel&&result.patchCards===2&&result.assessmentRows===37&&(!process.env.MODERATOR_SMOKE_EXPECT_LOCAL_WATCH||result.liveWatchItems>=1)&&result.reviewAdapterReady&&result.grillStarted&&result.grillReview&&result.grillConfirmed&&result.modSpecV2Ready?0:2;
+      const code=result.bridge&&result.studio&&result.promptReady&&result.messageCount>=3&&result.planEnabled&&result.libraryOpen&&result.libraryCards>=37&&result.communityPanel&&result.patchCards===2&&result.assessmentRows===37&&(!process.env.MODERATOR_SMOKE_EXPECT_LOCAL_WATCH||result.liveWatchItems>=1)&&result.reviewAdapterReady&&result.grillStarted&&result.footballBoardReady&&result.passBoard&&result.runBoard&&result.grillReview&&result.grillConfirmed&&result.modSpecV2Ready?0:2;
       await fs.writeFile(userPath("desktop-nexus-review-adapter.png"),(await mainWindow.webContents.capturePage()).toPNG());
       await fs.writeFile(userPath("desktop-smoke.json"),JSON.stringify({
         at:new Date().toISOString(),

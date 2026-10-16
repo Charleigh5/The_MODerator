@@ -1,5 +1,6 @@
 /* GrillMe: user intent architecture, not Frostbite runtime proof. */
 import { inferPositionGroup, getPositionProfile, positionDecisionChoices, type PositionGroup } from "../data/footballPositionIntelligence.js";
+import {buildFootball22Scenario,type Football22Scenario} from "./football22Model.js";
 export type OptionId = "A"|"B"|"C"|"D";
 export type Round = "MECHANISM"|"SITUATION"|"SEPARATION"|"CONFIRM";
 type DecisionRound = Exclude<Round,"CONFIRM">;
@@ -12,6 +13,7 @@ export interface GridironSpecV2 {
  version:"GRIDIRON_MOD_SPEC_V2";id:string;universe:"MADDEN27";platform:"PC_OFFLINE";titleBuild:null;originalPrompt:string;
  archetype:Session["archetype"];positionGroup:PositionGroup|null;requestedPositions:string[];desiredOnFieldOutcome:string;decisions:Record<DecisionRound,Answer>;
  positionIntelligence:null|{roleLabel:string;recognition:string;execution:string;failure:string;counterplay:string;coachingScenario:string;skillAxes:string[];measurementCandidates:string[];evidenceStatus:"FOOTBALL_CONCEPT_NOT_GAME_VERIFIED";referenceIds:string[]};
+ tacticalScenarios:Football22Scenario[];
  behaviorModel:{layers:string[];designHypotheses:string[];footballConstraints:string[]};
  bindingEvidence:{id:string;surface:string;status:string;parity:string}[];
  readiness:CompiledIntent["readiness"];unresolvedInputs:string[];
@@ -114,6 +116,7 @@ export function createGridironModSpecV2(s:Session,intent:CompiledIntent,source?:
   requestedPositions:profile?.positions??[],
   desiredOnFieldOutcome:safety?"Context-dependent safety decisions, leverage and pursuit with realistic elite-versus-average overlap.":s.originalPrompt,
   decisions,
+  tacticalScenarios:profile&&profile.group!=="SPECIAL_TEAMS"?[buildFootball22Scenario("PASS_COVER3"),buildFootball22Scenario("RUN_OUTSIDE_ZONE")]:[],
   positionIntelligence:profile?{roleLabel:profile.label,recognition:profile.recognition,execution:profile.execution,
    failure:profile.failure,counterplay:profile.counterplay,coachingScenario:profile.scenario,
    skillAxes:profile.skillAxes,measurementCandidates:profile.metrics,

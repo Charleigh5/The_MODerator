@@ -1,6 +1,7 @@
 import {useEffect,useState} from "react";
 import {CheckCircle2,ChevronLeft,ShieldAlert} from "lucide-react";
 import {currentGrillQuestion,type Session,type OptionId,type GridironSpecV2} from "../lib/grillMeFlow";
+import {getPositionProfile} from "../data/footballPositionIntelligence";
 import "./GrillMePanel.css";
 export default function GrillMePanel({session,brief,onChoose,onBack,onConfirm}:{
  session:Session;brief:GridironSpecV2|null;
@@ -11,7 +12,7 @@ export default function GrillMePanel({session,brief,onChoose,onBack,onConfirm}:{
  useEffect(()=>{setCustomOpen(false);setCustomText("");},[session.step,session.originalPrompt]);
  const q=currentGrillQuestion(session);
  return <section className="m27-grill" aria-label="GrillMe mod intent interview" data-grill-round={q.round}>
-  <div className="m27-grill-heading"><div><span>GRILLME / INTENT ENGINE</span><strong>{q.label}</strong></div><div className="m27-grill-progress">{Math.min(session.step+1,4)} / 4</div></div>
+  <div className="m27-grill-heading"><div><span>GRILLME / {getPositionProfile(session.positionGroup)?.label.toUpperCase()??"INTENT ENGINE"}</span><strong>{q.label}</strong></div><div className="m27-grill-progress">{Math.min(session.step+1,4)} / 4</div></div>
   <div className="m27-grill-meter" aria-hidden="true"><span style={{width:String(Math.min((session.step+1)*25,100))+"%"}}/></div>
   {!brief ? <>
    <h2>{q.question}</h2><p className="m27-grill-why">{q.why}</p>

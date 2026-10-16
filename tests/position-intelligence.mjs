@@ -19,6 +19,8 @@ for(const [group,request] of Object.entries(samples)){
  assert.equal(spec.positionIntelligence.evidenceStatus,"FOOTBALL_CONCEPT_NOT_GAME_VERIFIED");
  assert.equal(spec.gameArtifactStatus,"GAME_ARTIFACT_NOT_BUILT");
  assert.equal(spec.runtimeStatus,"NOT_RUN");
+ assert.equal(spec.tacticalScenarios.length,group==="SPECIAL_TEAMS"?0:2);
+ assert(spec.tacticalScenarios.every(sc=>sc.offense.length===11&&sc.defense.length===11));
 }
 assert.equal(startGrillSession("Give the safety a dark smoke visor").positionGroup,null,"Cosmetic request must not trigger tactical safety tree.");
 assert.equal(startGrillSession("Change stadium lights").positionGroup,null);

@@ -5,6 +5,7 @@ import { compileStudioIntent, createStudioPlan, type StudioSource } from "../lib
 import type { ModIntentSpec } from "../lib/modIntentCompiler";
 import { startGrillSession, currentGrillQuestion, chooseGrillOption, previousGrillRound, confirmGrillBrief, createGridironModSpecV2, type Session, type GridironSpecV2, type OptionId } from "../lib/grillMeFlow";
 import GrillMePanel from "./GrillMePanel";
+import Football22Board from "./Football22Board";
 import ModIntelligenceLibrary from "./ModIntelligenceLibrary";
 import type { ModCatalogEntry } from "../data/modIntelligence";
 import "./MaddenStudioApp.css";
@@ -223,6 +224,7 @@ export default function MaddenStudioApp() {
                 setGrill(g => g ? previousGrillRound(g) : null);
                 setGridSpec(null);
               }} onConfirm={confirmDecisionTree}/>}
+              {grill?.positionGroup&&grill.positionGroup!=="SPECIAL_TEAMS"&&<Football22Board focusGroup={grill.positionGroup}/>}
               {working && <div className="m27-working" role="status">Processing through Madden 27 evidence gates…</div>}
               <div ref={bottom}/>
             </div>
