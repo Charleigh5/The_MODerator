@@ -86,7 +86,7 @@ export function chooseGrillOption(s:Session,id:OptionId,customText?:string):Sess
 export function previousGrillRound(s:Session):Session{
  if(s.step===0)return s;
  const step=(s.step-1) as Session["step"],answers={...s.answers};
- for(let i=step;i<3;i++){const r=rounds.at(i);if(r)delete answers[r];}
+ for(let i=step;i<3;i++){const r=rounds[i as 0|1|2];if(r)delete answers[r];}
  return {...s,step,answers,confirmed:false};
 }
 export function confirmGrillBrief(s:Session):Session{

@@ -30,7 +30,7 @@ export default function GrillMePanel({session,brief,onChoose,onBack,onConfirm}:{
      <button className="m27-grill-confirm" type="button" onClick={onConfirm}><CheckCircle2 size={17}/> Confirm Mod Brief v2</button>
     </div>}
    {session.step>0&&<button className="m27-grill-back" type="button" onClick={onBack}><ChevronLeft size={14}/> Revise previous decision</button>}
-  </> : <div className="m27-grill-complete" role="status"><CheckCircle2 size={20}/><div><strong>GRIDIRON_MOD_SPEC_V2 confirmed</strong><p>{brief.id} · {brief.readiness.replaceAll("_"," ")} · GAME ARTIFACT NOT BUILT · RUNTIME NOT RUN</p></div><button type="button" onClick={onBack}>Revise</button></div>}
+  </> : <div className="m27-grill-complete" role="status"><CheckCircle2 size={20}/><div><strong>GRIDIRON_MOD_SPEC_V2 confirmed</strong><p>{brief.id} · {brief.readiness.replace(/_/g," ")} · GAME ARTIFACT NOT BUILT · RUNTIME NOT RUN</p></div><button type="button" onClick={onBack}>Revise</button></div>}
   <footer>Football intent is not proof of Madden 27 engine access. All game bindings require independent verification.</footer>
  </section>;
 }
