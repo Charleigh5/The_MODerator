@@ -36,17 +36,17 @@ export default function Football22Board({focusGroup}:{focusGroup:PositionGroup|n
        selected.id===player.id?"selected":""].join(" ")}
       style={{left:player.x+"%",top:player.y+"%"}} title={player.id+" · "+player.assignment}
       aria-pressed={selected.id===player.id}
-      aria-label={player.id.replaceAll("_"," ")+": "+player.assignment}
+      aria-label={player.id.replace(/_/g," ")+": "+player.assignment}
       onClick={()=>setSelectedId(player.id)}>{player.label}</button>)}
     </div>
     <div className="m27-film22-legend"><span><i className="offense"/> Offense · 11 players</span><span><i className="defense"/> Defense · 11 players</span><span><i className="focused"/> Focus {focusGroup||"none"}</span></div>
     <article className="m27-film22-detail">
-     <div><small>SELECTED RESPONSIBILITY</small><h4>{selected.id.replaceAll("_"," ")} <span>· {selected.side}</span></h4></div>
+     <div><small>SELECTED RESPONSIBILITY</small><h4>{selected.id.replace(/_/g," ")} <span>· {selected.side}</span></h4></div>
      <p><strong>Assignment</strong> {selected.assignment}</p>
      <p><strong>Read / key</strong> {selected.readKey}</p>
      <p><strong>Measure</strong> {selected.metric}</p>
      {related.length>0&&<div className="m27-film22-rel"><small>INTERACTIONS ({related.length})</small>
-       {related.map(e=><p key={e.id}><b>{e.from.replaceAll("_"," ")} ↔ {e.to.replaceAll("_"," ")}</b> {e.readOrConflict}</p>)}</div>}
+       {related.map(e=><p key={e.id}><b>{e.from.replace(/_/g," ")} ↔ {e.to.replace(/_/g," ")}</b> {e.readOrConflict}</p>)}</div>}
     </article>
    </>}
    <div className="m27-film22-proof"><ShieldAlert size={15}/><span>TACTICAL CONCEPT ONLY. Assignments and counterplay are coaching hypotheses—not decoded EA AI, physics or animation. No Madden 27 game runtime proof.</span></div>
