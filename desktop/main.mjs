@@ -395,6 +395,24 @@ function createWindow(){
         const assessmentRows = document.querySelectorAll(".m27-ci-row").length;
         const communityPanel = Boolean(document.querySelector(".m27-ci"));
         const reviewAdapterReady = Boolean(document.querySelector(".m27-ci-review-inbox button"));
+        buttons().find(b => b.getAttribute("aria-label") === "Close mod library")?.click();
+        await new Promise(resolve => setTimeout(resolve, 110));
+        buttons().find(b => b.textContent?.includes("New design session"))?.click();
+        await new Promise(resolve => setTimeout(resolve, 90));
+        buttons().find(b => b.textContent?.includes("Elite safety IQ"))?.click();
+        await new Promise(resolve => setTimeout(resolve, 90));
+        buttons().find(b => b.textContent?.includes("Analyze request"))?.click();
+        await new Promise(resolve => setTimeout(resolve, 220));
+        const grillStarted = document.querySelector(".m27-grill")?.getAttribute("data-grill-round") === "MECHANISM";
+        for (let i=0;i<3;i++){
+          document.querySelector(".m27-grill-choice")?.click();
+          await new Promise(resolve => setTimeout(resolve, 130));
+        }
+        const grillReview = document.querySelector(".m27-grill")?.getAttribute("data-grill-round") === "CONFIRM";
+        document.querySelector(".m27-grill-confirm")?.click();
+        await new Promise(resolve => setTimeout(resolve, 170));
+        const modSpecV2Ready = Boolean(buttons().find(b => b.textContent?.includes("Download Mod Spec v2") && !b.disabled));
+        const grillConfirmed = Boolean(document.querySelector(".m27-grill-complete"));
         document.querySelector(".m27-ci-review-inbox")?.scrollIntoView({block:"center"});
         return {
           liveWatchItems,
@@ -402,6 +420,10 @@ function createWindow(){
           assessmentRows,
           communityPanel,
           reviewAdapterReady,
+          grillStarted,
+          grillReview,
+          grillConfirmed,
+          modSpecV2Ready,
           libraryOpen,
           libraryCards,
           title: document.title,
@@ -413,7 +435,7 @@ function createWindow(){
         };
       })()`);
       console.log("MODERATOR_DESKTOP_SMOKE "+JSON.stringify(result));
-      const code=result.bridge&&result.studio&&result.promptReady&&result.messageCount>=3&&result.planEnabled&&result.libraryOpen&&result.libraryCards>=37&&result.communityPanel&&result.patchCards===2&&result.assessmentRows===37&&(!process.env.MODERATOR_SMOKE_EXPECT_LOCAL_WATCH||result.liveWatchItems>=1)&&result.reviewAdapterReady?0:2;
+      const code=result.bridge&&result.studio&&result.promptReady&&result.messageCount>=3&&result.planEnabled&&result.libraryOpen&&result.libraryCards>=37&&result.communityPanel&&result.patchCards===2&&result.assessmentRows===37&&(!process.env.MODERATOR_SMOKE_EXPECT_LOCAL_WATCH||result.liveWatchItems>=1)&&result.reviewAdapterReady&&result.grillStarted&&result.grillReview&&result.grillConfirmed&&result.modSpecV2Ready?0:2;
       await fs.writeFile(userPath("desktop-nexus-review-adapter.png"),(await mainWindow.webContents.capturePage()).toPNG());
       await fs.writeFile(userPath("desktop-smoke.json"),JSON.stringify({
         at:new Date().toISOString(),

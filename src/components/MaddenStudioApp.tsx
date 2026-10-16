@@ -3,6 +3,8 @@ import { ArrowDownToLine, ArrowUp, BookOpen, CheckCircle2, HelpCircle, Cpu, File
 import { buildModeratorInstructions } from "../lib/aiOrchestrator";
 import { compileStudioIntent, createStudioPlan, type StudioSource } from "../lib/maddenStudio";
 import type { ModIntentSpec } from "../lib/modIntentCompiler";
+import { startGrillSession, currentGrillQuestion, chooseGrillOption, previousGrillRound, confirmGrillBrief, createGridironModSpecV2, type Session, type GridironSpecV2, type OptionId } from "../lib/grillMeFlow";
+import GrillMePanel from "./GrillMePanel";
 import ModIntelligenceLibrary from "./ModIntelligenceLibrary";
 import type { ModCatalogEntry } from "../data/modIntelligence";
 import "./MaddenStudioApp.css";
@@ -13,6 +15,7 @@ const EXAMPLES = [
   { title: "Uniform identity", prompt: "Madden 27: create an alternate uniform with dark blue helmets and silver details", detail: "Art and package compatibility" },
   { title: "Franchise ratings", prompt: "Set my Madden 27 franchise QB speed to 95 in a copied save", detail: "Requires verified schema" },
   { title: "Stadium atmosphere", prompt: "Madden 27: change the end zone design and stadium field graphics", detail: "Exact-build resources required" },
+  { title: "Elite safety IQ", prompt: "Madden 27: a 95-rated safety should recognize coverage concepts and pursue better than a 72-rated safety without being superhuman", detail: "GrillMe • behavior vs ratings vs physics" },
 ];
 const GREETING: Message = { id: 1, role: "studio", via: "EVIDENCE COMPILER", text: "Welcome to Madden 27 Mod Studio. Describe what you want changed. I'll identify the modification surface, show what is actually supported, and prepare a governed plan. A plan is not an installed or tested mod." };
 
@@ -31,6 +34,8 @@ export default function MaddenStudioApp() {
   const [libraryOpen, setLibraryOpen] = useState(false);
   const [lastPrompt, setLastPrompt] = useState("");
   const [spec, setSpec] = useState<ModIntentSpec | null>(null);
+  const [grill, setGrill] = useState<Session | null>(null);
+  const [gridSpec, setGridSpec] = useState<GridironSpecV2 | null>(null);
   const [source, setSource] = useState<StudioSource | null>(null);
   const [inspection, setInspection] = useState<string | null>(null);
   const [error, setError] = useState("");
@@ -70,6 +75,8 @@ export default function MaddenStudioApp() {
     setDraft("");
     setLastPrompt(prompt);
     setSpec(next);
+    setGrill(startGrillSession(prompt));
+    setGridSpec(null);
     append("user", prompt);
     setWorking(true);
     try {
@@ -98,6 +105,7 @@ export default function MaddenStudioApp() {
       const selected = { name: picked.name, extension: picked.extension, size: picked.size, sha256: picked.sha256 };
       setSource(selected);
       if (lastPrompt) setSpec(compileStudioIntent(lastPrompt, selected));
+      if (gridSpec) { setGridSpec(null); setGrill(g => g ? { ...g, confirmed: false } : null); }
       setError("");
     } catch (e) { setError(String(e)); }
   }
@@ -136,11 +144,46 @@ export default function MaddenStudioApp() {
     window.setTimeout(() => URL.revokeObjectURL(href), 2000);
   }
 
+  function exportModSpecV2() {
+    if (!gridSpec) return;
+    const payload = new Blob([JSON.stringify(gridSpec, null, 2)], { type: "application/json" });
+    const href = URL.createObjectURL(payload);
+    const a = document.createElement("a");
+    a.href = href;
+    a.download = "moderator-" + gridSpec.id.toLowerCase() + "-grillme-modspec-v2.json";
+    a.click();
+    window.setTimeout(() => URL.revokeObjectURL(href), 2000);
+  }
+  function chooseDecision(option: OptionId, detail?: string) {
+    if (!grill) return;
+    try {
+      const q = currentGrillQuestion(grill);
+      const next = chooseGrillOption(grill, option, detail);
+      setGrill(next);
+      setGridSpec(null);
+      append("user", q.label + ": " + option + (detail ? " · " + detail : ""), "GRILLME / SELECTION");
+      setError("");
+    } catch (e) { setError(e instanceof Error ? e.message : String(e)); }
+  }
+  function confirmDecisionTree() {
+    if (!grill || !spec) return;
+    try {
+      const approved = confirmGrillBrief(grill);
+      const output = createGridironModSpecV2(approved, spec, source);
+      setGrill(approved);
+      setGridSpec(output);
+      append("studio", "Mod Brief " + output.id + " confirmed. Readiness: " + output.readiness + ". This exports a research specification, not a playable mod.", "GRILLME / CONFIRMED");
+      setError("");
+    } catch (e) { setError(e instanceof Error ? e.message : String(e)); }
+  }
+
   function restart() {
     setMessages(initial);
     setDraft("");
     setLastPrompt("");
     setSpec(null);
+    setGrill(null);
+    setGridSpec(null);
     setInspection(null);
     setError("");
     promptRef.current?.focus();
@@ -176,6 +219,10 @@ export default function MaddenStudioApp() {
                 <div className="m27-avatar">{m.role === "user" ? "YOU" : "M27"}</div>
                 <div><div className="m27-msg-label">{m.role === "user" ? "YOUR REQUEST" : m.via || "MODERATOR"}</div><p>{m.text}</p></div>
               </article>)}
+              {grill && <GrillMePanel session={grill} brief={gridSpec} onChoose={chooseDecision} onBack={() => {
+                setGrill(g => g ? previousGrillRound(g) : null);
+                setGridSpec(null);
+              }} onConfirm={confirmDecisionTree}/>}
               {working && <div className="m27-working" role="status">Processing through Madden 27 evidence gates…</div>}
               <div ref={bottom}/>
             </div>
@@ -186,7 +233,7 @@ export default function MaddenStudioApp() {
           <textarea id="m27-prompt" ref={promptRef} value={draft} maxLength={4000}
             onChange={e => setDraft(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) { e.preventDefault(); void submit(); }}}
             placeholder="e.g. Make my safety's visor smoke black and match his gloves to the alternate uniform…" rows={2}/>
-          <div className="m27-mobile-tools"><button onClick={() => void selectSource()} disabled={!desktop}>Select local file</button><button onClick={exportPlan} disabled={!spec}>Download plan</button><button onClick={() => void importPlan()} disabled={!desktop}>Import plan</button></div>
+          <div className="m27-mobile-tools"><button onClick={() => void selectSource()} disabled={!desktop}>Select local file</button><button onClick={exportPlan} disabled={!spec}>Download plan</button><button onClick={exportModSpecV2} disabled={!gridSpec}>Download Mod Spec v2</button><button onClick={() => void importPlan()} disabled={!desktop}>Import plan</button></div>
           <div className="m27-compose-actions"><span>No game files are changed by a chat request · Ctrl+Enter to submit</span>
             <button className="m27-send" disabled={!draft.trim() || working} onClick={() => void submit()}><ArrowUp size={19}/><span>Analyze request</span></button>
           </div></div>
@@ -221,6 +268,8 @@ export default function MaddenStudioApp() {
             <div className="m27-binding" key={i}><Cpu size={14}/><span><strong>{m.capability.id}</strong><small>{m.capability.evidence} · parity {m.parity}</small></span></div>)
             : <p>Nothing inferred without a request.</p>}
           <button className="m27-primary" onClick={exportPlan} disabled={!spec}><ArrowDownToLine size={16}/> Download evidence plan</button>
+          <button className="m27-secondary" onClick={exportModSpecV2} disabled={!gridSpec}><ArrowDownToLine size={16}/> Download Mod Spec v2</button>
+          {gridSpec && <p className="m27-inspection">{gridSpec.id} · USER-CONFIRMED INTENT ONLY</p>}
           <small className="m27-disclosure">Exports a JSON plan, not a .fbmod, installed asset, or playable modification.</small>
         </section>
         <div className="m27-inspector-bottom">
