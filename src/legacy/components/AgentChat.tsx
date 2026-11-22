@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { ChatMsg, Phase, QAState } from "../types";
+import type { ChatMsg, Phase, QAState } from "../../types";
 import { CATEGORIES } from "../lib/agentEngine";
 import { IconBall, IconBolt, IconChevron, IconUpload, IconFile, IconDownload, IconPaperclip } from "./icons";
 import { parseDocument } from "../lib/documentProcessor";

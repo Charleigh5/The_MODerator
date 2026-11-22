@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { MODS } from '../data/modLibrary';
-import type { ModEntry } from '../types';
+import type { ModEntry } from '../../types';
 import { IconStar, IconDownload, IconEdit, IconChevronRight, IconAlert, IconFile, IconCode, IconTest, IconX } from './icons';
 
 interface ModLibraryBrowserProps {

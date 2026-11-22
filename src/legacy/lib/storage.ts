@@ -1,4 +1,4 @@
-import type { BuildStatus, BundleMeta, ChatMsg, Phase, QAState } from "../types";
+import type { BuildStatus, BundleMeta, ChatMsg, Phase, QAState } from "../../types";
 
 /* ------------------------------------------------ session binder ---------- */
 

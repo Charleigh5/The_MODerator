@@ -1,0 +1,143 @@
+/* Football 22-player board legend, detail drawer, proof note, and responsive rules. */
+
+.m27-film22-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 17px;
+  font-size: 10px;
+  color: #b4cfdf;
+  padding: 11px 0
+}
+
+.m27-film22-legend span {
+  display: flex;
+  align-items: center;
+  gap: 5px
+}
+
+.m27-film22-legend i {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%
+}
+
+.m27-film22-legend i.offense {
+  background: #cbeaff
+}
+
+.m27-film22-legend i.defense {
+  background: #e09c63
+}
+
+.m27-film22-legend i.focused {
+  background: #76f5be
+}
+
+.m27-film22-detail {
+  background: #081e2e;
+  border: 1px solid #2b536c;
+  border-radius: 7px;
+  padding: 13px
+}
+
+.m27-film22-detail small {
+  color: #7acdf6;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .11em
+}
+
+.m27-film22-detail h4 {
+  margin: 6px 0 9px;
+  font-size: 14px
+}
+
+.m27-film22-detail h4 span {
+  font-size: 10px;
+  color: #8dacc2
+}
+
+.m27-film22-detail p {
+  font-size: 11px!important;
+  margin: 6px 0!important;
+  line-height: 1.55!important;
+  color: #b8d5e7!important
+}
+
+.m27-film22-detail p strong {
+  color: #f1f7fe;
+  min-width: 72px;
+  display: inline-block
+}
+
+.m27-film22-rel {
+  border-top: 1px solid #ffffff1c;
+  margin-top: 9px;
+  padding-top: 9px
+}
+
+.m27-film22-rel p b {
+  color: #d6bd92;
+  margin-right: 6px
+}
+
+.m27-film22-proof {
+  margin-top: 13px;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  border-left: 3px solid #e2aa65;
+  background: #4e322830;
+  color: #e9c59c;
+  padding: 10px;
+  font-size: 10px;
+  line-height: 1.6
+}
+
+.m27-film22-proof svg {
+  flex: none
+}
+
+.m27-film22-foot {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+  color: #8ba7bb;
+  font-size: 9px;
+  line-height: 1.5
+}
+
+.m27-film22-foot a {
+  color: #80c6f2
+}
+
+.m27-film22 button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px
+}
+
+@media(max-width:600px) {
+  .m27-film22 {
+    padding: 12px
+  }
+  .m27-film22-field {
+    height: 250px
+  }
+  .m27-film22-player {
+    min-width: 24px;
+    height: 24px;
+    font-size: 8px
+  }
+  .m27-film22-head h3 {
+    font-size: 20px
+  }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  .m27-film22 * {
+    transition: none!important
+  }
+}

@@ -1,0 +1,166 @@
+/* GrillMe custom input, review summary, completion banner, and responsive rules. */
+
+.m27-grill-custom {
+  grid-column: 1/-1;
+  padding: 12px;
+  background: #0b2134;
+  border: 1px solid #4a80a7;
+  border-radius: 8px;
+  display: grid;
+  gap: 9px
+}
+
+.m27-grill-custom label {
+  font-weight: 800;
+  color: #b4daf4;
+  font-size: 11px
+}
+
+.m27-grill-custom textarea {
+  width: 100%;
+  resize: vertical;
+  background: #132d43;
+  border: 1px solid #497494;
+  border-radius: 6px;
+  color: #f0f8ff;
+  font: inherit;
+  font-size: 12px;
+  padding: 10px
+}
+
+.m27-grill-custom button,.m27-grill-confirm {
+  border: 1px solid #54a1d6;
+  background: #1970b3;
+  border-radius: 6px;
+  padding: 11px 14px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800
+}
+
+.m27-grill-custom button:disabled {
+  opacity: .45;
+  cursor: not-allowed
+}
+
+.m27-grill-back {
+  margin-top: 13px;
+  display: flex;
+  gap: 5px;
+  align-items: center;
+  padding: 8px 0;
+  background: none;
+  border: 0;
+  color: #9bc9e8;
+  font-size: 11px
+}
+
+.m27-grill-review {
+  display: grid;
+  gap: 9px
+}
+
+.m27-grill-review>div:not(.m27-grill-notice) {
+  border-bottom: 1px solid #ffffff1c;
+  padding: 7px 0
+}
+
+.m27-grill-review small {
+  font-size: 9px;
+  color: #7ac5ef;
+  letter-spacing: .1em
+}
+
+.m27-grill-review strong {
+  display: block;
+  font-size: 13px;
+  margin: 4px 0
+}
+
+.m27-grill-review p {
+  font-size: 11px;
+  line-height: 1.5;
+  color: #adc6d8;
+  margin: 0 0 6px
+}
+
+.m27-grill-notice {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border-left: 2px solid #eba864;
+  padding: 11px;
+  color: #d9bd99;
+  font-size: 11px;
+  line-height: 1.5
+}
+
+.m27-grill-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px
+}
+
+.m27-grill-complete {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  border: 1px solid #3b887d;
+  background: #143e41;
+  padding: 13px;
+  border-radius: 7px
+}
+
+.m27-grill-complete>svg {
+  flex: none;
+  color: #7bd9b0
+}
+
+.m27-grill-complete strong {
+  font-size: 12px
+}
+
+.m27-grill-complete p {
+  font-size: 10px;
+  color: #b1d9cc;
+  margin: 5px 0 0;
+  line-height: 1.55
+}
+
+.m27-grill-complete button {
+  margin-left: auto;
+  background: #195b66;
+  color: #d7f4f3;
+  border: 1px solid #478d90;
+  padding: 8px 10px;
+  border-radius: 5px;
+  font-size: 11px
+}
+
+.m27-grill footer {
+  font-size: 10px;
+  color: #7b9bb3;
+  line-height: 1.5;
+  border-top: 1px solid #ffffff13;
+  padding-top: 13px;
+  margin-top: 16px
+}
+
+@media(max-width:650px) {
+  .m27-grill {
+    padding: 13px
+  }
+  .m27-grill-choices {
+    grid-template-columns: 1fr
+  }
+  .m27-grill h2 {
+    font-size: 16px
+  }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  .m27-grill-meter span {
+    transition: none
+  }
+}

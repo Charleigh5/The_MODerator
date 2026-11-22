@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import type { TermLine } from "../types";
+import type { TermLine } from "../../types";
 
 const KIND_CLS: Record<TermLine["kind"], string> = {
   in: "text-[#ffe9a8]",

@@ -1,0 +1,150 @@
+/* Community Intelligence assessment rows, metrics, issues, footer, and breakpoints. */
+
+.m27-ci-filters {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 11px;
+  color: #b4cbe0;
+  margin: 12px 0
+}
+
+.m27-ci-filters select {
+  color: #e0effc;
+  background: #1b3650;
+  border: 1px solid #386888;
+  padding: 8px;
+  border-radius: 6px
+}
+
+.m27-ci-rows {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 13px
+}
+
+.m27-ci-row {
+  background: #12253b;
+  border: 1px solid #33536e;
+  padding: 17px;
+  border-radius: 8px;
+  min-width: 0
+}
+
+.m27-ci-row-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px
+}
+
+.m27-ci-row h4 {
+  font-size: 15px;
+  line-height: 1.3;
+  margin: 7px 0 8px;
+  font-weight: 850
+}
+
+.m27-ci-row-top>strong {
+  font-size: 21px;
+  color: #87c6f6;
+  white-space: nowrap
+}
+
+.m27-ci-row-top>strong small {
+  font-size: 9px;
+  display: block;
+  color: #8aa7be;
+  text-align: right
+}
+
+.m27-ci-bar {
+  height: 4px;
+  background: #25425d;
+  border-radius: 4px;
+  overflow: hidden
+}
+
+.m27-ci-bar>span {
+  height: 100%;
+  display: block;
+  background: #64b9f9
+}
+
+.m27-ci-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 15px;
+  padding-top: 11px;
+  color: #9dbbd0;
+  font-size: 10px
+}
+
+.m27-ci-metrics span {
+  display: flex;
+  align-items: center;
+  gap: 4px
+}
+
+.m27-ci-issue {
+  margin-top: 12px;
+  border-left: 2px solid #d6a36a;
+  background: #2d302f80;
+  padding: 9px 12px;
+  font-size: 10px;
+  line-height: 1.45
+}
+
+.m27-ci-issue strong {
+  display: block;
+  color: #f0cda2
+}
+
+.m27-ci-issue span {
+  display: block;
+  margin-top: 5px;
+  color: #cfbba4
+}
+
+.m27-ci-row>p {
+  font-size: 10px;
+  color: #9fbacf;
+  line-height: 1.55;
+  margin: 12px 0 0
+}
+
+.m27-ci-footer {
+  border-top: 1px solid #ffffff1a;
+  padding: 18px 0 0;
+  color: #94adc4;
+  font-size: 11px;
+  line-height: 1.6
+}
+
+@media(max-width:970px) {
+  .m27-ci-overview {
+    flex-direction: column
+  }
+  .m27-ci-numbers {
+    align-self: flex-start
+  }
+  .m27-ci-rows {
+    grid-template-columns: 1fr
+  }
+}
+
+@media(max-width:630px) {
+  .m27-ci-patch-grid {
+    grid-template-columns: 1fr
+  }
+  .m27-ci-numbers {
+    width: 100%;
+    flex-wrap: wrap
+  }
+  .m27-ci-numbers>div {
+    flex: 1
+  }
+  .m27-ci-overview {
+    padding: 16px
+  }
+}

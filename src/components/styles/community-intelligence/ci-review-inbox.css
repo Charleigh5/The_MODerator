@@ -1,0 +1,66 @@
+/* Community Intelligence offline Nexus review pack inbox controls and items. */
+
+.m27-ci-review-inbox {
+  padding: 20px 23px;
+  background: #122a3d;
+  border: 1px solid #496e83;
+  border-radius: 8px
+}
+
+.m27-ci-review-inbox>p {
+  color: #b0c7d8;
+  font-size: 12px;
+  line-height: 1.6
+}
+
+.m27-ci-review-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap
+}
+
+.m27-ci-review-actions strong {
+  font-size: 11px;
+  color: #d6ecfc
+}
+
+.m27-ci-review-actions button {
+  background: #23618a;
+  color: #f0f7ff;
+  border: 1px solid #5692be;
+  border-radius: 6px;
+  padding: 10px 13px;
+  cursor: pointer
+}
+
+.m27-ci-review-actions button:disabled {
+  opacity: .5;
+  cursor: not-allowed
+}
+
+.m27-ci-review-item {
+  padding: 11px 13px;
+  margin-top: 8px;
+  background: #0c2133;
+  border-left: 2px solid #c9965f
+}
+
+.m27-ci-review-item span {
+  font-size: 10px;
+  color: #ddbb89
+}
+
+.m27-ci-review-item p {
+  font-size: 11px;
+  color: #bdccdd
+}
+
+.m27-ci-review-item a {
+  font-size: 10px;
+  color: #8bc7ef;
+  display: flex;
+  align-items: center;
+  gap: 5px
+}

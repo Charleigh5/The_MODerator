@@ -1,4 +1,4 @@
-import type { Phase } from "../types";
+import type { Phase } from "../../types";
 import { TICKER_ITEMS } from "../data/modLibrary";
 import { IconFolder, IconSave, IconTrendingUp } from "./icons";
 

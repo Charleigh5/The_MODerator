@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { BuildStatus, BundleMeta, Phase, TermLine } from "../types";
+import type { BuildStatus, BundleMeta, Phase, TermLine } from "../../types";
 import CodeView from "./CodeView";
 
 type Tab = "blueprint" | "ship";
