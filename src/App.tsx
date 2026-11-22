@@ -1,3 +1,4 @@
+import "./index.css";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type {
   Phase,

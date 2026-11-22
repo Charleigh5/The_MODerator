@@ -58,10 +58,10 @@ export default function CommunityIntelligencePanel(){
    <section className="m27-ci-intro"><div className="m27-ci-label">SOURCE EVALUATION / 2026-10-09</div><h3>Community confidence <em>is not popularity.</em></h3><p>Evidence-coverage scores measure how much attributable information exists about a mod, not whether players like it. Community quality ratings stay withheld until independent retail-build testing and adequate review coverage exist.</p></section>
    <div className="m27-ci-numbers"><div><strong>{assessments.length}</strong><span>Evaluated references</span></div><div><strong>{assessments.filter(x=>x.qualityScore!==null).length}</strong><span>Qualified quality ratings</span></div><div><strong>{communityEvidence.length}</strong><span>Dated source records</span></div></div>
  </div>
- <section className="m27-ci-watch"><div className="m27-ci-label">AUTOMATED SOURCE WATCH / HOMEPC</div>
+ <section className="m27-ci-watch"><div className="m27-ci-label">AUTOMATED SOURCE WATCH / LOCAL COMPANION</div>
  {live ? <><p>Last successful snapshot: {live.observedAt} · {live.counts.sourcesSucceeded}/7 feeds responding · {live.counts.totalObserved} distinct source observations · {live.counts.newItems} in latest run. Quality ratings remain evidence-gated.</p>
  <div className="m27-ci-live-items">{live.events.slice(0,8).map(item=><a key={item.id} href={item.url} target="_blank" rel="noopener noreferrer"><span>{item.detection==="INITIAL_BASELINE"?"BASELINE": "NEW"} · {item.kind.replace(/_/g," ")}</span><strong>{item.title}</strong><ExternalLink size={12}/></a>)}</div></>
- : <p>{fetchError|| (window.moderatorDesktop?"No valid local snapshot yet. Run the local collector.":"Recurring source-watch data is available through MODerator Desktop on HOMEPC.")}</p>}
+ : <p>{fetchError|| (window.moderatorDesktop?"No valid local snapshot yet. Run the local collector.":"Recurring source-watch data is available through MODerator Desktop.")}</p>}
  </section>
  <section className="m27-ci-review-inbox">
   <div className="m27-ci-label">NEXUS REVIEW ADAPTER / PERMISSION-GATED OFFLINE INBOX</div>

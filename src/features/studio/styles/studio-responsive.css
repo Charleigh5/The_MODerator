@@ -1,0 +1,139 @@
+@media (max-width: 1250px) {
+  .m27-shell {
+    grid-template-columns: 205px minmax(360px, 1fr) 282px;
+  }
+
+  .m27-inspector-section,
+  .m27-inspector-bottom {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+@media (max-width: 980px) {
+  .m27-drawer-toggle {
+    display: inline-flex;
+  }
+
+  .m27-mobile-tools {
+    display: flex;
+  }
+
+  .m27-shell {
+    grid-template-columns: 192px minmax(0, 1fr);
+  }
+
+  .m27-shell > .m27-inspector {
+    display: none;
+  }
+
+  .m27-conversation {
+    padding: 0 20px;
+  }
+
+  .m27-compose-wrap {
+    padding: 12px 20px 20px;
+  }
+}
+
+@media (max-width: 600px) {
+  .m27-shell {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .m27-rail {
+    flex: none;
+    padding: 8px 10px;
+    gap: 6px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .m27-brand {
+    padding: 0;
+  }
+
+  .m27-brand-mark {
+    width: 32px;
+    height: 32px;
+    font-size: 15px;
+  }
+
+  .m27-rail-heading,
+  .m27-rail .m27-template,
+  .m27-rail-footer {
+    display: none;
+  }
+
+  .m27-drawer-labs {
+    display: block;
+  }
+
+  .m27-new {
+    font-size: 10px;
+    padding: 7px 9px;
+    gap: 5px;
+    white-space: nowrap;
+  }
+
+  .m27-main {
+    flex: 1;
+    min-height: 0;
+  }
+
+  .m27-top {
+    padding: 0 12px;
+    height: 48px;
+  }
+
+  .m27-crumb {
+    font-size: 9px;
+    letter-spacing: 0.08em;
+  }
+
+  .m27-crumb span {
+    margin: 0 5px;
+  }
+
+  .m27-env-status {
+    display: none;
+  }
+
+  .m27-hero {
+    padding-top: 24px;
+  }
+
+  .m27-compose-actions > span {
+    display: none;
+  }
+
+  .m27-compose {
+    padding: 12px;
+  }
+
+  .m27-compose-wrap {
+    padding: 8px 10px 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m27-shell *,
+  .m27-shell *:before,
+  .m27-shell *:after {
+    animation: none !important;
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}
+
+/* Keep mobile quick tools wrapped cleanly when the inspector collapses. */
+.m27-mobile-tools {
+  flex-wrap: wrap;
+}
+
+.m27-mobile-tools button {
+  flex: 1 1 125px;
+}

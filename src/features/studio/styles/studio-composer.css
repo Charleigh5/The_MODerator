@@ -1,0 +1,75 @@
+.m27-compose-wrap {
+  padding: 15px 26px 26px;
+  background: linear-gradient(0deg, #07111e 70%, rgba(7, 17, 30, 0));
+}
+
+.m27-compose {
+  max-width: 790px;
+  margin: auto;
+  background: #14273c;
+  border: 1px solid #3d6481;
+  box-shadow: 0 12px 60px #0209139c;
+  border-radius: 12px;
+  padding: 16px 17px 13px;
+}
+
+.m27-compose-label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 10px;
+  color: #78bced;
+  letter-spacing: 0.12em;
+  font-weight: 850;
+}
+
+.m27-compose textarea {
+  display: block;
+  width: 100%;
+  resize: vertical;
+  min-height: 60px;
+  max-height: 200px;
+  background: transparent;
+  border: 0;
+  outline: none !important;
+  color: #f1f8fc;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 11px 0 8px;
+}
+
+.m27-compose textarea::placeholder {
+  color: #92acc3;
+}
+
+.m27-compose-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.m27-compose-actions > span {
+  color: #8eaac0;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.m27-send {
+  background: #52aeed;
+  color: #071b2c;
+  border: 1px solid #6fc7ff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  white-space: nowrap;
+  font-weight: 850;
+  font-size: 11px;
+}
+
+.m27-send:hover {
+  background: #84d3ff;
+}
