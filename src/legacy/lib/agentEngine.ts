@@ -1,4 +1,4 @@
-import type { CategoryId, QAQuestion, GenFile, BundleMeta, PatternDef } from "../types";
+import type { CategoryId, QAQuestion, GenFile, BundleMeta, PatternDef } from "../../types";
 import { MODS, PATTERNS, STARTER_KB_IDS } from "../data/modLibrary";
 
 /* ---------------- helpers ---------------- */

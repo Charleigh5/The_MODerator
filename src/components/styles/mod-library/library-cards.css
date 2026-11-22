@@ -1,0 +1,171 @@
+/* Mod Intelligence Library results grid, cards, tags, and action buttons. */
+
+.m27-lib-notice {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 12px 30px;
+  background: #152d3e;
+  color: #a8c4d6;
+  line-height: 1.55;
+  font-size: 11px
+}
+
+.m27-lib-notice svg {
+  flex-shrink: 0;
+  color: #f1b879
+}
+
+.m27-lib-notice b {
+  color: #ffdbab
+}
+
+.m27-lib-results-heading {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 32px 9px;
+  font-size: 11px;
+  color: #d2eafa;
+  font-weight: 850;
+  letter-spacing: .1em;
+  text-transform: uppercase
+}
+
+.m27-lib-results-heading span {
+  color: #7b9cb4;
+  font-weight: 400;
+  letter-spacing: .03em;
+  text-transform: none
+}
+
+.m27-lib-list {
+  overflow: auto;
+  min-height: 0;
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  align-content: start;
+  gap: 14px;
+  padding: 9px 32px 26px
+}
+
+.m27-lib-card {
+  background: #10263d;
+  border: 1px solid #355371;
+  padding: 19px;
+  border-radius: 8px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px
+}
+
+.m27-lib-card-header {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start
+}
+
+.m27-lib-icon {
+  flex-shrink: 0;
+  background: #184a6d;
+  color: #61b9f8;
+  border: 1px solid #3676a2;
+  width: 35px;
+  height: 35px;
+  border-radius: 7px;
+  display: grid;
+  place-items: center
+}
+
+.m27-lib-tags {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  color: #79b6e2;
+  font-size: 9px;
+  letter-spacing: .06em;
+  text-transform: uppercase
+}
+
+.m27-lib-tags span {
+  border: 1px solid #335a77;
+  background: #162f46;
+  padding: 3px 6px;
+  border-radius: 3px
+}
+
+.m27-lib-card h3 {
+  color: #f0f7ff;
+  font-weight: 900;
+  margin: 8px 0 3px;
+  font-size: 17px;
+  line-height: 1.25
+}
+
+.m27-lib-author {
+  color: #89a8c3;
+  font-size: 10px
+}
+
+.m27-lib-card>p {
+  color: #bdd0e1;
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 0
+}
+
+.m27-lib-caution {
+  color: #c0a98a;
+  background: #282b3026;
+  border-left: 2px solid #b58154;
+  font-size: 10px;
+  line-height: 1.55;
+  padding: 8px 10px
+}
+
+.m27-lib-lower {
+  margin-top: auto;
+  border-top: 1px solid #ffffff19;
+  padding-top: 12px
+}
+
+.m27-lib-state {
+  display: block;
+  font-size: 9px;
+  letter-spacing: .1em;
+  color: #b8c6d2;
+  font-weight: 900;
+  margin-bottom: 10px
+}
+
+.m27-lib-buttons {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap
+}
+
+.m27-lib-buttons a,.m27-lib-buttons button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-decoration: none;
+  color: #e2f1fe;
+  background: #163f60;
+  border: 1px solid #356a90;
+  padding: 8px 9px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 750;
+  line-height: 1.25
+}
+
+.m27-lib-buttons button {
+  background: #1976ba;
+  color: #fff
+}
+
+.m27-lib-buttons a:hover,.m27-lib-buttons button:hover {
+  background: #267bb5
+}

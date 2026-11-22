@@ -8,7 +8,7 @@ import type {
   BundleMeta,
   BuildStatus,
   TermLine,
-} from "./types";
+} from "../types";
 import { PLATFORMS, MODS, PATTERNS } from "./data/modLibrary";
 import {
   starterKb,
@@ -29,7 +29,7 @@ import {
   suggestNextStep,
   type ConversationContext,
 } from "./lib/conversationEngine";
-import { createEvidenceBundle, isEvidenceBundle } from "./lib/evidenceBundle";
+import { createEvidenceBundle, isEvidenceBundle } from "../lib/evidenceBundle";
 import {
   type Memory,
   type Session,
@@ -57,13 +57,13 @@ import ModLibraryBrowser from "./components/ModLibraryBrowser";
 import CodeViewport from "./components/CodeViewport";
 import FeatureRoadmap from "./components/FeatureRoadmap";
 import ChatGPTPlanPanel from "./components/ChatGPTPlanPanel";
-import { buildModeratorInput, buildModeratorInstructions } from "./lib/aiOrchestrator";
+import { buildModeratorInput, buildModeratorInstructions } from "../lib/aiOrchestrator";
 import {
   loadModLibrary,
   addModToLibrary,
   type ModEntry,
 } from "./lib/modStore";
-import type { ModEntry as VaultModEntry } from "./types";
+import type { ModEntry as VaultModEntry } from "../types";
 
 const GREETING_BASE =
   "CODEWRIGHT here. Describe what CFB27 or Madden 27 should do differently in plain English. I’ll resolve the request against source-backed capabilities, title parity, conflicts, required inputs, and proof gates before I call anything buildable. Build commands create governed execution packages first; game artifacts and runtime verification are never implied until they actually run.";

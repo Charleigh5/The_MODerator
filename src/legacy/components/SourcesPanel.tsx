@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { PatternDef } from "../types";
+import type { PatternDef } from "../../types";
 import { MODS, PLATFORMS } from "../data/modLibrary";
 import CodeView from "./CodeView";
 import { IconVault, IconRadar, IconChevron, IconDownload, IconCheck, IconStar, IconAlert, IconFile, IconCode, IconTest } from "./icons";

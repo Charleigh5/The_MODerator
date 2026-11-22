@@ -5,7 +5,7 @@ import { MaddenStudioApp } from "./features/studio";
 
 // Preserve the original multi-title workbench as a dev-only lazy route so production
 // does not bundle legacy components or legacy CSS.
-const LegacyApp = import.meta.env.DEV ? lazy(() => import("./App.tsx")) : null;
+const LegacyApp = import.meta.env.DEV ? lazy(() => import("./legacy/App.tsx")) : null;
 const legacy =
   Boolean(LegacyApp) &&
   new URLSearchParams(window.location.search).get("legacy") === "1";

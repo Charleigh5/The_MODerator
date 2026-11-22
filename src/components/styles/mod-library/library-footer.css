@@ -1,0 +1,98 @@
+/* Mod Intelligence Library empty state, footer, and responsive rules. */
+
+.m27-lib-empty {
+  grid-column: 1/-1;
+  color: #acbdd0;
+  padding: 40px 20px;
+  text-align: center;
+  border: 1px dashed #58718c
+}
+
+.m27-lib-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  border-top: 1px solid #ffffff1a;
+  padding: 13px 32px;
+  color: #7a96ac;
+  font-size: 10px
+}
+
+.m27-lib-foot button {
+  background: #174e76;
+  border: 1px solid #3c81b5;
+  color: #d7eeff;
+  border-radius: 6px;
+  padding: 10px 13px;
+  white-space: nowrap
+}
+
+@media(max-width:850px) {
+  .m27-lib-list {
+    grid-template-columns: 1fr
+  }
+  .m27-lib-header,.m27-lib-controls,.m27-lib-list {
+    padding-left: 15px;
+    padding-right: 15px
+  }
+  .m27-lib-stats>div {
+    padding: 10px
+  }
+  .m27-lib-controls {
+    align-items: stretch
+  }
+  .m27-lib-filters {
+    flex-wrap: wrap
+  }
+  .m27-lib-results-heading,.m27-lib-notice,.m27-lib-foot {
+    padding-left: 15px;
+    padding-right: 15px
+  }
+}
+
+@media(max-width:560px) {
+  .m27-lib-backdrop {
+    padding: 0
+  }
+  .m27-lib {
+    height: 100dvh;
+    border-radius: 0
+  }
+  .m27-lib-header {
+    padding-top: 16px
+  }
+  .m27-lib-stats {
+    grid-template-columns: repeat(2,1fr)
+  }
+  .m27-lib-stats strong {
+    font-size: 15px
+  }
+  .m27-lib-controls {
+    padding-top: 10px;
+    padding-bottom: 10px
+  }
+  .m27-lib-search {
+    min-width: 100%
+  }
+  .m27-lib-stats>div {
+    padding: 7px 15px
+  }
+  .m27-lib-foot span {
+    display: none
+  }
+  .m27-lib-foot {
+    justify-content: flex-end
+  }
+  .m27-lib-card {
+    padding: 13px
+  }
+}
+
+@media(prefers-reduced-motion:reduce) {
+  .m27-lib * {
+    scroll-behavior: auto!important;
+    animation: none!important;
+    transition: none!important
+  }
+}

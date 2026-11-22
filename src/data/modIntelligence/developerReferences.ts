@@ -1,0 +1,95 @@
+// Open-source developer tools, plugins, and research references.
+import type { ModCatalogEntry } from "./types.js";
+
+export const developerReferenceMods: ModCatalogEntry[] = [
+  {
+    "id": "dev-fmt-madden-27-profile-compiler",
+    "title": "FMT Madden 27 Profile & Compiler",
+    "author": "FMTDev",
+    "kind": "Code & tools",
+    "category": "Developer",
+    "description": "Frostbite asset profile, EBX/RES/chunk mapping, TOC/CAS compilation infrastructure; game-launch and mesh-import switches explicitly false.",
+    "language": "C# / .NET 10",
+    "paths": "Madden27Profile.json; Source/Core/Compiler/Madden27AssetCompiler.cs",
+    "license": "CC-BY-NC-ND-4.0",
+    "evidence": "SOURCE_INSPECTED",
+    "url": "https://github.com/FMTDev/FMT.Madden26Plugin",
+    "reuse": "NO_DERIVATIVE_REUSE",
+    "compatibility": "MADDEN27_NOT_GAME_VERIFIED"
+  },
+  {
+    "id": "dev-madden-franchise-parser",
+    "title": "madden-franchise parser",
+    "author": "bep713",
+    "kind": "Code & tools",
+    "category": "Developer",
+    "description": "Read/parse franchise container; event-based ready state, table parsing, schema-based data access. Madden27 field parity unverified.",
+    "language": "JavaScript / Node.js",
+    "paths": "src/FranchiseFile.js; package.json",
+    "license": "MIT_PACKAGE_METADATA",
+    "evidence": "SOURCE_INSPECTED",
+    "url": "https://github.com/bep713/madden-franchise",
+    "reuse": "REVIEW_REUSE_POSSIBLE",
+    "compatibility": "MADDEN27_NOT_GAME_VERIFIED"
+  },
+  {
+    "id": "dev-mmc-frosty-modding-tools",
+    "title": "MMC Frosty Modding Tools",
+    "author": "bphit4 / MMC",
+    "kind": "Code & tools",
+    "category": "Developer",
+    "description": "Community packaging and UI workflow reference; exact Madden27 release binary and runtime compatibility not inspected.",
+    "language": "Packaged binaries + documentation",
+    "paths": "README.md; GitHub Releases",
+    "license": "UNKNOWN",
+    "evidence": "DOCS_INSPECTED",
+    "url": "https://github.com/bphit4/MMC-Frosty-Modding-Tools",
+    "reuse": "NO_CODE_EXTRACTED",
+    "compatibility": "MADDEN27_NOT_GAME_VERIFIED"
+  },
+  {
+    "id": "dev-frostytoolsuite-reference",
+    "title": "FrostyToolsuite reference",
+    "author": "CadeEvs",
+    "kind": "Code & tools",
+    "category": "Developer",
+    "description": "Historical Frostbite tooling architecture reference; no claimed Madden27 runtime support.",
+    "language": "C#",
+    "paths": "Frosty editor/mod manager/sdk",
+    "license": "UNKNOWN",
+    "evidence": "REPOSITORY_DISCOVERED",
+    "url": "https://github.com/CadeEvs/FrostyToolsuite",
+    "reuse": "NO_CODE_EXTRACTED",
+    "compatibility": "MADDEN27_NOT_GAME_VERIFIED"
+  },
+  {
+    "id": "dev-cfb27-dynasty-research",
+    "title": "CFB27 dynasty research",
+    "author": "eric-levinson",
+    "kind": "Code & tools",
+    "category": "Developer",
+    "description": "Separate universe; pattern reference only; never inherit CFB identifiers or save schemas into Madden27.",
+    "language": "Various code and schemas",
+    "paths": "CFB27-specific save writer and table documentation",
+    "license": "UNKNOWN",
+    "evidence": "REPOSITORY_DISCOVERED",
+    "url": "https://github.com/eric-levinson/cfb27-dynasty-modding",
+    "reuse": "NO_MADDEN_PARITY",
+    "compatibility": "MADDEN27_NOT_GAME_VERIFIED"
+  },
+  {
+    "id": "dev-suspicious-madden-27-manager-listing",
+    "title": "Suspicious Madden 27 Manager listing",
+    "author": "MilliHairdresserWire",
+    "kind": "Code & tools",
+    "category": "Developer",
+    "description": "README advertises full roster/load-order editing but only one 53-byte Python source file observed; no credible functional implementation.",
+    "language": "Python",
+    "paths": "manager.py (53 bytes)",
+    "license": "UNKNOWN",
+    "evidence": "INSUFFICIENT_IMPLEMENTATION",
+    "url": "https://github.com/MilliHairdresserWire/Madden-27-Mod-Manager",
+    "reuse": "DO_NOT_RECOMMEND",
+    "compatibility": "MADDEN27_NOT_GAME_VERIFIED"
+  }
+];

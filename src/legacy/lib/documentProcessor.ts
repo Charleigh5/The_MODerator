@@ -1,4 +1,4 @@
-import type { CategoryId } from "../types";
+import type { CategoryId } from "../../types";
 import { MODS } from "../data/modLibrary";
 import { SOURCES } from "./agentEngine";
 

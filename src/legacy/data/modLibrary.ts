@@ -1,4 +1,4 @@
-import type { ModEntry, PatternDef, Platform } from "../types";
+import type { ModEntry, PatternDef, Platform } from "../../types";
 
 export const PLATFORMS: Platform[] = [
   { id: "cfbvault", name: "CFB Vault", url: "cfbvault.gg", mods: 1204, status: "online", heartbeat: 1240, latency: 23 },

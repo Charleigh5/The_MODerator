@@ -1,6 +1,6 @@
-import type { CategoryId } from "../types";
+import type { CategoryId } from "../../types";
 import { detectCategory } from "./agentEngine";
-import { compileModIntent, type ModIntentSpec } from "./modIntentCompiler";
+import { compileModIntent, type ModIntentSpec } from "../../lib/modIntentCompiler";
 export interface ConversationContext{modIdea:string;category:CategoryId|null;keyFeatures:string[];decisions:Record<string,string>;refinements:string[];currentFocus:string|null;intentSpec:ModIntentSpec|null;}
 export interface ConversationState{context:ConversationContext;conversationPhase:"exploring"|"refining"|"ready";lastTopic:string|null;}
 export function createInitialContext():ConversationContext{return{modIdea:"",category:null,keyFeatures:[],decisions:{},refinements:[],currentFocus:null,intentSpec:null};}
