@@ -1,7 +1,7 @@
 import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
 import "./studio-base.css";
-import MaddenStudioApp from "./components/MaddenStudioApp.tsx";
+import { MaddenStudioApp } from "./features/studio";
 
 // Preserve the original multi-title workbench as a dev-only lazy route so production
 // does not bundle legacy components or legacy CSS.

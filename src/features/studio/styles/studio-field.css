@@ -1,0 +1,75 @@
+.m27-viewport {
+  padding: 14px 17px 12px;
+  border-bottom: 1px solid var(--m27-line);
+}
+
+.m27-field {
+  height: 120px;
+  position: relative;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 calc(20% - 1px), #bddefb32 calc(20% - 1px) 20%),
+    repeating-linear-gradient(90deg, #103c46 0 20%, #154a52 20% 40%);
+  transform: perspective(340px) rotateX(9deg);
+  border: 1px solid #3a7284;
+  box-shadow: inset 0 0 55px #061b24;
+}
+
+.m27-field:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  left: 0;
+  top: 49%;
+  border-top: 1px dashed #d5efff4d;
+}
+
+.m27-yard {
+  position: absolute;
+  top: 47px;
+  color: #9bcbd145;
+  font-size: 17px;
+  font-weight: 900;
+  transform: rotate(-90deg);
+}
+
+.m27-yard-a {
+  left: 14%;
+}
+
+.m27-yard-b {
+  left: 49%;
+}
+
+.m27-yard-c {
+  left: 84%;
+}
+
+.m27-formation {
+  position: absolute;
+  bottom: 20px;
+  left: 45%;
+  color: #c7e8f7;
+  letter-spacing: 8px;
+  text-shadow: 0 0 15px #c3efff;
+  transform: rotate(-90deg);
+}
+
+.m27-formation span {
+  color: #53b8ff;
+}
+
+.m27-field-caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  color: #aac9d8;
+  font-size: 9px;
+  letter-spacing: 0.1em;
+  padding-top: 12px;
+}
+
+.m27-field-caption span {
+  color: #8ba8bf;
+  font-size: 8px;
+}
