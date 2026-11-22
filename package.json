@@ -70,5 +70,9 @@
     "npmRebuild": false
   },
   "author": "Charleigh5",
-  "license": "MIT"
+  "license": "MIT",
+  "overrides": {
+    "minimatch@^9.0.0": "^11.0.9",
+    "minimatch@^10.0.0": "^11.0.9"
+  }
 }
