@@ -162,7 +162,7 @@ export default function MaddenStudioApp() {
       </aside>
 
       <main className="m27-main">
-        <header className="m27-top"><div className="m27-crumb">MOD STUDIO <span>/</span> WORKSPACE <span>/</span> MADDEN 27</div>
+        <header className="m27-top"><div className="m27-crumb">MOD STUDIO <span aria-hidden="true">/</span> WORKSPACE <span aria-hidden="true">/</span> MADDEN 27</div>
           <div className="m27-top-right"><span className="m27-pulse"/> {desktop ? "WINDOWS COMPANION DETECTED" : "BROWSER STUDIO"} <span className="m27-version">RESEARCH LAB</span></div>
         </header>
         <div className="m27-conversation" aria-label="Design conversation">
@@ -196,7 +196,7 @@ export default function MaddenStudioApp() {
       <aside className="m27-inspector" aria-label="Build evidence and Windows companion">
         <div className="m27-inspector-head"><span>THE FILM ROOM</span><strong>BUILD INTELLIGENCE</strong><small>Every request gets an evidence trail.</small></div>
         <div className="m27-viewport" aria-label="Decorative schematic of a football field">
-          <div className="m27-field"><div className="m27-yard m27-yard-a">20</div><div className="m27-yard m27-yard-b">30</div><div className="m27-yard m27-yard-c">40</div><div className="m27-formation">▲ <span>●</span> ▲</div></div>
+          <div className="m27-field" aria-hidden="true"><div className="m27-yard m27-yard-a">20</div><div className="m27-yard m27-yard-b">30</div><div className="m27-yard m27-yard-c">40</div><div className="m27-formation">▲ <span>●</span> ▲</div></div>
           <div className="m27-field-caption">FIELD OVERVIEW <span>SCHEMATIC • NOT IN-GAME PREVIEW</span></div>
         </div>
         <section className="m27-inspector-section">
