@@ -9,6 +9,7 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
+import type { GridironSpecV2 } from "../../lib/grillMeFlow";
 import type { StudioSource } from "../../lib/maddenStudio";
 import type { ModIntentSpec } from "../../lib/modIntentCompiler";
 import { FieldSchematic } from "./FieldSchematic";
@@ -16,6 +17,7 @@ import { DESIGN_LABS, summarizeReadiness } from "./types";
 
 type FilmRoomInspectorProps = {
   spec: ModIntentSpec | null;
+  gridSpec: GridironSpecV2 | null;
   source: StudioSource | null;
   inspection: string | null;
   error: string;
@@ -27,14 +29,16 @@ type FilmRoomInspectorProps = {
   onSelectSource: () => void;
   onImportPlan: () => void;
   onExportPlan: () => void;
+  onExportModSpecV2: () => void;
   onSignIn: () => void;
   onSelectTemplate?: (prompt: string) => void;
   onClose?: () => void;
 };
 
 export function FilmRoomInspector({
-  spec, source, inspection, error, working, desktop, connected, model,
-  inDrawer = false, onSelectSource, onImportPlan, onExportPlan, onSignIn, onSelectTemplate, onClose,
+  spec, gridSpec, source, inspection, error, working, desktop, connected, model,
+  inDrawer = false, onSelectSource, onImportPlan, onExportPlan, onExportModSpecV2,
+  onSignIn, onSelectTemplate, onClose,
 }: FilmRoomInspectorProps) {
   const bindings = spec
     ? Array.from(
@@ -140,6 +144,10 @@ export function FilmRoomInspector({
         <button type="button" className="m27-primary" onClick={onExportPlan} disabled={!spec}>
           <ArrowDownToLine size={16} /> Download evidence plan
         </button>
+        <button type="button" className="m27-secondary" onClick={onExportModSpecV2} disabled={!gridSpec}>
+          <ArrowDownToLine size={16} /> Download Mod Spec v2
+        </button>
+        {gridSpec && <p className="m27-inspection">{gridSpec.id} {"·"} USER-CONFIRMED INTENT ONLY</p>}
         <small className="m27-disclosure">Exports a JSON plan, not a .fbmod, installed asset, or playable modification.</small>
       </section>
 

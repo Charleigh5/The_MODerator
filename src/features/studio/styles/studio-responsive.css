@@ -128,3 +128,12 @@
     transition: none !important;
   }
 }
+
+/* Keep mobile quick tools wrapped cleanly when the inspector collapses. */
+.m27-mobile-tools {
+  flex-wrap: wrap;
+}
+
+.m27-mobile-tools button {
+  flex: 1 1 125px;
+}

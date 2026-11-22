@@ -1,22 +1,23 @@
 import { useEffect, useRef, useState } from "react";
 import { buildModeratorInstructions } from "../../lib/aiOrchestrator";
-import { compileStudioIntent, createStudioPlan, type StudioSource } from "../../lib/maddenStudio";
+import { compileStudioIntent, type StudioSource } from "../../lib/maddenStudio";
 import type { ModIntentSpec } from "../../lib/modIntentCompiler";
+import {
+  chooseGrillOption,
+  confirmGrillBrief,
+  createGridironModSpecV2,
+  currentGrillQuestion,
+  previousGrillRound,
+  startGrillSession,
+  type GridironSpecV2,
+  type OptionId,
+  type Session,
+} from "../../lib/grillMeFlow";
 import type { ModCatalogEntry } from "../../data/modIntelligence";
+import { downloadModSpecV2File, downloadPlanFile } from "./planExport";
 import { GREETING, summarizeReadiness, type Message } from "./types";
 
 const INITIAL_MESSAGES: Message[] = [GREETING];
-
-function downloadPlanFile(spec: ModIntentSpec, source: StudioSource | null) {
-  const plan = createStudioPlan(spec, source);
-  const payload = new Blob([JSON.stringify(plan, null, 2)], { type: "application/json" });
-  const href = URL.createObjectURL(payload);
-  const link = document.createElement("a");
-  link.href = href;
-  link.download = "moderator-madden27-plan.json";
-  link.click();
-  window.setTimeout(() => URL.revokeObjectURL(href), 2000);
-}
 
 export function useStudioSession() {
   const [messages, setMessages] = useState<Message[]>(INITIAL_MESSAGES);
@@ -25,6 +26,8 @@ export function useStudioSession() {
   const [inspectorOpen, setInspectorOpen] = useState(false);
   const [lastPrompt, setLastPrompt] = useState("");
   const [spec, setSpec] = useState<ModIntentSpec | null>(null);
+  const [grill, setGrill] = useState<Session | null>(null);
+  const [gridSpec, setGridSpec] = useState<GridironSpecV2 | null>(null);
   const [source, setSource] = useState<StudioSource | null>(null);
   const [inspection, setInspection] = useState<string | null>(null);
   const [error, setError] = useState("");
@@ -65,11 +68,12 @@ export function useStudioSession() {
     return () => document.removeEventListener("keydown", onKey);
   }, [inspectorOpen]);
 
-  const append = (role: Message["role"], text: string, via?: string) =>
+  const append = (role: "user" | "studio", text: string, via?: string) => {
     setMessages((prev) => [...prev, { id: nextId.current++, role, text, via }]);
+  };
 
-  async function submit(text = draft) {
-    const prompt = text.trim();
+  async function submit() {
+    const prompt = draft.trim();
     if (!prompt || working) return;
     setError("");
     let next: ModIntentSpec;
@@ -82,6 +86,8 @@ export function useStudioSession() {
     setDraft("");
     setLastPrompt(prompt);
     setSpec(next);
+    setGrill(startGrillSession(prompt));
+    setGridSpec(null);
     append("user", prompt);
     setWorking(true);
     try {
@@ -114,6 +120,10 @@ export function useStudioSession() {
       const selected = { name: picked.name, extension: picked.extension, size: picked.size, sha256: picked.sha256 };
       setSource(selected);
       if (lastPrompt) setSpec(compileStudioIntent(lastPrompt, selected));
+      if (gridSpec) {
+        setGridSpec(null);
+        setGrill((g) => (g ? { ...g, confirmed: false } : null));
+      }
       setError("");
     } catch (e) {
       setError(String(e));
@@ -149,8 +159,44 @@ export function useStudioSession() {
     }
   }
 
+  function chooseDecision(option: OptionId, detail?: string) {
+    if (!grill) return;
+    try {
+      const q = currentGrillQuestion(grill);
+      setGrill(chooseGrillOption(grill, option, detail));
+      setGridSpec(null);
+      append("user", `${q.label}: ${option}${detail ? ` · ${detail}` : ""}`, "GRILLME / SELECTION");
+      setError("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  }
+
+  function backGrillRound() {
+    setGrill((g) => (g ? previousGrillRound(g) : null));
+    setGridSpec(null);
+  }
+
+  function confirmDecisionTree() {
+    if (!grill || !spec) return;
+    try {
+      const approved = confirmGrillBrief(grill);
+      const output = createGridironModSpecV2(approved, spec, source);
+      setGrill(approved);
+      setGridSpec(output);
+      append("studio", `Mod Brief ${output.id} confirmed. Readiness: ${output.readiness}. This exports a research specification, not a playable mod.`, "GRILLME / CONFIRMED");
+      setError("");
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    }
+  }
+
   const exportPlan = () => {
     if (spec) downloadPlanFile(spec, source);
+  };
+
+  const exportModSpecV2 = () => {
+    if (gridSpec) downloadModSpecV2File(gridSpec);
   };
 
   function applyTemplate(prompt: string) {
@@ -172,6 +218,8 @@ export function useStudioSession() {
     setDraft("");
     setLastPrompt("");
     setSpec(null);
+    setGrill(null);
+    setGridSpec(null);
     setInspection(null);
     setError("");
     setInspectorOpen(false);
@@ -180,7 +228,8 @@ export function useStudioSession() {
 
   return {
     messages, draft, setDraft, libraryOpen, setLibraryOpen, inspectorOpen, setInspectorOpen,
-    spec, source, inspection, error, working, desktop, connected, model, bottomRef, promptRef,
-    submit, selectSource, importPlan, signIn, exportPlan, applyTemplate, applyInspiration, restart,
+    spec, grill, gridSpec, source, inspection, error, working, desktop, connected, model, bottomRef, promptRef,
+    submit, selectSource, importPlan, signIn, chooseDecision, backGrillRound, confirmDecisionTree,
+    exportPlan, exportModSpecV2, applyTemplate, applyInspiration, restart,
   };
 }

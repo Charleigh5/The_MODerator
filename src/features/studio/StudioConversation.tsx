@@ -1,5 +1,8 @@
 import type { RefObject } from "react";
 import { ArrowUp, Layers3, LockKeyhole, SlidersHorizontal, Sparkles } from "lucide-react";
+import Football22Board from "../../components/Football22Board";
+import GrillMePanel from "../../components/GrillMePanel";
+import type { GridironSpecV2, OptionId, Session } from "../../lib/grillMeFlow";
 import type { ModIntentSpec } from "../../lib/modIntentCompiler";
 import type { Message } from "./types";
 
@@ -9,6 +12,8 @@ type StudioConversationProps = {
   draft: string;
   working: boolean;
   spec: ModIntentSpec | null;
+  grill: Session | null;
+  gridSpec: GridironSpecV2 | null;
   inspectorOpen: boolean;
   bottomRef: RefObject<HTMLDivElement>;
   promptRef: RefObject<HTMLTextAreaElement>;
@@ -16,25 +21,19 @@ type StudioConversationProps = {
   onSubmit: () => void;
   onSelectSource: () => void;
   onExportPlan: () => void;
+  onExportModSpecV2: () => void;
   onImportPlan: () => void;
+  onChooseDecision: (option: OptionId, detail?: string) => void;
+  onBackGrillRound: () => void;
+  onConfirmDecisionTree: () => void;
   onToggleInspector: () => void;
 };
 
 export function StudioConversation({
-  desktop,
-  messages,
-  draft,
-  working,
-  spec,
-  inspectorOpen,
-  bottomRef,
-  promptRef,
-  onDraftChange,
-  onSubmit,
-  onSelectSource,
-  onExportPlan,
-  onImportPlan,
-  onToggleInspector,
+  desktop, messages, draft, working, spec, grill, gridSpec, inspectorOpen,
+  bottomRef, promptRef, onDraftChange, onSubmit, onSelectSource, onExportPlan,
+  onExportModSpecV2, onImportPlan, onChooseDecision, onBackGrillRound,
+  onConfirmDecisionTree, onToggleInspector,
 }: StudioConversationProps) {
   const ready = spec?.readiness === "READY_TO_BUILD";
 
@@ -97,6 +96,18 @@ export function StudioConversation({
                 </div>
               </article>
             ))}
+            {grill && (
+              <GrillMePanel
+                session={grill}
+                brief={gridSpec}
+                onChoose={onChooseDecision}
+                onBack={onBackGrillRound}
+                onConfirm={onConfirmDecisionTree}
+              />
+            )}
+            {grill?.positionGroup && grill.positionGroup !== "SPECIAL_TEAMS" && (
+              <Football22Board focusGroup={grill.positionGroup} />
+            )}
             {working && (
               <div className="m27-working" role="status">
                 Processing through Madden 27 evidence gates{"…"}
@@ -133,6 +144,9 @@ export function StudioConversation({
             </button>
             <button type="button" onClick={onExportPlan} disabled={!spec}>
               Download plan
+            </button>
+            <button type="button" onClick={onExportModSpecV2} disabled={!gridSpec}>
+              Download Mod Spec v2
             </button>
             <button type="button" onClick={onSelectSource} disabled={!desktop}>
               Local source

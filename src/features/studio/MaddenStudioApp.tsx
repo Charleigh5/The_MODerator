@@ -16,6 +16,7 @@ export default function MaddenStudioApp() {
 
   const inspectorProps = {
     spec: s.spec,
+    gridSpec: s.gridSpec,
     source: s.source,
     inspection: s.inspection,
     error: s.error,
@@ -26,6 +27,7 @@ export default function MaddenStudioApp() {
     onSelectSource: () => void s.selectSource(),
     onImportPlan: () => void s.importPlan(),
     onExportPlan: s.exportPlan,
+    onExportModSpecV2: s.exportModSpecV2,
     onSignIn: () => void s.signIn(),
   };
 
@@ -43,6 +45,8 @@ export default function MaddenStudioApp() {
         draft={s.draft}
         working={s.working}
         spec={s.spec}
+        grill={s.grill}
+        gridSpec={s.gridSpec}
         inspectorOpen={s.inspectorOpen}
         bottomRef={s.bottomRef}
         promptRef={s.promptRef}
@@ -50,7 +54,11 @@ export default function MaddenStudioApp() {
         onSubmit={() => void s.submit()}
         onSelectSource={() => void s.selectSource()}
         onExportPlan={s.exportPlan}
+        onExportModSpecV2={s.exportModSpecV2}
         onImportPlan={() => void s.importPlan()}
+        onChooseDecision={s.chooseDecision}
+        onBackGrillRound={s.backGrillRound}
+        onConfirmDecisionTree={s.confirmDecisionTree}
         onToggleInspector={() => s.setInspectorOpen((open) => !open)}
       />
 

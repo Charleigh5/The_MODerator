@@ -34,6 +34,11 @@ export const DESIGN_LABS: DesignLab[] = [
     prompt: "Madden 27: change the end zone design and stadium field graphics",
     detail: "Exact-build resources required",
   },
+  {
+    title: "Elite safety IQ",
+    prompt: "Madden 27: a 95-rated safety should recognize coverage concepts and pursue better than a 72-rated safety without being superhuman",
+    detail: "GrillMe • behavior vs ratings vs physics",
+  },
 ];
 
 export const GREETING: Message = {
